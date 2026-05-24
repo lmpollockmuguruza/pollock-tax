@@ -1554,9 +1554,209 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 
 .theme-toggle { display: none; }
 
+/* ============================================================
+   POLLOCKTAX PREMIUM OPENER OVERLAY
+   ============================================================ */
+
+body.opener-active {
+  overflow: hidden !important;
+}
+
+.opener-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #FAFAF7; /* Fallback matching light theme var(--bg) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* Animated US-Spain Blend Background Mesh */
+  background-image: 
+    radial-gradient(at 15% 25%, rgba(43, 79, 140, 0.15) 0px, transparent 50%), 
+    radial-gradient(at 85% 15%, rgba(200, 16, 46, 0.12) 0px, transparent 50%),  
+    radial-gradient(at 75% 85%, rgba(212, 175, 55, 0.1) 0px, transparent 50%), 
+    radial-gradient(at 25% 75%, rgba(200, 16, 46, 0.08) 0px, transparent 50%);
+  background-size: 200% 200%;
+  animation: openerGradientMesh 12s ease infinite;
+}
+
+@keyframes openerGradientMesh {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.opener-content {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  padding-inline: clamp(20px, 4vw, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opener-headline-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1100px; /* Expands the horizontal plane */
+  gap: 0 40px;       /* Pushes the three blocks away from each other */
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: #0A1226;
+  line-height: 1.2;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.opener-static {
+  font-weight: 400;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Combines "Tax advisory" and "for" into a single, unbreaking left block */
+.opener-static:first-child {
+  display: inline-flex;
+  gap: 12px;
+}
+
+.opener-connector {
+  color: #5A6478;
+  font-style: italic;
+  font-weight: 300;
+}
+
+.opener-rotator {
+  display: inline-block;
+  vertical-align: middle;
+  height: 64px;
+  overflow: hidden;
+  position: relative;
+  flex-grow: 0;
+  min-width: 340px; /* Generous width so long words don't crowd the right text */
+  border-left: 1px solid rgba(138, 147, 166, 0.3);  /* Optional: Adds a premium, clean visual separator border on the left */
+  padding-left: 40px; /* Optional: Adjusts space inside that separator border */
+}
+
+.rotator-inner {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(0);
+  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.rotator-inner span {
+  display: block;
+  height: 64px;
+  line-height: 64px;
+  font-weight: 700;
+  color: #2B4F8C;
+  text-align: left;
+}
+
+.opener-brand-reveal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.opener-brand-reveal.is-active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.opener-logo {
+  height: 80px;
+  width: auto;
+  animation: logoPulse 2s ease-in-out infinite alternate;
+}
+
+.opener-brand-text {
+  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #0A1226;
+}
+
+@keyframes logoPulse {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+@media (max-width: 880px) {
+  .opener-rotator {
+    min-width: 240px;
+    height: 50px;
+  }
+  .rotator-inner span {
+    height: 50px;
+    line-height: 50px;
+  }
+  .opener-headline-wrap {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  .rotator-inner span {
+    text-align: center;
+  }
+}
 </style>
 </head>
-<body>
+<body class="opener-active">
+
+<div id="site-opener" class="opener-overlay">
+  <div class="opener-content">
+    <div class="opener-headline-wrap">
+      <span class="opener-static">Tax advisory</span>
+      <span class="opener-connector">for</span>
+      <div class="opener-rotator">
+        <div class="rotator-inner" id="rotator-words">
+          <span>expats</span>
+          <span>recent movers</span>
+          <span>students</span>
+          <span>digital nomads</span>
+          <span>military</span>
+          <span>retirees</span>
+          <span>catching up</span>
+          <span>SMEs</span>
+          <span>founders</span>
+        </div>
+      </div>
+      <span class="opener-static">in Spain.</span>
+    </div>
+
+    <div class="opener-brand-reveal" id="opener-brand">
+      <img src="images/logo.png" alt="PollockTax Logo" class="opener-logo" />
+      <h1 class="opener-brand-text">PollockTax</h1>
+    </div>
+  </div>
+</div>
 
 <header class="nav" id="nav">
   <div class="container nav-inner">
@@ -2590,7 +2790,7 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
           <div class="stl-event stl-event--spain" data-date="Apr 8 · Spain">
             <span class="stl-event-flag stl-event-flag--spain" data-bilingual><span data-lang="en">Spain</span><span data-lang="es">España</span></span>
             <h4 data-bilingual><span data-lang="en">Renta 2025 campaign opens online</span><span data-lang="es">Se abre la Campaña de Renta 2025 por internet</span></h4>
-            <p data-bilingual><span data-lang="en">Modelo 100 (IRPF) and Modelo 714 (Patrimonio) for the 2025 tax year become fileable online. Early filing helps if a refund is expected.</span><span data-lang="es">Se pueden presentar online el Modelo 100 (IRPF) y el Modelo 714 (Patrimonio) del ejercicio 2025. Presentar pronto ayuda si esperas devolución.</span></p>
+            <p data-bilingual><span data-lang="en">Modelo 100 (IRPF) and Modelo 714 (Patrimonio) for the 2025 tax year become fileable online. Early filing helps if a refund is expected.</span><span data-lang="es">Se pueden presentar online el Modelo 100 (IRPF) and el Modelo 714 (Patrimonio) del ejercicio 2025. Presentar pronto ayuda si esperas devolución.</span></p>
             <span class="stl-forms">Modelo 100 · Modelo 714</span>
           </div>
         </div>
@@ -3071,6 +3271,60 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
   const $  = (q, ctx = document) => ctx.querySelector(q);
   const $$ = (q, ctx = document) => Array.from(ctx.querySelectorAll(q));
 
+  /* ===== SITE INTRO OPENER SYSTEM ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    const body = document.body;
+    const opener = $('#site-opener');
+    const headlineWrap = $('.opener-headline-wrap');
+    const rotator = $('#rotator-words');
+    const brandReveal = $('#opener-brand');
+    
+    if (!opener || !rotator) return;
+
+    body.classList.add('opener-active');
+
+    const wordsCount = rotator.children.length;
+    let currentWordIndex = 0;
+    const wordStayDuration = 1300; 
+
+    const getStepHeight = () => rotator.children[0].offsetHeight;
+
+    function rotateWords() {
+      if (currentWordIndex < wordsCount - 1) {
+        currentWordIndex++;
+        const currentTranslation = currentWordIndex * getStepHeight();
+        rotator.style.transform = `translateY(-${currentTranslation}px)`;
+        
+        setTimeout(rotateWords, wordStayDuration);
+      } else {
+        setTimeout(triggerBrandReveal, 1000);
+      }
+    }
+
+    function triggerBrandReveal() {
+      headlineWrap.style.opacity = '0';
+      headlineWrap.style.transform = 'translate(0, -20px)';
+
+      setTimeout(() => {
+        headlineWrap.style.display = 'none';
+        brandReveal.classList.add('is-active');
+        
+        setTimeout(dismissOpener, 1800);
+      }, 500);
+    }
+
+    function dismissOpener() {
+      opener.style.opacity = '0';
+      setTimeout(() => {
+        opener.remove();
+        body.classList.remove('opener-active');
+        window.scrollTo(0, 0);
+      }, 800);
+    }
+
+    setTimeout(rotateWords, wordStayDuration);
+  });
+
   /* ===== THEME ===== */
   const root = document.documentElement;
   const STORAGE_KEYS = { theme: 'pollock.theme', lang: 'pollock.lang', cookies: 'pollock.cookies' };
@@ -3084,7 +3338,7 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
     if (saved) setTheme(saved);
   } catch (e) {}
   $$('[data-theme-toggle]').forEach(btn => btn.addEventListener('click', () => {
-    setTheme(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    setTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
   }));
 
   /* ===== LANGUAGE ===== */
@@ -3130,7 +3384,9 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
   function closeDrawer() {
     mobileDrawer.classList.remove('is-open');
     mobileOverlay.classList.remove('is-open');
-    document.body.style.overflow = '';
+    if(!document.body.classList.contains('opener-active')) {
+      document.body.style.overflow = '';
+    }
   }
 
   if(openMenuBtn && closeMenuBtn && mobileOverlay) {
@@ -3326,7 +3582,9 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
     }
     function closeModal() {
       modal.classList.remove('is-open');
-      document.body.style.overflow = '';
+      if(!document.body.classList.contains('opener-active')) {
+        document.body.style.overflow = '';
+      }
     }
     function showModalTab(tab) {
       $$('[data-modal-tab]', modal).forEach(b => {

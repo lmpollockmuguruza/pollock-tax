@@ -1621,7 +1621,7 @@ body.opener-active {
   opacity: 0; /* Changed from 1 to 0 so it starts hidden */
   transform: translateY(0);
   /* You can change 0.5s to 0.2s below to make it appear even faster */
-  transition: opacity 0.3s ease, transform 0.3s ease; 
+  transition: opacity 0.55s ease, transform 0.3s ease; 
   padding-inline: clamp(20px, 5vw, 60px);
 }
 
@@ -3393,7 +3393,7 @@ body.opener-active {
     // ==========================================
     setTimeout(() => {
       headlineWrap.style.opacity = '1';
-    }, 50); 
+    }, 125); 
 
     const wordsCount = rotator.children.length;
     let currentWordIndex = 0;
@@ -3402,7 +3402,7 @@ body.opener-active {
     // 2. CHANGE THIS LINE:
     // Lower this number to make the words spin faster (e.g., from 1100 to 700)
     // ==========================================
-    const wordStayDuration = 700; 
+    const wordStayDuration = 950; 
 
     const getStepHeight = () => rotator.children[0].offsetHeight;
 
@@ -3418,7 +3418,7 @@ body.opener-active {
         // 3. CHANGE THIS DELAY:
         // Lower this number to speed up the transition to the logo (e.g., from 1000 to 400)
         // ==========================================
-        setTimeout(triggerBrandReveal, 400); 
+        setTimeout(triggerBrandReveal, 800); 
       }
     }
 
@@ -3434,8 +3434,8 @@ body.opener-active {
         headlineWrap.style.display = 'none';
         brandReveal.classList.add('is-active');
         
-        setTimeout(dismissOpener, 1000); // Was 1800
-      }, 300); // Was 500
+        setTimeout(dismissOpener, 1500); // Was 1800
+      }, 450); // Was 500
     }
 
     function dismissOpener() {
@@ -3450,7 +3450,7 @@ body.opener-active {
         opener.remove();
         body.classList.remove('opener-active');
         window.scrollTo(0, 0);
-      }, 500); 
+      }, 750); 
     }
 
     setTimeout(rotateWords, wordStayDuration);

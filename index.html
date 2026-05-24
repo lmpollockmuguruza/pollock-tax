@@ -1610,9 +1610,9 @@ body.opener-active {
 .opener-headline-wrap {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; /* Pushes content to the extreme left and right */
   width: 100%;
-  max-width: 1100px;
+  max-width: 1240px;
   gap: 0 40px;
   font-size: clamp(28px, 3.5vw, 44px);
   font-weight: 300;
@@ -1622,6 +1622,9 @@ body.opener-active {
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.5s ease, transform 0.5s ease;
+  
+  /* This creates your left and right margins on desktop */
+  padding-inline: clamp(20px, 6vw, 80px); 
 }
 
 .opener-static {
@@ -1717,6 +1720,7 @@ body.opener-active {
   .opener-headline-wrap {
     flex-direction: column;
     text-align: center;
+    justify-content: center; /* Safely brings it back to center on small screens */
     gap: 16px;
   }
   .opener-rotator {
@@ -1743,15 +1747,15 @@ body.opener-active {
       <span class="opener-static">Tax advisory <span class="opener-connector">for</span></span>
       <div class="opener-rotator">
         <div class="rotator-inner" id="rotator-words">
-          <span>expats</span>
+          <span>digital nomads</span>
           <span>recent movers</span>
           <span>students</span>
-          <span>digital nomads</span>
           <span>military</span>
           <span>retirees</span>
-          <span>catching up</span>
           <span>SMEs</span>
           <span>founders</span>
+          <span>catching up</span>
+          <span>expats</span>
         </div>
       </div>
       <span class="opener-static">in Spain.</span>

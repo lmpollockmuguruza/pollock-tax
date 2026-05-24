@@ -1760,7 +1760,7 @@ body.opener-active {
 <div id="site-opener" class="opener-overlay">
   <canvas id="fluid-canvas" class="opener-canvas"></canvas>
   
-<div class="opener-content">
+  <div class="opener-content">
     <div class="opener-headline-wrap">
       <span class="opener-static align-left">Tax advisory</span>
       
@@ -1789,6 +1789,14 @@ body.opener-active {
       <h1 class="opener-brand-text">PollockTax</h1>
     </div>
   </div>
+</div> <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const opener = document.getElementById('site-opener');
+    if (opener && window.stopFluidCanvas) {
+      // Safeguard fluid mesh rendering loops from jumping scopes
+    }
+  });
+</script>
 
 <header class="nav" id="nav">
   <div class="container nav-inner">

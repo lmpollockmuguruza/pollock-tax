@@ -1618,9 +1618,10 @@ body.opener-active {
   letter-spacing: -0.02em;
   color: #0A1226;
   line-height: 1.2;
-  opacity: 1;
+  opacity: 0; /* Changed from 1 to 0 so it starts hidden */
   transform: translateY(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  /* You can change 0.5s to 0.2s below to make it appear even faster */
+  transition: opacity 0.3s ease, transform 0.3s ease; 
   padding-inline: clamp(20px, 5vw, 60px);
 }
 
@@ -3374,7 +3375,7 @@ body.opener-active {
     };
   });
 
-  /* ===== SITE INTRO OPENER SYSTEM ===== */
+/* ===== SITE INTRO OPENER SYSTEM ===== */
   document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
     const opener = $('#site-opener');
@@ -3386,9 +3387,22 @@ body.opener-active {
 
     body.classList.add('opener-active');
 
+    // ==========================================
+    // 1. ADD THESE 3 LINES HERE:
+    // This dynamically fades the text in right after load
+    // ==========================================
+    setTimeout(() => {
+      headlineWrap.style.opacity = '1';
+    }, 50); 
+
     const wordsCount = rotator.children.length;
     let currentWordIndex = 0;
-    const wordStayDuration = 1100; // Accelerated pacing loop
+    
+    // ==========================================
+    // 2. CHANGE THIS LINE:
+    // Lower this number to make the words spin faster (e.g., from 1100 to 700)
+    // ==========================================
+    const wordStayDuration = 700; 
 
     const getStepHeight = () => rotator.children[0].offsetHeight;
 
@@ -3400,7 +3414,11 @@ body.opener-active {
         
         setTimeout(rotateWords, wordStayDuration);
       } else {
-        setTimeout(triggerBrandReveal, 1000);
+        // ==========================================
+        // 3. CHANGE THIS DELAY:
+        // Lower this number to speed up the transition to the logo (e.g., from 1000 to 400)
+        // ==========================================
+        setTimeout(triggerBrandReveal, 400); 
       }
     }
 
@@ -3408,23 +3426,31 @@ body.opener-active {
       headlineWrap.style.opacity = '0';
       headlineWrap.style.transform = 'translate(0, -20px)';
 
+      // ==========================================
+      // 4. CHANGE THESE TWO DELAYS:
+      // Lower the 500 to 300, and the 1800 to 1000 to make the logo cycle snappier
+      // ==========================================
       setTimeout(() => {
         headlineWrap.style.display = 'none';
         brandReveal.classList.add('is-active');
         
-        setTimeout(dismissOpener, 1800);
-      }, 500);
+        setTimeout(dismissOpener, 1000); // Was 1800
+      }, 300); // Was 500
     }
 
     function dismissOpener() {
       opener.style.opacity = '0';
       if (window.stopFluidCanvas) window.stopFluidCanvas();
       
+      // ==========================================
+      // 5. CHANGE THIS FINAL DELAY:
+      // Lower this number so the page reveals quicker as the screen clears (e.g., from 800 to 500)
+      // ==========================================
       setTimeout(() => {
         opener.remove();
         body.classList.remove('opener-active');
         window.scrollTo(0, 0);
-      }, 800);
+      }, 500); 
     }
 
     setTimeout(rotateWords, wordStayDuration);

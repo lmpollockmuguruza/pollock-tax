@@ -553,6 +553,45 @@ html[lang="es"] .hero-rotator > [data-lang="es"] { display: grid; grid-template-
 }
 
 /* ============ UNIFIED OFFER ============ */
+/* "Did you know?" stats strip */
+.stats-strip {
+  margin: 8px 0 clamp(48px, 6vw, 72px);
+  padding: clamp(28px, 4vw, 40px);
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+.stats-strip-head { max-width: 64ch; margin-bottom: 32px; }
+.stats-kicker {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--es-primary);
+  display: block;
+  margin-bottom: 10px;
+}
+.stats-strip-head p { color: var(--ink-2); font-size: clamp(16px, 2vw, 19px); line-height: 1.5; margin: 0; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 3vw, 36px);
+}
+.stat { border-top: 2px solid var(--accent); padding-top: 14px; }
+.stat-num {
+  display: block;
+  font-weight: 300;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.stat-label { display: block; color: var(--ink-3); font-size: 13.5px; line-height: 1.45; }
+.stats-source { margin: 28px 0 0; color: var(--ink-4); font-size: 12px; line-height: 1.5; }
+@media (max-width: 760px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .stats-grid { grid-template-columns: 1fr; } }
+
 .offer-tabs-wrap {
   display: grid;
   grid-template-columns: minmax(280px, 340px) 1fr;
@@ -1027,11 +1066,28 @@ html[lang="es"] .hero-rotator > [data-lang="es"] { display: grid; grid-template-
 .faq-a-inner { padding: 0 0 26px; max-width: 64ch; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
 .faq-item.is-open .faq-a { grid-template-rows: 1fr; }
 
-/* "Digging deeper" bio expander reuses the accordion, with paragraph spacing */
+/* Accordion-based prose (bio expander + "tax detail by situation") */
 .bio-deeper { margin-top: 28px; }
-.bio-deeper .faq-q { font-size: 15px; font-weight: 500; }
-.bio-deeper .faq-a-inner p { margin: 0 0 14px; }
-.bio-deeper .faq-a-inner p:last-child { margin-bottom: 0; }
+.bio-deeper .faq-q,
+.tax-detail .faq-q { font-size: 15px; font-weight: 500; }
+.bio-deeper .faq-a-inner p,
+.tax-detail .faq-a-inner p { margin: 0 0 14px; }
+.bio-deeper .faq-a-inner p:last-child,
+.tax-detail .faq-a-inner p:last-child { margin-bottom: 0; }
+
+.tax-detail { margin-top: clamp(40px, 6vw, 64px); }
+.tax-detail-head { max-width: 64ch; margin-bottom: 8px; }
+.tax-detail-kicker {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 10px;
+}
+.tax-detail-head h3 { font-size: clamp(20px, 3vw, 26px); font-weight: 500; letter-spacing: -0.015em; margin: 0 0 12px; color: var(--ink); }
+.tax-detail-head p { color: var(--ink-3); font-size: 15px; line-height: 1.55; margin: 0; }
 
 /* ============ TIMELINE ============ */
 .timeline-section { background: var(--bg-elev); }
@@ -1059,12 +1115,15 @@ html[lang="es"] .hero-rotator > [data-lang="es"] { display: grid; grid-template-
   color: var(--ink-3);
 }
 .tl-legend-swatch {
-  width: 18px; height: 4px;
-  border-radius: 2px;
+  width: 16px; height: 11px;
+  border-radius: 1.5px;
   flex-shrink: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 1px rgba(10,18,38,0.06);
 }
-.tl-legend-swatch--us    { background: var(--us-primary); }
-.tl-legend-swatch--spain { background: var(--es-primary); }
+.tl-legend-swatch--us    { background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2011'%3E%3Crect%20width='16'%20height='11'%20fill='%23fff'/%3E%3Cg%20fill='%23B31942'%3E%3Crect%20width='16'%20height='1.57'/%3E%3Crect%20y='3.14'%20width='16'%20height='1.57'/%3E%3Crect%20y='6.28'%20width='16'%20height='1.57'/%3E%3Crect%20y='9.43'%20width='16'%20height='1.57'/%3E%3C/g%3E%3Crect%20width='7'%20height='6.28'%20fill='%230A3161'/%3E%3Cg%20fill='%23fff'%3E%3Ccircle%20cx='1.7'%20cy='1.4'%20r='.55'/%3E%3Ccircle%20cx='4.1'%20cy='1.4'%20r='.55'/%3E%3Ccircle%20cx='2.9'%20cy='3.4'%20r='.55'/%3E%3Ccircle%20cx='1.7'%20cy='5'%20r='.55'/%3E%3Ccircle%20cx='4.1'%20cy='5'%20r='.55'/%3E%3C/g%3E%3C/svg%3E"); }
+.tl-legend-swatch--spain { background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2011'%3E%3Crect%20width='16'%20height='11'%20fill='%23AA151B'/%3E%3Crect%20y='2.75'%20width='16'%20height='5.5'%20fill='%23F1BF00'/%3E%3C/svg%3E"); }
 .tl-legend-swatch--prep  { background: var(--prep-primary); }
 .tl-legend-swatch--both  { background: var(--both-primary); }
 
@@ -1201,6 +1260,19 @@ html[lang="es"] .hero-rotator > [data-lang="es"] { display: grid; grid-template-
 .stl-event-flag--prep::before  { background: var(--prep-primary); }
 .stl-event-flag--both  { color: var(--both-primary);  border-color: var(--both-border);  background: var(--both-soft); }
 .stl-event-flag--both::before  { background: var(--both-primary); }
+
+/* Minimalist flag chips (styled like the emblem's flags, not emoji) carry the jurisdiction */
+.stl-event-flag--us::before,
+.stl-event-flag--spain::before {
+  width: 15px; height: 10px;
+  border-radius: 1.5px;
+  background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 1px rgba(10,18,38,0.06);
+}
+.stl-event-flag--us::before    { background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2011'%3E%3Crect%20width='16'%20height='11'%20fill='%23fff'/%3E%3Cg%20fill='%23B31942'%3E%3Crect%20width='16'%20height='1.57'/%3E%3Crect%20y='3.14'%20width='16'%20height='1.57'/%3E%3Crect%20y='6.28'%20width='16'%20height='1.57'/%3E%3Crect%20y='9.43'%20width='16'%20height='1.57'/%3E%3C/g%3E%3Crect%20width='7'%20height='6.28'%20fill='%230A3161'/%3E%3Cg%20fill='%23fff'%3E%3Ccircle%20cx='1.7'%20cy='1.4'%20r='.55'/%3E%3Ccircle%20cx='4.1'%20cy='1.4'%20r='.55'/%3E%3Ccircle%20cx='2.9'%20cy='3.4'%20r='.55'/%3E%3Ccircle%20cx='1.7'%20cy='5'%20r='.55'/%3E%3Ccircle%20cx='4.1'%20cy='5'%20r='.55'/%3E%3C/g%3E%3C/svg%3E"); }
+.stl-event-flag--spain::before { background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2011'%3E%3Crect%20width='16'%20height='11'%20fill='%23AA151B'/%3E%3Crect%20y='2.75'%20width='16'%20height='5.5'%20fill='%23F1BF00'/%3E%3C/svg%3E"); }
 
 .stl-event h4 {
   font-size: 15px;
@@ -1428,6 +1500,14 @@ html[lang="es"] .hero-rotator > [data-lang="es"] { display: grid; grid-template-
   padding-bottom: 56px;
 }
 .footer-brand .logo { margin-bottom: 20px; }
+.footer-lockup-link { display: inline-block; margin-bottom: 20px; }
+.footer-lockup { width: 230px; max-width: 70vw; height: auto; display: block; }
+.footer-lockup--dark { display: none; }
+[data-theme="dark"] .footer-lockup--light { display: none; }
+[data-theme="dark"] .footer-lockup--dark { display: block; }
+.lockup-fallback { display: none; }
+.footer-lockup-link.lockup-failed .footer-lockup { display: none !important; }
+.footer-lockup-link.lockup-failed .lockup-fallback { display: inline-flex; }
 .footer-brand p { color: var(--ink-3); font-size: 14px; max-width: 36ch; line-height: 1.55; margin: 0; }
 .footer-col h4 { font-size: 13px; color: var(--ink); margin: 0 0 16px; font-weight: 500; }
 .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
@@ -1733,6 +1813,17 @@ body.opener-active {
   transform: translate(-50%, -50%) scale(1);
 }
 
+.opener-lockup {
+  width: min(440px, 80vw);
+  height: auto;
+  animation: logoPulse 2s ease-in-out infinite alternate;
+}
+.opener-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
 .opener-logo {
   height: 80px;
   width: auto;
@@ -1813,8 +1904,12 @@ body.opener-active {
     </div>
 
     <div class="opener-brand-reveal" id="opener-brand">
-      <img src="images/logo.png" alt="PollockTax Logo" class="opener-logo" />
-      <h1 class="opener-brand-text">PollockTax</h1>
+      <img src="images/logo-lockup.svg" alt="Pollock — US Expat Tax | Spain" class="opener-lockup"
+           onerror="this.style.display='none';var f=document.getElementById('opener-fallback');if(f)f.style.display='flex';" />
+      <div id="opener-fallback" class="opener-fallback" style="display:none">
+        <img src="images/logo.png" alt="" class="opener-logo" />
+        <h1 class="opener-brand-text">PollockTax</h1>
+      </div>
     </div>
   </div>
 </div> <script>
@@ -1886,14 +1981,14 @@ body.opener-active {
       <div class="hero-text">
         <span class="eyebrow hero-rotator" data-bilingual aria-live="polite" data-reveal>
           <span data-lang="en">
-            <span class="hero-rot-line is-active">U.S. tax preparation &amp; consulting for U.S. expats</span>
-            <span class="hero-rot-line">Help for expats in Spain with their Spanish tax &amp; legal obligations</span>
-            <span class="hero-rot-line">U.S. tax preparation for Spaniards &amp; others with U.S. tax obligations</span>
+            <span class="hero-rot-line is-active">Tax prep &amp; consulting for U.S. expats</span>
+            <span class="hero-rot-line">Spanish tax &amp; legal obligations, handled</span>
+            <span class="hero-rot-line">U.S. tax help for Spaniards &amp; others</span>
           </span>
           <span data-lang="es">
-            <span class="hero-rot-line is-active">Preparación y asesoría fiscal de EE. UU. para expatriados americanos</span>
-            <span class="hero-rot-line">Ayuda a expatriados en España con sus obligaciones fiscales y legales españolas</span>
-            <span class="hero-rot-line">Preparación fiscal de EE. UU. para españoles y otros con obligaciones en EE. UU.</span>
+            <span class="hero-rot-line is-active">Preparación y asesoría fiscal de EE. UU. para expatriados</span>
+            <span class="hero-rot-line">Obligaciones fiscales y legales españolas, resueltas</span>
+            <span class="hero-rot-line">Ayuda fiscal de EE. UU. para españoles y otros</span>
           </span>
         </span>
 
@@ -2035,6 +2130,26 @@ body.opener-active {
                  onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
             <span style="display:none">DrakeTax</span>
           </div>
+          <div class="cred-item" title="Arthur Andersen">
+            <img src="images/credentials/arthur-andersen.png" alt="Arthur Andersen"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">Arthur Andersen</span>
+          </div>
+          <div class="cred-item" title="Ernst &amp; Young">
+            <img src="images/credentials/ey.png" alt="Ernst &amp; Young"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">Ernst &amp; Young</span>
+          </div>
+          <div class="cred-item" title="IE Business School">
+            <img src="images/credentials/ie-business-school.png" alt="IE Business School"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">IE Business School</span>
+          </div>
+          <div class="cred-item" title="H&amp;R Block">
+            <img src="images/credentials/hr-block.png" alt="H&amp;R Block"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">H&amp;R Block</span>
+          </div>
 
           <div class="cred-item" title="UW–Madison">
             <img src="images/credentials/uw-madison.png" alt="UW–Madison"
@@ -2066,6 +2181,26 @@ body.opener-active {
                  onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
             <span style="display:none">DrakeTax</span>
           </div>
+          <div class="cred-item" title="Arthur Andersen">
+            <img src="images/credentials/arthur-andersen.png" alt="Arthur Andersen"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">Arthur Andersen</span>
+          </div>
+          <div class="cred-item" title="Ernst &amp; Young">
+            <img src="images/credentials/ey.png" alt="Ernst &amp; Young"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">Ernst &amp; Young</span>
+          </div>
+          <div class="cred-item" title="IE Business School">
+            <img src="images/credentials/ie-business-school.png" alt="IE Business School"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">IE Business School</span>
+          </div>
+          <div class="cred-item" title="H&amp;R Block">
+            <img src="images/credentials/hr-block.png" alt="H&amp;R Block"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+            <span style="display:none">H&amp;R Block</span>
+          </div>
         </div>
       </div>
     </div>
@@ -2086,6 +2221,38 @@ body.opener-active {
           <span data-lang="es">La práctica se dirige desde Madrid y atiende a americanos en toda España. Elige un perfil para ver las declaraciones americanas y españolas que suelen aplicar, con los formularios concretos.</span>
         </p>
       </div>
+    </div>
+
+    <div class="stats-strip" data-reveal>
+      <div class="stats-strip-head">
+        <span class="stats-kicker" data-bilingual><span data-lang="en">Did you know?</span><span data-lang="es">¿Sabías que…?</span></span>
+        <p data-bilingual="block">
+          <span data-lang="en">You're far from alone. Americans are one of the fastest-growing communities in Spain — and almost all of them carry a U.S. filing obligation.</span>
+          <span data-lang="es">No estás solo, ni mucho menos. Los americanos son una de las comunidades que más crece en España — y casi todos arrastran una obligación fiscal con EE. UU.</span>
+        </p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat">
+          <span class="stat-num">48,700</span>
+          <span class="stat-label" data-bilingual><span data-lang="en">U.S. nationals legally residing in Spain (mid-2025)</span><span data-lang="es">ciudadanos de EE. UU. con residencia legal en España (mediados de 2025)</span></span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">20–25k</span>
+          <span class="stat-label" data-bilingual><span data-lang="en">retirees &amp; passive-income residents — the largest group</span><span data-lang="es">jubilados y residentes con renta pasiva — el grupo más numeroso</span></span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">15–18k</span>
+          <span class="stat-label" data-bilingual><span data-lang="en">remote workers &amp; digital nomads — the fastest-growing</span><span data-lang="es">trabajadores remotos y nómadas digitales — el que más crece</span></span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">15,638</span>
+          <span class="stat-label" data-bilingual><span data-lang="en">first-time U.S. residency permits granted in 2024 — a record</span><span data-lang="es">primeras autorizaciones de residencia para americanos en 2024 — récord</span></span>
+        </div>
+      </div>
+      <p class="stats-source" data-bilingual="block">
+        <span data-lang="en">Sources: Spain's Immigration Observatory (June 2025) and Eurostat first-permit data (2024). Figures are approximate.</span>
+        <span data-lang="es">Fuentes: Observatorio Permanente de la Inmigración (junio 2025) y datos de primeros permisos de Eurostat (2024). Cifras aproximadas.</span>
+      </p>
     </div>
 
     <div class="offer-tabs-wrap" data-reveal>
@@ -2471,6 +2638,130 @@ body.opener-active {
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <div class="tax-detail" data-reveal>
+      <div class="tax-detail-head">
+        <span class="tax-detail-kicker" data-bilingual><span data-lang="en">Read more</span><span data-lang="es">Más detalle</span></span>
+        <h3 data-bilingual="block">
+          <span data-lang="en">The tax detail, by situation</span>
+          <span data-lang="es">El detalle fiscal, según tu situación</span>
+        </h3>
+        <p data-bilingual="block">
+          <span data-lang="en">A plain-language summary of what each group typically has to deal with on both the U.S. and Spanish sides. Open the one that fits.</span>
+          <span data-lang="es">Un resumen en lenguaje claro de lo que suele afrontar cada grupo, tanto en EE. UU. como en España. Abre el que te encaje.</span>
+        </p>
+      </div>
+
+      <div class="faq-list" data-accordion>
+        <div class="faq-item">
+          <button class="faq-q" data-faq-q>
+            <span data-bilingual><span data-lang="en">Retirees &amp; passive-income residents</span><span data-lang="es">Jubilados y residentes con renta pasiva</span></span>
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a"><div><div class="faq-a-inner" data-bilingual="block">
+            <span data-lang="en">
+              <p>If you moved here on a Non-Lucrative Visa (or simply don't work), you generally can't use the Foreign Earned Income Exclusion (FEIE) — that's only for earned income. The main tool to avoid double taxation is instead the Foreign Tax Credit (FTC), which offsets your U.S. liability with Spanish income taxes paid or accrued.</p>
+              <p>If Spain is your tax residence, you generally declare worldwide income on both returns, each converted into that country's currency. You'll also file the informative reports — FBAR and Form 8938 on the U.S. side, Modelos 720 and 721 (including real estate and crypto) on the Spanish side. U.S. penalties for missing these can be especially severe.</p>
+              <p>Two more to plan for: a possible annual Spanish wealth tax, and — for larger estates — Spanish inheritance and gift tax, ideally considered before the move.</p>
+            </span>
+            <span data-lang="es">
+              <p>Si viniste con una Visa No Lucrativa (o simplemente no trabajas), por lo general no puedes aplicar la Exclusión por Ingresos del Extranjero (FEIE), que es solo para rentas del trabajo. La vía principal para evitar la doble imposición es el Crédito Fiscal Extranjero (FTC), que compensa tu factura en EE. UU. con los impuestos pagados o devengados en España.</p>
+              <p>Si tu residencia fiscal es España, en general declaras la renta mundial en ambas declaraciones, cada una convertida a la moneda de su país. También presentas los informes informativos: FBAR y Formulario 8938 en EE. UU., y Modelos 720 y 721 (incluidos inmuebles y cripto) en España. Las sanciones de EE. UU. por omitirlos pueden ser muy severas.</p>
+              <p>Dos cosas más a prever: el posible Impuesto sobre el Patrimonio anual y —para patrimonios elevados— el Impuesto de Sucesiones y Donaciones, idealmente valorados antes de mudarte.</p>
+            </span>
+          </div></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" data-faq-q>
+            <span data-bilingual><span data-lang="en">Americans employed in Spain</span><span data-lang="es">Americanos empleados en España</span></span>
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a"><div><div class="faq-a-inner" data-bilingual="block">
+            <span data-lang="en">
+              <p>You're a Spanish tax resident if you spend 183+ days here in a calendar year, or your "centre of economic activity" or close family is in Spain. Either way, as a U.S. citizen you still have to comply with U.S. tax rules. To avoid paying twice you'll usually lean on the FEIE (earned income only) or the FTC (all income types already taxed in Spain), with income categorised carefully.</p>
+              <p>If you qualify and apply within your first six months, the so-called "Beckham Law" treats you as a non-resident for Spanish tax and applies a flat 24% on your first €600,000 of Spanish-source earned income — though a lower Spanish bill also reduces the FTC benefit on the U.S. side.</p>
+              <p>The same U.S. and Spanish informative reports apply (FBAR, Form 8938, Modelos 720/721). And if you were a resident of a "sticky state" — California, Virginia, New Mexico or South Carolina — sever that residency carefully so you're not still on the hook at state level.</p>
+            </span>
+            <span data-lang="es">
+              <p>Eres residente fiscal en España si pasas aquí 183 días o más en el año natural, o si tu "centro de actividad económica" o tu familia cercana están en España. En cualquier caso, como ciudadano de EE. UU. sigues obligado a cumplir con las normas fiscales estadounidenses. Para no pagar dos veces normalmente usarás la FEIE (solo rentas del trabajo) o el FTC (todo tipo de renta ya gravada en España), categorizando los ingresos con cuidado.</p>
+              <p>Si cumples los requisitos y lo solicitas en tus primeros seis meses, la llamada "Ley Beckham" te trata como no residente a efectos del IRPF y aplica un 24% fijo sobre tus primeros 600.000 € de rendimientos del trabajo de fuente española — aunque una factura española menor también reduce el beneficio del FTC en EE. UU.</p>
+              <p>Aplican los mismos informes informativos en EE. UU. y España (FBAR, Formulario 8938, Modelos 720/721). Y si eras residente de un "sticky state" —California, Virginia, Nuevo México o Carolina del Sur— rompe esa residencia con cuidado para no seguir respondiendo a nivel estatal.</p>
+            </span>
+          </div></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" data-faq-q>
+            <span data-bilingual><span data-lang="en">Self-employed &amp; digital nomads (autónomos)</span><span data-lang="es">Autónomos y nómadas digitales</span></span>
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a"><div><div class="faq-a-inner" data-bilingual="block">
+            <span data-lang="en">
+              <p>You share the same double-taxation puzzle as employees — FEIE, FTC, or the Beckham route if set up correctly from the start. The added wrinkle is self-employment tax in both countries (15.3% on the U.S. side).</p>
+              <p>Thanks to the U.S.–Spain Totalization Agreement, an American running a sole proprietorship in Spain can usually avoid paying social-security style tax twice — but the timing and paperwork are critical. Whether to set up a Spanish or U.S. limited-liability company is part of the same mix, with direct tax consequences on both sides.</p>
+              <p>As with every category, the U.S. and Spanish informative reports still apply (FBAR, Form 8938, Modelos 720/721).</p>
+            </span>
+            <span data-lang="es">
+              <p>Compartes el mismo rompecabezas de doble imposición que los empleados —FEIE, FTC o la vía Beckham si se configura bien desde el principio—. El matiz añadido es la cotización por cuenta propia en ambos países (15,3% en el lado estadounidense).</p>
+              <p>Gracias al Convenio de Totalización entre EE. UU. y España, un americano dado de alta como autónomo en España suele poder evitar pagar dos veces la parte de seguridad social — pero el momento y los trámites son críticos. Constituir una sociedad limitada española o estadounidense forma parte de la misma decisión, con consecuencias fiscales directas en ambos lados.</p>
+              <p>Como en cada categoría, siguen aplicando los informes informativos de EE. UU. y España (FBAR, Formulario 8938, Modelos 720/721).</p>
+            </span>
+          </div></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" data-faq-q>
+            <span data-bilingual><span data-lang="en">U.S. students in Spain</span><span data-lang="es">Estudiantes de EE. UU. en España</span></span>
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a"><div><div class="faq-a-inner" data-bilingual="block">
+            <span data-lang="en">
+              <p>A typical semester or academic year usually keeps you under the 183-day threshold, so you generally won't be a Spanish tax resident. But you still file your U.S. federal — and very likely state — returns, just like any year you held a job or want to recover over-withheld tax.</p>
+              <p>The practical snag is that some free filing software won't accept a foreign address, and there's no tax office down the block. If you do stay long enough to cross into Spanish residency, the usual dual-filing rules apply, like any other expat.</p>
+            </span>
+            <span data-lang="es">
+              <p>Un semestre o curso académico normal suele mantenerte por debajo del umbral de 183 días, así que en general no serás residente fiscal en España. Pero igualmente presentas tus declaraciones federales —y muy probablemente estatales— de EE. UU., como cualquier año en que trabajaste o quieras recuperar retenciones en exceso.</p>
+              <p>El inconveniente práctico es que algún software gratuito no admite direcciones extranjeras, y no tienes una oficina de impuestos en la esquina. Si te quedas el tiempo suficiente para ser residente en España, aplican las reglas habituales de doble declaración, como a cualquier expatriado.</p>
+            </span>
+          </div></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" data-faq-q>
+            <span data-bilingual><span data-lang="en">Behind on filing? Catching up</span><span data-lang="es">¿Atrasado? Ponerse al día</span></span>
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a"><div><div class="faq-a-inner" data-bilingual="block">
+            <span data-lang="en">
+              <p>To every problem there's a solution — some less painful than others. If your missed filings were non-willful, the cleanest path is the Streamlined Foreign Offshore Procedures (SFOP): an honest, understandable statement explaining the non-willfulness can spare you penalties.</p>
+              <p>Because Spain is a high-tax country, many U.S. expats here end up owing little or no U.S. tax anyway. At a minimum you'd prepare your three most recent years of returns and six most recent FBARs, with the non-willful statement attached. The key is to come forward under SFOP rather than quietly slipping a late return through.</p>
+            </span>
+            <span data-lang="es">
+              <p>A cada problema hay una solución, unas menos dolorosas que otras. Si tus incumplimientos fueron no intencionales, la vía más limpia es el procedimiento Streamlined Foreign Offshore (SFOP): una declaración honesta y comprensible que explique la no intencionalidad puede ahorrarte las sanciones.</p>
+              <p>Como España es un país de alta tributación, muchos expatriados estadounidenses aquí acaban debiendo poco o ningún impuesto en EE. UU. Como mínimo prepararías tus tres últimos años de declaraciones y los seis últimos FBAR, con la declaración de no intencionalidad adjunta. La clave es regularizar bajo el SFOP, no "colar" una declaración fuera de plazo en silencio.</p>
+            </span>
+          </div></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" data-faq-q>
+            <span data-bilingual><span data-lang="en">Spaniards &amp; others with a U.S. green card</span><span data-lang="es">Españoles y otros con green card de EE. UU.</span></span>
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a"><div><div class="faq-a-inner" data-bilingual="block">
+            <span data-lang="en">
+              <p>A valid, unexpired U.S. green card means you're taxed just like a U.S. citizen — so you file a Form 1040 on worldwide income. If you also meet one of the residency criteria in Article 9 of Spain's IRPF law (Ley 35/2006) for the same year, you'll comply with Spanish income tax too.</p>
+              <p>In practice you'd typically use the FEIE or FTC to reduce or eliminate U.S. double taxation, and you'd meet the informative reporting requirements on both the U.S. and Spanish sides.</p>
+            </span>
+            <span data-lang="es">
+              <p>Una green card estadounidense válida y vigente significa que tributas igual que un ciudadano de EE. UU. — así que presentas el Formulario 1040 sobre tu renta mundial. Si además cumples uno de los criterios de residencia del Artículo 9 de la Ley del IRPF (Ley 35/2006) en el mismo año, también cumplirás con el IRPF español.</p>
+              <p>En la práctica usarías la FEIE o el FTC para reducir o eliminar la doble imposición estadounidense, y cumplirías los requisitos de información tanto en EE. UU. como en España.</p>
+            </span>
+          </div></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -3158,11 +3449,17 @@ body.opener-active {
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="#top" class="logo">
-          <span class="logo-mark" aria-hidden="true">
-            <img src="images/logo.png" alt="" style="height: 38px; width: auto; display: block;" />
+        <a href="#top" class="footer-lockup-link" aria-label="Pollock — US Expat Tax | Spain — home">
+          <img src="images/logo-lockup.svg" alt="Pollock — US Expat Tax | Spain" class="footer-lockup footer-lockup--light"
+               onerror="this.parentElement.classList.add('lockup-failed');" />
+          <img src="images/logo-lockup-dark.svg" alt="" aria-hidden="true" class="footer-lockup footer-lockup--dark"
+               onerror="this.parentElement.classList.add('lockup-failed');" />
+          <span class="logo lockup-fallback">
+            <span class="logo-mark" aria-hidden="true">
+              <img src="images/logo.png" alt="" style="height: 38px; width: auto; display: block;" />
+            </span>
+            <span class="logo-word">PollockTax</span>
           </span>
-          <span class="logo-word">PollockTax</span>
         </a>
         <p data-bilingual="block">
           <span data-lang="en">U.S. tax &amp; consulting for Americans in Spain. Based in Madrid, working remotely across Spain.</span>

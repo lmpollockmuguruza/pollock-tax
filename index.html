@@ -37,15 +37,18 @@
   --ink-4:        #8A93A6;
   --line:         #E2DED2;
   --line-2:       #D4CFC0;
-  --accent:       #2B4F8C;
-  --accent-hover: #BF1A2F;
+  /* Official flag colors — U.S. "Old Glory" Blue/Red, Spain Red/Yellow.
+     Used wherever a blue/red/yellow appears, so the palette stays true to the flags. */
+  --accent:       #0A3161;   /* Old Glory Blue — PMS 282 C */
+  --accent-hover: #B31942;   /* Old Glory Red  — PMS 193 C */
 
-  --us-primary:   #2B4F8C;
-  --us-soft:      rgba(43, 79, 140, 0.08);
-  --us-border:    rgba(43, 79, 140, 0.25);
-  --es-primary:   #C8102E;
-  --es-soft:      rgba(200, 16, 46, 0.08);
-  --es-border:    rgba(200, 16, 46, 0.25);
+  --us-primary:   #0A3161;   /* Old Glory Blue */
+  --us-soft:      rgba(10, 49, 97, 0.08);
+  --us-border:    rgba(10, 49, 97, 0.25);
+  --es-primary:   #AA151B;   /* Spanish flag red */
+  --es-soft:      rgba(170, 21, 27, 0.08);
+  --es-border:    rgba(170, 21, 27, 0.25);
+  --es-gold:      #F1BF00;   /* Spanish flag yellow — emblem accent only */
   --both-primary: #6B4E8F;       
   --both-soft:    rgba(107, 78, 143, 0.08);
   --both-border:  rgba(107, 78, 143, 0.25);
@@ -184,6 +187,24 @@ html[lang="es"] .lang-toggle [data-lang="es"] { display: inline; }
 [data-bilingual="block"] [data-lang] { display: none; }
 html[lang="en"] [data-bilingual="block"] [data-lang="en"] { display: block; }
 html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
+
+/* HERO TAGLINE ROTATOR — light fade-rotation through the straight taglines.
+   The active-language wrapper becomes a single-cell grid so every line stacks in
+   the same place and the box sizes to the tallest line (robust to wrapping). */
+html[lang="en"] .hero-rotator > [data-lang="en"],
+html[lang="es"] .hero-rotator > [data-lang="es"] { display: grid; grid-template-areas: "rot"; }
+.hero-rotator { max-width: 46ch; }
+.hero-rot-line {
+  grid-area: rot;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out);
+  pointer-events: none;
+}
+.hero-rot-line.is-active { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-rot-line { transition: opacity 200ms linear; transform: none; }
+}
 
 /* NAV */
 .nav {
@@ -1006,6 +1027,12 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 .faq-a-inner { padding: 0 0 26px; max-width: 64ch; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
 .faq-item.is-open .faq-a { grid-template-rows: 1fr; }
 
+/* "Digging deeper" bio expander reuses the accordion, with paragraph spacing */
+.bio-deeper { margin-top: 28px; }
+.bio-deeper .faq-q { font-size: 15px; font-weight: 500; }
+.bio-deeper .faq-a-inner p { margin: 0 0 14px; }
+.bio-deeper .faq-a-inner p:last-child { margin-bottom: 0; }
+
 /* ============ TIMELINE ============ */
 .timeline-section { background: var(--bg-elev); }
 
@@ -1682,7 +1709,7 @@ body.opener-active {
   height: 64px;
   line-height: 64px;
   font-weight: 700;
-  color: #2B4F8C;
+  color: #0A3161;
   text-align: left;
 }
 
@@ -1810,7 +1837,7 @@ body.opener-active {
 
     <nav class="nav-links" aria-label="Primary">
       <a class="nav-link" href="#about"     data-bilingual><span data-lang="en">About</span><span data-lang="es">Sobre mí</span></a>
-      <a class="nav-link" href="#offer"     data-bilingual><span data-lang="en">Who &amp; what</span><span data-lang="es">A quién y qué</span></a>
+      <a class="nav-link" href="#offer"     data-bilingual><span data-lang="en">Who you are</span><span data-lang="es">Quién eres</span></a>
       <a class="nav-link" href="#process"   data-bilingual><span data-lang="en">Process</span><span data-lang="es">Proceso</span></a>
       <a class="nav-link" href="#timeline"  data-bilingual><span data-lang="en">Timeline</span><span data-lang="es">Calendario</span></a>
       <a class="nav-link" href="#whats-new" data-bilingual><span data-lang="en">What's new</span><span data-lang="es">Novedades</span></a>
@@ -1842,7 +1869,7 @@ body.opener-active {
   </button>
   <nav class="mobile-nav-links">
     <a class="mobile-nav-link" href="#about"     data-bilingual><span data-lang="en">About</span><span data-lang="es">Sobre mí</span></a>
-    <a class="mobile-nav-link" href="#offer"     data-bilingual><span data-lang="en">Who &amp; what</span><span data-lang="es">A quién y qué</span></a>
+    <a class="mobile-nav-link" href="#offer"     data-bilingual><span data-lang="en">Who you are</span><span data-lang="es">Quién eres</span></a>
     <a class="mobile-nav-link" href="#process"   data-bilingual><span data-lang="en">Process</span><span data-lang="es">Proceso</span></a>
     <a class="mobile-nav-link" href="#timeline"  data-bilingual><span data-lang="en">Timeline</span><span data-lang="es">Calendario</span></a>
     <a class="mobile-nav-link" href="#whats-new" data-bilingual><span data-lang="en">What's new</span><span data-lang="es">Novedades</span></a>
@@ -1857,9 +1884,17 @@ body.opener-active {
     <div class="hero-grid">
 
       <div class="hero-text">
-        <span class="eyebrow" data-bilingual>
-          <span data-lang="en">U.S. Tax & Consulting · Spain</span>
-          <span data-lang="es">Asesoría Fiscal Estadounidense · España</span>
+        <span class="eyebrow hero-rotator" data-bilingual aria-live="polite" data-reveal>
+          <span data-lang="en">
+            <span class="hero-rot-line is-active">U.S. tax preparation &amp; consulting for U.S. expats</span>
+            <span class="hero-rot-line">Help for expats in Spain with their Spanish tax &amp; legal obligations</span>
+            <span class="hero-rot-line">U.S. tax preparation for Spaniards &amp; others with U.S. tax obligations</span>
+          </span>
+          <span data-lang="es">
+            <span class="hero-rot-line is-active">Preparación y asesoría fiscal de EE. UU. para expatriados americanos</span>
+            <span class="hero-rot-line">Ayuda a expatriados en España con sus obligaciones fiscales y legales españolas</span>
+            <span class="hero-rot-line">Preparación fiscal de EE. UU. para españoles y otros con obligaciones en EE. UU.</span>
+          </span>
         </span>
 
         <h1 class="hero-headline display-1" data-bilingual="block" data-reveal>
@@ -1905,7 +1940,7 @@ body.opener-active {
 <section class="section" id="about">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="eyebrow" data-bilingual><span data-lang="en">About</span><span data-lang="es">Sobre mí</span></span>
+      <span class="eyebrow" data-bilingual><span data-lang="en">Who I am</span><span data-lang="es">Quién soy</span></span>
       <div>
         <h2 class="display-2" data-bilingual="block">
           <span data-lang="en">A small practice, led by Andy Pollock.</span>
@@ -1939,6 +1974,29 @@ body.opener-active {
         </p>
 
         <div class="signature" data-bilingual><span data-lang="en">Founder &amp; principal advisor</span><span data-lang="es">Fundador y asesor principal</span></div>
+
+        <div class="faq-list bio-deeper" data-accordion data-reveal>
+          <div class="faq-item">
+            <button class="faq-q" data-faq-q>
+              <span data-bilingual><span data-lang="en">Digging deeper — Andy's full background</span><span data-lang="es">Profundizando — la trayectoria completa de Andy</span></span>
+              <span class="plus" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a"><div><div class="faq-a-inner" data-bilingual="block">
+              <span data-lang="en">
+                <p>Andy is from the Midwest and moved to Spain more than 25 years ago. He completed his university studies in Accounting and Spanish at the University of Wisconsin–Madison with honors, then moved to Chicago to begin his career as an auditor with Arthur Andersen, where he earned his CPA. He went on to become Accounting Manager for Lindberg Corporation, a NASDAQ-traded industrial company, where he gained valuable experience meeting the SEC's rigorous quarterly and annual filing requirements.</p>
+                <p>In 1999, Andy decided to pursue his dream — like many of you — and moved to Spain. He first earned an M.B.A. at the prestigious Instituto de Empresa (“IE”), finishing among the top students of his class. He then moved to Barcelona as a manager in Ernst &amp; Young's Transaction Support (“Due Diligence”) department, investigating and analyzing the financial records, forecasts and budgets of companies in the process of being bought or sold.</p>
+                <p>Andy later became Ria Envia's Chief Financial Officer for European Operations, overseeing wire-remittance and currency-exchange businesses across Spain, France, England, Germany and Italy, and acting for part of his tenure as the company's legal representative before the Bank of Spain. More recently, he served as Deputy Chief Financial Officer for Villar Mir Group's energy and gas companies (the Enérgya VM group, with aggregate annual sales above €500 million), navigating a wide range of economic and liquidity challenges, including the pandemic and the Russia–Ukraine war.</p>
+                <p>Since last year, Andy has focused his financial and economic expertise on individual income tax. He has studied and certified himself across a number of U.S. individual-tax areas, worked a full three months for H&amp;R Block's tax-preparation unit in Southern Wisconsin during the most recent season, and volunteered with the IRS's VITA/TCE tax-preparation assistance program.</p>
+              </span>
+              <span data-lang="es">
+                <p>Andy es del Medio Oeste estadounidense y se mudó a España hace más de 25 años. Cursó sus estudios universitarios de Contabilidad y Español en la Universidad de Wisconsin–Madison con honores y se trasladó a Chicago para empezar su carrera como auditor en Arthur Andersen, donde obtuvo su certificación CPA. Después fue Director de Contabilidad de Lindberg Corporation, una empresa industrial cotizada en el NASDAQ, donde adquirió valiosa experiencia cumpliendo los exigentes requisitos trimestrales y anuales de la SEC.</p>
+                <p>En 1999, Andy decidió perseguir su sueño —como muchos de vosotros— y se mudó a España. Primero cursó un M.B.A. en el prestigioso Instituto de Empresa (“IE”), terminando entre los mejores de su promoción. Luego se trasladó a Barcelona como manager en el departamento de Transaction Support (“Due Diligence”) de Ernst &amp; Young, investigando y analizando los registros financieros, previsiones y presupuestos de empresas en proceso de compraventa.</p>
+                <p>Más adelante fue Director Financiero para Operaciones Europeas de Ria Envia, supervisando los negocios de remesas y cambio de divisa en España, Francia, Inglaterra, Alemania e Italia, y actuando durante parte de su etapa como representante legal de la compañía ante el Banco de España. Más recientemente fue Director Financiero Adjunto de las empresas de energía y gas del Grupo Villar Mir (el grupo Enérgya VM, con ventas anuales agregadas superiores a 500 millones de euros), sorteando numerosos retos económicos y de liquidez, incluidos la pandemia y la guerra entre Rusia y Ucrania.</p>
+                <p>Desde el año pasado, Andy ha centrado su experiencia financiera y económica en el impuesto sobre la renta de las personas físicas. Se ha formado y certificado en varias áreas del impuesto individual estadounidense, ha trabajado tres meses completos en la unidad de preparación de declaraciones de H&amp;R Block en el sur de Wisconsin durante la última campaña, y ha colaborado como voluntario en el programa de asistencia VITA/TCE del IRS.</p>
+              </span>
+            </div></div></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -2017,7 +2075,7 @@ body.opener-active {
 <section class="section" id="offer">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="eyebrow" data-bilingual><span data-lang="en">Who &amp; what</span><span data-lang="es">A quién y qué</span></span>
+      <span class="eyebrow" data-bilingual><span data-lang="en">Who you are</span><span data-lang="es">Quién eres</span></span>
       <div>
         <h2 class="display-2" data-bilingual="block">
           <span data-lang="en">Pick the situation that sounds most like yours.</span>
@@ -2460,7 +2518,7 @@ body.opener-active {
     <div class="onboard-grid">
 
       <aside class="onboard-side" data-reveal>
-        <span class="eyebrow" data-bilingual><span data-lang="en">Start your case</span><span data-lang="es">Empezar mi caso</span></span>
+        <span class="eyebrow" data-bilingual><span data-lang="en">Let's get started</span><span data-lang="es">Empecemos</span></span>
         <h2 class="display-2" style="margin-top: 24px;" data-bilingual="block">
           <span data-lang="en">A short intake. Then a call. That's it.</span>
           <span data-lang="es">Un formulario breve. Luego una llamada. Sin más.</span>
@@ -2642,7 +2700,7 @@ body.opener-active {
             </p>
 
             <div class="calendly-inline-widget"
-                 data-url="https://calendly.com/andypollock/discovery-call?hide_event_type_details=1&background_color=fafaf7&text_color=0a1226&primary_color=2b4f8c"
+                 data-url="https://calendly.com/andypollock/discovery-call?hide_event_type_details=1&background_color=fafaf7&text_color=0a1226&primary_color=0a3161"
                  id="calendly-embed"
                  style="min-width:280px;height:680px;"></div>
 
@@ -2762,7 +2820,7 @@ body.opener-active {
 <section class="section timeline-section" id="timeline">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="eyebrow" data-bilingual><span data-lang="en">Tax calendar 2026</span><span data-lang="es">Calendario fiscal 2026</span></span>
+      <span class="eyebrow" data-bilingual><span data-lang="en">When you need to do it</span><span data-lang="es">Cuándo hay que hacerlo</span></span>
       <div>
         <h2 class="display-2" data-bilingual="block">
           <span data-lang="en">The dates that actually matter.</span>
@@ -3116,7 +3174,7 @@ body.opener-active {
         <h4 data-bilingual><span data-lang="en">Practice</span><span data-lang="es">Práctica</span></h4>
         <ul>
           <li><a href="#about"     data-bilingual><span data-lang="en">About</span><span data-lang="es">Sobre mí</span></a></li>
-          <li><a href="#offer"     data-bilingual><span data-lang="en">Who &amp; what</span><span data-lang="es">A quién y qué</span></a></li>
+          <li><a href="#offer"     data-bilingual><span data-lang="en">Who you are</span><span data-lang="es">Quién eres</span></a></li>
           <li><a href="#process"   data-bilingual><span data-lang="en">Process</span><span data-lang="es">Proceso</span></a></li>
           <li><a href="#timeline"  data-bilingual><span data-lang="en">Timeline</span><span data-lang="es">Calendario</span></a></li>
           <li><a href="#whats-new" data-bilingual><span data-lang="en">What's new</span><span data-lang="es">Novedades</span></a></li>
@@ -3350,13 +3408,13 @@ body.opener-active {
         );
 
         if (i === 0) {
-          grad.addColorStop(0, 'rgba(43, 79, 140, 0.14)'); // Navy Blue
+          grad.addColorStop(0, 'rgba(10, 49, 97, 0.14)');   // Old Glory Blue
           grad.addColorStop(1, 'transparent');
         } else if (i === 1) {
-          grad.addColorStop(0, 'rgba(200, 16, 46, 0.11)');  // Crimson Red
+          grad.addColorStop(0, 'rgba(170, 21, 27, 0.11)');  // Spanish flag red
           grad.addColorStop(1, 'transparent');
         } else {
-          grad.addColorStop(0, 'rgba(212, 175, 55, 0.09)'); // Spanish Gold
+          grad.addColorStop(0, 'rgba(241, 191, 0, 0.09)');  // Spanish flag yellow
           grad.addColorStop(1, 'transparent');
         }
 
@@ -3542,12 +3600,33 @@ body.opener-active {
     $$('[data-reveal]').forEach(el => el.classList.add('is-visible'));
   }
 
-  /* ===== FAQ ===== */
+  /* ===== HERO TAGLINE ROTATOR ===== */
+  (function () {
+    const rotator = $('.hero-rotator');
+    if (!rotator) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Lines are mirrored across both language wrappers; rotate every wrapper by index in lockstep.
+    const groups = $$('[data-lang]', rotator).map(g => $$('.hero-rot-line', g));
+    const count = groups[0] ? groups[0].length : 0;
+    if (count < 2) return;
+    let i = 0;
+    setInterval(() => {
+      const next = (i + 1) % count;
+      groups.forEach(lines => {
+        if (lines[i]) lines[i].classList.remove('is-active');
+        if (lines[next]) lines[next].classList.add('is-active');
+      });
+      i = next;
+    }, reduce ? 6000 : 4200);
+  })();
+
+  /* ===== FAQ + generic scoped accordions (.faq-list / [data-accordion]) ===== */
   $$('[data-faq-q]').forEach(q => {
     q.addEventListener('click', () => {
       const item = q.closest('.faq-item');
+      const list = q.closest('.faq-list, [data-accordion]') || document;
       const wasOpen = item.classList.contains('is-open');
-      $$('.faq-item').forEach(other => other.classList.remove('is-open'));
+      $$('.faq-item', list).forEach(other => other.classList.remove('is-open'));
       if (!wasOpen) item.classList.add('is-open');
     });
   });

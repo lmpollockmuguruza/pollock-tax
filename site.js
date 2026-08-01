@@ -209,25 +209,56 @@
   const openMenuBtn = $('#menu-toggle-btn');
   const closeMenuBtn = $('#menu-close-btn');
 
+  const FOCUSABLE = 'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])';
+
+  /* Keeps Tab inside an open overlay, so keyboard users cannot wander into the
+     inert page behind it. */
+  function trapFocus(container, e) {
+    if (e.key !== 'Tab') return;
+    const items = $$(FOCUSABLE, container).filter(el => el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0], last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
   function openDrawer() {
+    drawerReturn = document.activeElement;
     mobileDrawer.classList.add('is-open');
     mobileOverlay.classList.add('is-open');
+    mobileDrawer.removeAttribute('aria-hidden');
+    if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
+    if (closeMenuBtn) closeMenuBtn.focus();
   }
 
   function closeDrawer() {
+    const wasOpen = mobileDrawer.classList.contains('is-open');
     mobileDrawer.classList.remove('is-open');
     mobileOverlay.classList.remove('is-open');
+    mobileDrawer.setAttribute('aria-hidden', 'true');
+    if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'false');
     if(!document.body.classList.contains('opener-active')) {
       document.body.style.overflow = '';
     }
+    if (wasOpen && drawerReturn && document.contains(drawerReturn)) drawerReturn.focus();
+    drawerReturn = null;
   }
 
+  let drawerReturn = null;
+
   if(openMenuBtn && closeMenuBtn && mobileOverlay) {
+    mobileDrawer.setAttribute('aria-hidden', 'true');
+    openMenuBtn.setAttribute('aria-expanded', 'false');
+    openMenuBtn.setAttribute('aria-controls', 'mobile-drawer');
     openMenuBtn.addEventListener('click', openDrawer);
     closeMenuBtn.addEventListener('click', closeDrawer);
     mobileOverlay.addEventListener('click', closeDrawer);
     $$('.mobile-nav-link').forEach(link => link.addEventListener('click', closeDrawer));
+    mobileDrawer.addEventListener('keydown', e => trapFocus(mobileDrawer, e));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && mobileDrawer.classList.contains('is-open')) closeDrawer();
+    });
   }
 
   /* ===== Reveal on scroll ===== */
@@ -246,28 +277,58 @@
   }
 
   /* ===== FAQ + generic scoped accordions (.faq-list / [data-accordion]) ===== */
+  function syncAccordion(item) {
+    const btn = $('[data-faq-q]', item);
+    if (btn) btn.setAttribute('aria-expanded', item.classList.contains('is-open') ? 'true' : 'false');
+  }
   $$('[data-faq-q]').forEach(q => {
     q.addEventListener('click', () => {
       const item = q.closest('.faq-item');
       const list = q.closest('.faq-list, [data-accordion]') || document;
       const wasOpen = item.classList.contains('is-open');
-      $$('.faq-item', list).forEach(other => other.classList.remove('is-open'));
+      $$('.faq-item', list).forEach(other => {
+        other.classList.remove('is-open');
+        syncAccordion(other);
+      });
       if (!wasOpen) item.classList.add('is-open');
+      syncAccordion(item);
     });
   });
 
   /* ===== OFFER TABS — persona switcher ===== */
-  $$('[data-offer-tab]').forEach(tab => {
-    tab.addEventListener('click', () => {
+  (function () {
+    const tabs = $$('[data-offer-tab]');
+    if (!tabs.length) return;
+
+    function select(tab, moveFocus) {
       const key = tab.getAttribute('data-offer-tab');
-      $$('[data-offer-tab]').forEach(t => {
-        t.setAttribute('aria-pressed', t === tab ? 'true' : 'false');
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.setAttribute('tabindex', on ? '0' : '-1');
       });
       $$('[data-offer-pane]').forEach(p => {
         p.classList.toggle('is-active', p.getAttribute('data-offer-pane') === key);
       });
+      if (moveFocus) tab.focus();
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab, false));
+      // Arrow keys move between tabs, as a tablist is expected to.
+      tab.addEventListener('keydown', e => {
+        const map = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+        if (e.key in map) {
+          e.preventDefault();
+          select(tabs[(i + map[e.key] + tabs.length) % tabs.length], true);
+        } else if (e.key === 'Home') {
+          e.preventDefault(); select(tabs[0], true);
+        } else if (e.key === 'End') {
+          e.preventDefault(); select(tabs[tabs.length - 1], true);
+        }
+      });
     });
-  });
+  })();
 
   /* ===== FORM ===== */
   const form = $('#onboarding-form');
@@ -297,11 +358,16 @@
         chip.addEventListener('click', () => {
           const value = chip.getAttribute('data-value');
           if (mode === 'single') {
-            $$('.chip', group).forEach(c => c.classList.remove('is-selected'));
+            $$('.chip', group).forEach(c => {
+              c.classList.remove('is-selected');
+              c.setAttribute('aria-pressed', 'false');
+            });
             chip.classList.add('is-selected');
+            chip.setAttribute('aria-pressed', 'true');
             state.data[name] = value;
           } else {
             chip.classList.toggle('is-selected');
+            chip.setAttribute('aria-pressed', chip.classList.contains('is-selected') ? 'true' : 'false');
             if (!Array.isArray(state.data[name])) state.data[name] = [];
             if (chip.classList.contains('is-selected')) {
               if (!state.data[name].includes(value)) state.data[name].push(value);
@@ -358,7 +424,7 @@
       };
 
       const lines = [
-        `New intake — ${state.data.firstName || '(no name)'}`,
+        `New intake: ${state.data.firstName || '(no name)'}`,
         ``,
         `Name: ${state.data.firstName || '—'}`,
         `Email: ${state.data.email || '—'}`,
@@ -383,8 +449,15 @@
         `Submitted from pollocktax.com`
       ].join('\n');
 
-      const subject = `New intake — ${state.data.firstName || 'Pollock Tax website'}`;
+      const subject = `New intake: ${state.data.firstName || 'Pollock Tax website'}`;
       const mailto = `mailto:Andy@pollocktax.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
+
+      // The mailto may be blocked, or the visitor may use webmail, so the same
+      // text is always shown on the page for them to copy.
+      const summaryEl = $('#intake-summary');
+      if (summaryEl) summaryEl.textContent = lines;
+      const retry = $('[data-mailto-retry]');
+      if (retry) retry.setAttribute('href', mailto);
 
       window.location.href = mailto;
 
@@ -407,20 +480,234 @@
     showStep(1);
   }
 
+  /* ===== MAP =====
+     The ranked list is the real data; the map is a picture of it. Hovering or
+     focusing either side highlights the matching region. */
+  (function () {
+    const block = $('.map-block');
+    if (!block) return;
+
+    const TITLE = {
+      en: 'Map of Spain shaded by the share of U.S. nationals living in each autonomous community',
+      es: 'Mapa de España sombreado según la proporción de ciudadanos estadounidenses en cada comunidad autónoma'
+    };
+    const DESC = {
+      en: 'Madrid, Catalonia and Andalusia are the darkest, together accounting for about two thirds of the total. The figures are listed beside the map.',
+      es: 'Madrid, Cataluña y Andalucía son las más oscuras y suman cerca de dos tercios del total. Las cifras aparecen junto al mapa.'
+    };
+
+    function label() {
+      const l = root.getAttribute('lang') === 'es' ? 'es' : 'en';
+      const t = $('[data-map-title]', block), d = $('[data-map-desc]', block);
+      if (t) t.textContent = TITLE[l];
+      if (d) d.textContent = DESC[l];
+    }
+    label();
+    $$('[data-set-lang]').forEach(b => b.addEventListener('click', label));
+
+    const regions = $$('[data-region]', block);
+    const rows = $$('[data-region-row]', block);
+
+    function highlight(key) {
+      block.classList.toggle('is-focusing', !!key);
+      regions.forEach(r => r.classList.toggle('is-active', r.getAttribute('data-region') === key));
+      rows.forEach(r => r.classList.toggle('is-active', r.getAttribute('data-region-row') === key));
+    }
+
+    rows.forEach(row => {
+      const key = row.getAttribute('data-region-row');
+      ['mouseenter', 'focus'].forEach(ev => row.addEventListener(ev, () => highlight(key)));
+      ['mouseleave', 'blur'].forEach(ev => row.addEventListener(ev, () => highlight(null)));
+    });
+    regions.forEach(region => {
+      const key = region.getAttribute('data-region');
+      region.addEventListener('mouseenter', () => highlight(key));
+      region.addEventListener('mouseleave', () => highlight(null));
+    });
+  })();
+
+  /* ===== STATS =====
+     The figures are already correct in the HTML; this only animates the way
+     they arrive. Anything that goes wrong here leaves the printed numbers in
+     place, and reduced-motion visitors get them straight away. */
+  (function () {
+    const grid = $('[data-stats]');
+    if (!grid) return;
+
+    const stats = $$('[data-stat-order]', grid);
+    const counters = $$('[data-count]', grid).map(el => {
+      const final = el.textContent.trim();
+      const digits = final.replace(/[^\d]/g, '');
+      return {
+        el: el,
+        final: final,
+        target: parseInt(digits, 10),
+        // Keep the separator the page already uses rather than imposing a locale.
+        sep: (final.match(/[^\d]/) || [''])[0]
+      };
+    }).filter(c => c.target > 0);
+
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Only hide the stats once we know the script is running.
+    grid.classList.add('is-armed');
+
+    // Reserve the final width so nothing reflows while the digits climb.
+    counters.forEach(c => {
+      c.el.style.display = 'inline-block';
+      c.el.style.minWidth = c.final.length + 'ch';
+      c.el.style.fontVariantNumeric = 'tabular-nums';
+    });
+
+    function group(n, sep) {
+      const s = String(n);
+      if (!sep) return s;
+      return s.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+    }
+
+    function run() {
+      if (reduce) {
+        stats.forEach(s => s.classList.add('is-shown'));
+        return;
+      }
+
+      // The headline figure leads; the others follow it in.
+      stats.forEach(s => {
+        const order = parseInt(s.getAttribute('data-stat-order'), 10) || 0;
+        setTimeout(() => s.classList.add('is-shown'), order * 260);
+      });
+
+      counters.forEach((c, i) => {
+        const duration = 1500;
+        const delay = i * 260;
+        const start = performance.now() + delay;
+        c.el.textContent = group(0, c.sep);
+
+        function frame(now) {
+          const t = (now - start) / duration;
+          if (t < 0) { requestAnimationFrame(frame); return; }
+          if (t >= 1) { c.el.textContent = c.final; return; }
+          // easeOutCubic: quick off the mark, settling gently on the figure
+          const eased = 1 - Math.pow(1 - t, 3);
+          c.el.textContent = group(Math.round(c.target * eased), c.sep);
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) { run(); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        run();
+      });
+    }, { threshold: 0.35 });
+    io.observe(grid);
+  })();
+
+  /* ===== COPY TO CLIPBOARD =====
+     [data-copy="<selector>"] copies that element's text; [data-copy-text="…"]
+     copies a literal string. Falls back to a hidden textarea where the async
+     clipboard API is unavailable or blocked, and announces the result. */
+  (function () {
+    const buttons = $$('[data-copy], [data-copy-text]');
+    if (!buttons.length) return;
+
+    let live = $('#copy-live');
+    if (!live) {
+      live = document.createElement('div');
+      live.id = 'copy-live';
+      live.className = 'visually-hidden';
+      live.setAttribute('role', 'status');
+      live.setAttribute('aria-live', 'polite');
+      document.body.appendChild(live);
+    }
+
+    function legacyCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+      return ok;
+    }
+
+    async function copy(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+      }
+      return legacyCopy(text);
+    }
+
+    const MSG = {
+      en: { ok: 'Copied to clipboard', fail: 'Copy failed. Select the text and copy it manually.' },
+      es: { ok: 'Copiado al portapapeles', fail: 'No se pudo copiar. Selecciona el texto y cópialo a mano.' }
+    };
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const literal = btn.getAttribute('data-copy-text');
+        const src = literal !== null ? literal : (($(btn.getAttribute('data-copy')) || {}).textContent || '');
+        if (!src.trim()) return;
+
+        const ok = await copy(src);
+        const msgs = MSG[root.getAttribute('lang') === 'es' ? 'es' : 'en'];
+        live.textContent = ok ? msgs.ok : msgs.fail;
+
+        btn.classList.toggle('is-copied', ok);
+        btn.classList.toggle('is-copy-failed', !ok);
+        // Select the text so a manual copy is one keystroke away if this failed.
+        if (!ok && literal === null) {
+          const el = $(btn.getAttribute('data-copy'));
+          if (el) {
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            el.focus();
+          }
+        }
+        setTimeout(() => {
+          btn.classList.remove('is-copied', 'is-copy-failed');
+          live.textContent = '';
+        }, 2600);
+      });
+    });
+  })();
+
   /* ===== MODAL ===== */
   const modal = $('#policy-modal');
   if (modal) {
+    let modalReturn = null;
+    modal.setAttribute('aria-hidden', 'true');
+
     function openModal(tab) {
+      modalReturn = document.activeElement;
       modal.classList.add('is-open');
+      modal.removeAttribute('aria-hidden');
       if (tab) showModalTab(tab);
       document.body.style.overflow = 'hidden';
+      const first = $('[data-modal-close]', modal) || $(FOCUSABLE, modal);
+      if (first) first.focus();
     }
     function closeModal() {
+      const wasOpen = modal.classList.contains('is-open');
       modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
       if(!document.body.classList.contains('opener-active')) {
         document.body.style.overflow = '';
       }
+      if (wasOpen && modalReturn && document.contains(modalReturn)) modalReturn.focus();
+      modalReturn = null;
     }
+    modal.addEventListener('keydown', e => trapFocus(modal, e));
     function showModalTab(tab) {
       $$('[data-modal-tab]', modal).forEach(b => {
         b.setAttribute('aria-pressed', b.getAttribute('data-modal-tab') === tab ? 'true' : 'false');
@@ -437,7 +724,7 @@
       b.addEventListener('click', () => showModalTab(b.getAttribute('data-modal-tab')));
     });
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal(); });
 
     // Policy links on the reference pages arrive here as index.html#privacy etc.
     const POLICY_HASHES = ['privacy', 'cookies', 'ethics', 'terms'];

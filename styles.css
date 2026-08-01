@@ -101,6 +101,17 @@ input, textarea, select { font: inherit; color: inherit; }
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--accent); color: var(--bg); }
 
+/* Keyboard focus. Everything interactive here is a custom-styled control, so
+   the ring is defined once rather than left to each component. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+[data-theme="dark"] :focus-visible { outline-color: #7FA8D9; }
+/* Pointer users keep the clean look; keyboard users always get the ring. */
+:focus:not(:focus-visible) { outline: none; }
+
 body {
   font-family: var(--font-sans);
   font-weight: 400;
@@ -257,11 +268,16 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
   flex-direction: column;
   gap: 24px;
   transform: translateX(100%);
-  transition: transform var(--t-med) var(--ease);
+  /* visibility:hidden takes the off-canvas links out of the tab order natively,
+     so a keyboard user cannot land on a drawer they cannot see. */
+  visibility: hidden;
+  transition: transform var(--t-med) var(--ease), visibility 0s linear var(--t-med);
   box-shadow: -10px 0 30px rgba(0,0,0,0.1);
 }
 .mobile-drawer.is-open {
   transform: translateX(0);
+  visibility: visible;
+  transition: transform var(--t-med) var(--ease), visibility 0s;
 }
 .mobile-drawer-overlay {
   position: fixed;
@@ -341,6 +357,87 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
 .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line-2); }
 .btn-ghost:hover { border-color: var(--accent-hover); color: var(--accent-hover); }
+
+/* Screen-reader-only text (skip links, live regions) */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== HAND-OFF BLOCK (intake summary the visitor can copy) ===== */
+.btn-sm { padding: 8px 14px; font-size: 13px; gap: 8px; }
+.btn-sm svg { width: 15px; height: 15px; }
+
+.handoff {
+  margin-top: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-elev);
+  padding: 20px;
+  text-align: left;
+}
+.handoff-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.handoff-head h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.handoff-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.handoff-text {
+  margin: 0;
+  max-height: 230px;
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.handoff-hint { margin: 12px 0 0; font-size: 13px; color: var(--ink-3); }
+
+/* Buttons that need to read as inline links */
+.linkish {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.linkish:hover { color: var(--accent-hover); }
+
+[data-copy].is-copied, [data-copy-text].is-copied {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+[data-copy].is-copy-failed, [data-copy-text].is-copy-failed {
+  border-color: var(--es-primary);
+  color: var(--es-primary);
+}
 .btn-arrow { width: 14px; height: 14px; transition: transform var(--t-fast) var(--ease); }
 .btn:hover .btn-arrow { transform: translateX(3px); }
 
@@ -351,12 +448,16 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  gap: clamp(40px, 6vw, 88px);
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: clamp(40px, 4.5vw, 64px);
   align-items: center;
 }
 .hero-text .eyebrow { margin-bottom: 40px; }
-.hero-headline { max-width: 16ch; }
+/* The headline is set to break exactly on its three <br> lines. "handled with
+   care," is the widest line in English and "resueltos en España." in Spanish,
+   so the two languages get their own cap rather than one compromise size. */
+.hero-headline { font-size: clamp(32px, 4.9vw, 68px); }
+html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 .hero-sub { margin-top: 32px; max-width: 52ch; }
 .hero-actions { margin-top: 40px; display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -464,7 +565,10 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 }
 .about-bio .signature { margin-top: 36px; font-size: 14px; color: var(--ink-3); }
 
-.creds { margin-top: 80px; padding-top: 48px; border-top: 1px solid var(--line); }
+/* The logo wall closes the About section rather than standing as its own
+   band, so it sits tighter to the section edges than a full section would. */
+.creds { margin-top: clamp(48px, 6vw, 68px); padding-top: 40px; border-top: 1px solid var(--line); }
+#about { padding-bottom: clamp(44px, 5vw, 64px); }
 .creds-label {
   font-family: var(--font-sans);
   font-size: 12px;
@@ -489,7 +593,7 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
   align-items: center;
   justify-content: center;
   flex: 0 0 20%;
-  height: 72px;
+  height: 62px;
   padding: 8px 12px;
   font-size: 13px;
   font-weight: 500;
@@ -553,9 +657,10 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 }
 .commitment-num {
   display: block;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 12px;
-  letter-spacing: .08em;
+  font-weight: 500;
+  letter-spacing: .1em;
   color: var(--accent);
   margin-bottom: 20px;
 }
@@ -621,11 +726,12 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 .resource-card:hover { background: var(--bg-elev); }
 
 .resource-kicker {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 11px;
-  letter-spacing: .08em;
+  font-weight: 500;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--ink-4);
+  color: var(--ink-3);
   margin-bottom: 20px;
 }
 .resource-card h3 {
@@ -646,9 +752,9 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 .resource-meta {
   margin-top: auto;
   padding-top: 24px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink-4);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-3);
 }
 .resource-cta {
   display: inline-flex;
@@ -693,6 +799,15 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
   border-radius: var(--radius-lg);
 }
 .stats-strip-head { max-width: 64ch; margin-bottom: 32px; }
+
+/* Stats arrive in sequence once the strip is on screen. They start visible so
+   that without JavaScript, or if the script fails, the figures still read. */
+.stat { transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); }
+[data-stats].is-armed .stat { opacity: 0; transform: translateY(10px); }
+[data-stats].is-armed .stat.is-shown { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-stats].is-armed .stat { opacity: 1; transform: none; transition: none; }
+}
 .stats-kicker {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -720,6 +835,99 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 }
 .stat-label { display: block; color: var(--ink-3); font-size: 13.5px; line-height: 1.45; }
 .stats-source { margin: 28px 0 0; color: var(--ink-4); font-size: 12px; line-height: 1.5; }
+
+/* ============ WHERE AMERICANS LIVE (choropleth) ============
+   Geometry from Natural Earth (public domain), dissolved to autonomous
+   communities. Figures are INE padrón 2022, the last full breakdown. */
+.map-block { margin-top: clamp(48px, 6vw, 72px); }
+.map-head { max-width: 62ch; margin-bottom: 32px; }
+.map-head h3 {
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+.map-head p { margin: 0; color: var(--ink-3); font-size: 15px; line-height: 1.6; }
+
+.map-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+.es-map { width: 100%; height: auto; display: block; }
+
+/* One hue, five steps. Each path is stroked in its own fill so the province
+   outlines inside a community disappear and the region reads as one shape. */
+.es-step-0 path { fill: #DCDDD8; stroke: #DCDDD8; }
+.es-step-1 path { fill: #C2CCDA; stroke: #C2CCDA; }
+.es-step-2 path { fill: #8FA6C4; stroke: #8FA6C4; }
+.es-step-3 path { fill: #4A719F; stroke: #4A719F; }
+.es-step-4 path { fill: #0A3161; stroke: #0A3161; }
+.es-region path { stroke-width: 1.6; stroke-linejoin: round; transition: opacity var(--t-fast) var(--ease); }
+.es-inset { fill: none; stroke: var(--line-2); stroke-width: 1; }
+
+[data-theme="dark"] .es-step-0 path { fill: #232A3B; stroke: #232A3B; }
+[data-theme="dark"] .es-step-1 path { fill: #2E3E5C; stroke: #2E3E5C; }
+[data-theme="dark"] .es-step-2 path { fill: #40608F; stroke: #40608F; }
+[data-theme="dark"] .es-step-3 path { fill: #5C86BE; stroke: #5C86BE; }
+[data-theme="dark"] .es-step-4 path { fill: #8FB4E4; stroke: #8FB4E4; }
+
+/* Dim everything but the region being pointed at or focused */
+.map-block.is-focusing .es-region path { opacity: 0.28; }
+.map-block.is-focusing .es-region.is-active path { opacity: 1; }
+
+.map-legend {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 12px;
+}
+.map-legend-label { font-size: 11px; color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; }
+.map-swatch { width: 26px; height: 8px; border-radius: 1px; display: block; }
+.map-swatch.es-step-0 { background: #DCDDD8; }
+.map-swatch.es-step-1 { background: #C2CCDA; }
+.map-swatch.es-step-2 { background: #8FA6C4; }
+.map-swatch.es-step-3 { background: #4A719F; }
+.map-swatch.es-step-4 { background: #0A3161; }
+[data-theme="dark"] .map-swatch.es-step-0 { background: #232A3B; }
+[data-theme="dark"] .map-swatch.es-step-1 { background: #2E3E5C; }
+[data-theme="dark"] .map-swatch.es-step-2 { background: #40608F; }
+[data-theme="dark"] .map-swatch.es-step-3 { background: #5C86BE; }
+[data-theme="dark"] .map-swatch.es-step-4 { background: #8FB4E4; }
+
+.map-table-title {
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.map-list { list-style: none; margin: 0; padding: 0; }
+.map-list li + li { margin-top: 2px; }
+.map-row {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5em) 1fr 2.6em;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 8px;
+  border-radius: var(--radius);
+  text-align: left;
+  transition: background var(--t-fast) var(--ease);
+}
+.map-row:hover, .map-row.is-active { background: var(--bg-elev); }
+.map-row-name { font-size: 14px; color: var(--ink-2); }
+.map-row-bar { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.map-row-bar > span { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+[data-theme="dark"] .map-row-bar > span { background: #5C86BE; }
+.map-row-val { font-size: 13px; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+.map-row-rest { padding: 10px 8px 0; font-size: 13px; color: var(--ink-3); }
+.map-source { margin: 20px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-3); }
+
+@media (max-width: 880px) {
+  .map-grid { grid-template-columns: 1fr; gap: 28px; }
+}
 @media (max-width: 760px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 420px) { .stats-grid { grid-template-columns: 1fr; } }
 
@@ -1048,7 +1256,8 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 .form-step .step-sub { font-size: 14px; color: var(--ink-3); margin-bottom: 28px; }
 
 .field { margin-bottom: 22px; }
-.field label {
+.field label,
+.field .field-label {
   display: block;
   font-size: 13px;
   font-weight: 500;
@@ -1405,7 +1614,7 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 .stl-event-flag--us::before    { background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2011'%3E%3Crect%20width='16'%20height='11'%20fill='%23fff'/%3E%3Cg%20fill='%23B31942'%3E%3Crect%20width='16'%20height='1.57'/%3E%3Crect%20y='3.14'%20width='16'%20height='1.57'/%3E%3Crect%20y='6.28'%20width='16'%20height='1.57'/%3E%3Crect%20y='9.43'%20width='16'%20height='1.57'/%3E%3C/g%3E%3Crect%20width='7'%20height='6.28'%20fill='%230A3161'/%3E%3Cg%20fill='%23fff'%3E%3Ccircle%20cx='1.7'%20cy='1.4'%20r='.55'/%3E%3Ccircle%20cx='4.1'%20cy='1.4'%20r='.55'/%3E%3Ccircle%20cx='2.9'%20cy='3.4'%20r='.55'/%3E%3Ccircle%20cx='1.7'%20cy='5'%20r='.55'/%3E%3Ccircle%20cx='4.1'%20cy='5'%20r='.55'/%3E%3C/g%3E%3C/svg%3E"); }
 .stl-event-flag--spain::before { background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2011'%3E%3Crect%20width='16'%20height='11'%20fill='%23AA151B'/%3E%3Crect%20y='2.75'%20width='16'%20height='5.5'%20fill='%23F1BF00'/%3E%3C/svg%3E"); }
 
-.stl-event h4 {
+.stl-event h3 {
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.012em;
@@ -1640,7 +1849,7 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
 .footer-lockup-link.lockup-failed .footer-lockup { display: none !important; }
 .footer-lockup-link.lockup-failed .lockup-fallback { display: inline-flex; }
 .footer-brand p { color: var(--ink-3); font-size: 14px; max-width: 36ch; line-height: 1.55; margin: 0; }
-.footer-col h4 { font-size: 13px; color: var(--ink); margin: 0 0 16px; font-weight: 500; }
+.footer-col h3 { font-size: 13px; color: var(--ink); margin: 0 0 16px; font-weight: 500; }
 .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
 .footer-col a { color: var(--ink-3); font-size: 14px; transition: color var(--t-fast) var(--ease); }
 .footer-col a:hover { color: var(--accent-hover); }

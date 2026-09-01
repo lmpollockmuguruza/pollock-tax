@@ -143,13 +143,16 @@ body::before {
   z-index: 2;
 }
 
+/* Section labels. Nudged up a size and to a bold weight so each section
+   announces itself, while the uppercase tracking keeps them quiet enough
+   not to compete with the display heading beneath. */
 .eyebrow {
   font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: .08em;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: .09em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink-2);
   display: inline-block;
 }
 
@@ -514,7 +517,7 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   margin-bottom: 64px;
   align-items: start;
 }
-.section-head .eyebrow { padding-top: 8px; }
+.section-head .eyebrow { padding-top: 6px; }
 .section-head .lede { max-width: 56ch; }
 
 @media (max-width: 880px) {
@@ -581,7 +584,7 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 
 /* Static, borderless logo wall. Each cell is the same size; the per-logo cap
    below evens out the very different aspect ratios so nothing reads as louder
-   than its neighbours. */
+   than its neighbors. */
 .creds-grid {
   display: flex;
   flex-wrap: wrap;
@@ -622,9 +625,10 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   [data-theme="dark"] .cred-item[data-logo="sap"]:hover img { filter: grayscale(1) brightness(1.6) opacity(0.9); }
 }
 
-/* The one square mark needs more height to match the wordmarks. */
-.cred-item[data-logo="ey"] img  { --cred-h: 46px; }
-.cred-item[data-logo="sap"] img { --cred-h: 34px; }
+/* The square marks need more height to match the wordmarks. */
+.cred-item[data-logo="ey"] img             { --cred-h: 46px; }
+.cred-item[data-logo="american-club"] img  { --cred-h: 58px; }
+.cred-item[data-logo="sap"] img            { --cred-h: 34px; }
 
 .cred-item span {
   color: var(--ink-4);
@@ -774,7 +778,7 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 .resource-card:hover .resource-cta svg { transform: translateX(4px); }
 
 /* Single wide card used as the "next up" link at the foot of a reference page */
-.next-up { padding-top: 0; padding-bottom: clamp(48px, 7vw, 88px); }
+.next-up { padding-top: clamp(52px, 7vw, 88px); padding-bottom: clamp(48px, 7vw, 88px); }
 .resource-card--wide {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
@@ -841,14 +845,26 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
    communities. Figures are INE padrón 2022, the last full breakdown. */
 .map-block { margin-top: clamp(48px, 6vw, 72px); }
 .map-head { max-width: 62ch; margin-bottom: 32px; }
-.map-head h3 {
+.map-head h3,
+.offer-lead h3 {
   font-size: clamp(22px, 2.6vw, 30px);
   font-weight: 400;
   letter-spacing: -0.02em;
   margin: 0 0 12px;
   color: var(--ink);
 }
-.map-head p { margin: 0; color: var(--ink-3); font-size: 15px; line-height: 1.6; }
+.map-head p,
+.offer-lead p { margin: 0; color: var(--ink-3); font-size: 15px; line-height: 1.6; }
+
+/* Hands the reader from the map over to the profile tabs. Without it the tab
+   column starts flush under the map legend and reads as part of it. */
+.offer-lead {
+  max-width: 62ch;
+  margin-top: clamp(56px, 7vw, 88px);
+  padding-top: clamp(40px, 5vw, 56px);
+  margin-bottom: clamp(36px, 4vw, 48px);
+  border-top: 1px solid var(--line);
+}
 
 .map-grid {
   display: grid;
@@ -1049,16 +1065,16 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   display: grid;
   gap: 0;
 }
+/* Static rows: these list the filings a profile typically faces, so they
+   read as a reference list rather than as links out to the agencies. */
 .offer-service {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   align-items: start;
   gap: 24px;
   padding: 18px 0;
   border-top: 1px solid var(--line);
   color: inherit;
-  text-decoration: none;
-  transition: padding var(--t-med) var(--ease);
 }
 .offer-service:last-child { border-bottom: 1px solid var(--line); }
 .offer-service-body { display: flex; flex-direction: column; gap: 6px; }
@@ -1076,24 +1092,6 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   text-transform: uppercase;
   color: var(--ink-3);           /* Slightly darker ink variable to help legibility */
 }
-.offer-service-arrow {
-  width: 30px; height: 30px;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--ink-3);
-  flex: 0 0 auto;
-  transition: all var(--t-fast) var(--ease);
-}
-.offer-service-arrow svg { width: 12px; height: 12px; transition: transform var(--t-fast) var(--ease); }
-.offer-service:hover { padding-left: 10px; }
-.offer-service:hover .offer-service-title { color: var(--accent); }
-.offer-service:hover .offer-service-arrow {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
-  color: #fff;
-}
-.offer-service:hover .offer-service-arrow svg { transform: translateX(2px) translateY(-2px); }
 
 .offer-cta {
   margin-top: 36px;
@@ -1185,12 +1183,33 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   color: var(--ink);
 }
 .process-step p { color: var(--ink-3); font-size: 15px; line-height: 1.55; margin: 0; }
+
+/* A single-weight line drawing per step, sitting at the foot of the card just
+   above the duration. Purely decorative, so it inherits ink rather than accent
+   and lifts a shade on hover with the rest of the cell. */
+.process-art {
+  margin-top: auto;
+  padding-top: 32px;
+  color: var(--ink-4);
+  transition: color var(--t-med) var(--ease);
+}
+.process-art svg {
+  display: block;
+  width: 100%;
+  max-width: 128px;
+  height: auto;
+}
+.process-step:hover .process-art { color: var(--ink-3); }
+
 .process-step .duration { margin-top: auto; padding-top: 24px; font-size: 13px; color: var(--ink-3); }
+.process-art + .duration { margin-top: 0; padding-top: 20px; }
 
 @media (max-width: 880px) {
   .process-grid { grid-template-columns: 1fr; }
   .process-step { border-right: 0; border-bottom: 1px solid var(--line); min-height: auto; }
   .process-step:last-child { border-bottom: 0; }
+  .process-art { padding-top: 24px; }
+  .process-art svg { max-width: 104px; }
 }
 
 /* ============ ONBOARDING FORM ============ */
@@ -1430,7 +1449,18 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 .tax-detail-head p { color: var(--ink-3); font-size: 15px; line-height: 1.55; margin: 0; }
 
 /* ============ TIMELINE ============ */
-.timeline-section { background: var(--bg-elev); }
+/* The tinted band dissolves into the page rather than ending on a hard edge,
+   so the step down into the next section is a handoff rather than a cut. */
+.timeline-section { background: var(--bg-elev); position: relative; }
+.timeline-section::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: clamp(64px, 9vw, 120px);
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+}
+.timeline-section > .container { position: relative; z-index: 1; }
 
 .tl-legend {
   display: flex;
@@ -1472,13 +1502,37 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   padding: 24px 0 48px;
 }
 
+/* Two fixed lanes: U.S. obligations run down the left, Spanish ones down the
+   right, so a reader can follow one jurisdiction without zig-zagging. The
+   curves that used to link an alternating layout are gone; a single straight
+   spine runs behind every row instead. */
+.stl-columns-head {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  margin-bottom: 4px;
+}
+.stl-column-label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.stl-column-label--us    { grid-column: 1; margin-right: 32px; color: var(--us-primary); }
+.stl-column-label--spain { grid-column: 3; margin-left: 32px;  color: var(--es-primary); }
+
 .serpentine-row {
   display: grid;
   grid-template-columns: 1fr 60px 1fr;
   align-items: start;
   min-height: 140px;
+  padding-bottom: 48px;
   position: relative;
 }
+.serpentine-row:last-child { padding-bottom: 0; min-height: 0; }
 .serpentine-row::before {
   content: '';
   position: absolute;
@@ -1500,6 +1554,20 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   justify-self: start;
   width: 100%;
 }
+/* Prep windows are not a filing in either country, so they sit on the spine
+   itself rather than claiming one of the two lanes. */
+.serpentine-row--span {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  min-height: 0;
+}
+.serpentine-row--span .stl-node { grid-column: 1; }
+.stl-card--span {
+  grid-column: 1;
+  width: 100%;
+  max-width: 560px;
+  margin-top: 16px;
+}
 
 .stl-dot {
   width: 14px; height: 14px;
@@ -1514,35 +1582,6 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 .stl-dot--prep  { border-color: var(--prep-primary);  background: var(--prep-soft); }
 .stl-dot--both  { border-color: var(--both-primary);  background: var(--both-soft); }
 .serpentine-row:hover .stl-dot { transform: scale(1.3); }
-
-.stl-curve {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 56px;
-  position: relative;
-}
-.stl-curve::before {
-  content: '';
-  position: absolute;
-  width: 50%;
-  height: 100%;
-  border: 1px solid var(--line);
-  border-top: none;
-  border-radius: 0 0 999px 999px;
-}
-.stl-curve--left::before {
-  right: 50%;
-  border-right: none;
-  border-radius: 0 0 0 999px;
-  width: 51%;
-}
-.stl-curve--right::before {
-  left: 50%;
-  border-left: none;
-  border-radius: 0 0 999px 0;
-  width: 51%;
-}
 
 .stl-event {
   background: var(--bg);
@@ -1675,22 +1714,30 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 
 @media (max-width: 720px) {
   .serpentine-timeline { padding: 12px 0 32px; }
-  .serpentine-row {
+  .stl-columns-head { display: none; }
+  .serpentine-row,
+  .serpentine-row--span {
     grid-template-columns: 28px 1fr;
+    justify-items: stretch;
     gap: 16px;
     min-height: auto;
+    padding-bottom: 0;
     margin-bottom: 16px;
   }
   .serpentine-row::before {
     left: 13px;
   }
   .stl-card--left,
-  .stl-card--right {
+  .stl-card--right,
+  .stl-card--span {
     grid-column: 2;
     padding: 0;
     width: 100%;
+    max-width: none;
+    margin-top: 0;
   }
-  .stl-node {
+  .stl-node,
+  .serpentine-row--span .stl-node {
     grid-column: 1;
     grid-row: 1;
     align-items: center;
@@ -1714,7 +1761,6 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
     padding-top: 12px;
     border-top: 1px solid var(--line);
   }
-  .stl-curve { display: none; }
 }
 
 /* ============ WHAT'S NEW ============ */

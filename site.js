@@ -25,8 +25,9 @@
       time += 0.002; 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Base background layer
-      ctx.fillStyle = '#FAFAF7';
+      // Base background layer — read from the theme so the intro matches the site
+      ctx.fillStyle = getComputedStyle(document.documentElement)
+        .getPropertyValue('--bg').trim() || '#FAFAF7';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Render 3 distinct algorithmic color paths to simulate an organic mesh blend
@@ -107,12 +108,27 @@
     let currentWordIndex = 0;
     const wordStayDuration = 620;
 
-    const getStepHeight = () => rotator.children[0].offsetHeight;
+    const getStepHeight = () => rotator.children[0].getBoundingClientRect().height;
+
+    // The frame is only as wide as the word inside it, so a short word does not
+    // leave a hole between "for" and "in Spain."
+    const rotatorBox = rotator.parentElement;
+    function fitRotator(i) {
+      const word = rotator.children[i];
+      if (!word || !rotatorBox) return;
+      const cs = getComputedStyle(rotatorBox);
+      const chrome = parseFloat(cs.paddingLeft) + parseFloat(cs.borderLeftWidth);
+      rotatorBox.style.width = Math.ceil(word.getBoundingClientRect().width + chrome) + 'px';
+    }
+    fitRotator(0);
+    // Re-measure once the webfont is in, so the first frame is not sized to the fallback.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitRotator(currentWordIndex));
 
     function rotateWords() {
       if (currentWordIndex < wordsCount - 1) {
         currentWordIndex++;
         rotator.style.transform = `translateY(-${currentWordIndex * getStepHeight()}px)`;
+        fitRotator(currentWordIndex);
         after(rotateWords, wordStayDuration);
       } else {
         after(triggerBrandReveal, 500);
@@ -330,6 +346,55 @@
     });
   })();
 
+  /* ===== BOOKING CALENDAR (Cal.com) =====
+     The embed script is only fetched once someone actually reaches the booking
+     step, so no third-party code loads for a visitor who never gets there. */
+  const CAL_LINK = 'pollocktax/30min';
+  const CAL_NS   = 'discovery';
+  let calMounted = false;
+
+  function loadCalEmbed() {
+    if (window.Cal) return;
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal, ar = arguments;
+        if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+        if (ar[0] === L) {
+          const api = function () { p(api, arguments); };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); }
+          else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+  }
+
+  function mountCalendar() {
+    const el = $('#cal-embed');
+    if (!el || calMounted) return;
+    calMounted = true;
+    loadCalEmbed();
+    const theme = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    window.Cal('init', CAL_NS, { origin: 'https://app.cal.com' });
+    window.Cal.ns[CAL_NS]('inline', {
+      elementOrSelector: '#cal-embed',
+      calLink: el.getAttribute('data-cal-link') || CAL_LINK,
+      config: { layout: 'month_view' }
+    });
+    window.Cal.ns[CAL_NS]('ui', { theme: theme, hideEventTypeDetails: false, layout: 'month_view' });
+  }
+
+  // Keep the embed in step with the site theme once it is on the page.
+  $$('[data-theme-toggle]').forEach(btn => btn.addEventListener('click', () => {
+    if (!calMounted || !window.Cal || !window.Cal.ns || !window.Cal.ns[CAL_NS]) return;
+    window.Cal.ns[CAL_NS]('ui', { theme: root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light' });
+  }));
+
   /* ===== FORM ===== */
   const form = $('#onboarding-form');
   if (form) {
@@ -465,16 +530,7 @@
       success.classList.add('is-visible');
       formNav.style.display = 'none';
 
-      setTimeout(() => {
-        const embedEl = $('#calendly-embed');
-        if (embedEl && window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
-          embedEl.innerHTML = '';
-          window.Calendly.initInlineWidget({
-            url: embedEl.getAttribute('data-url'),
-            parentElement: embedEl
-          });
-        }
-      }, 400);
+      setTimeout(mountCalendar, 400);
     });
 
     showStep(1);

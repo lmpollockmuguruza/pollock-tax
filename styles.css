@@ -223,9 +223,56 @@ html[lang="es"] [data-bilingual="block"] [data-lang="es"] { display: block; }
   color: var(--ink);
   line-height: 1;      /* Flattens any hidden text block line-height issues */
 }
-.logo-mark { width: 28px; height: 32px; flex: 0 0 auto; }
-.logo-mark svg { width: 100%; height: 100%; fill: currentColor; }
+/* The mark ships as a trimmed PNG, so height drives it and width follows the
+   intrinsic ratio — no hard-coded box to fall out of sync with the artwork. */
+.logo-mark { display: block; flex: 0 0 auto; }
+.logo-mark img { height: 34px; width: auto; }
 .logo-word { font-weight: 500; font-size: 18px; letter-spacing: -0.018em; }
+
+/* BRAND LOCKUP — mark plus wordmark, composed in markup instead of baked into
+   an image, so it follows the theme and stays sharp at every size. Shared by
+   the intro reveal and the footer. */
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink);
+}
+.brand-mark { height: 44px; width: auto; flex: 0 0 auto; }
+.brand-lines { display: flex; flex-direction: column; gap: 6px; }
+.brand-word {
+  margin: 0;
+  font-weight: 500;
+  font-size: 25px;
+  letter-spacing: -0.022em;
+  line-height: 1;
+}
+.brand-tagline {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.brand-tagline-us  { color: var(--us-primary); }
+.brand-tagline-es  { color: var(--es-primary); }
+.brand-tagline-sep { color: var(--ink-4); font-weight: 400; }
+
+/* Stacked variant — the intro reveal centres the mark over the wordmark. */
+.brand-lockup--stacked { flex-direction: column; gap: 18px; text-align: center; }
+.brand-lockup--stacked .brand-mark { height: clamp(76px, 12vw, 128px); }
+.brand-lockup--stacked .brand-word { font-size: clamp(32px, 5.4vw, 50px); }
+.brand-lockup--stacked .brand-tagline { font-size: clamp(11px, 1.4vw, 13px); }
+
+/* Old Glory Blue sits very close to the dark background, so the mark gets a
+   small lift there rather than a different asset. */
+[data-theme="dark"] .logo-mark img,
+[data-theme="dark"] .brand-mark { filter: brightness(1.16) saturate(1.05); }
 
 .nav-links { display: flex; align-items: center; gap: 32px; }
 .nav-link {
@@ -1901,15 +1948,6 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   gap: 48px;
   padding-bottom: 56px;
 }
-.footer-brand .logo { margin-bottom: 20px; }
-.footer-lockup-link { display: inline-block; margin-bottom: 20px; }
-.footer-lockup { width: 230px; max-width: 70vw; height: auto; display: block; }
-.footer-lockup--dark { display: none; }
-[data-theme="dark"] .footer-lockup--light { display: none; }
-[data-theme="dark"] .footer-lockup--dark { display: block; }
-.lockup-fallback { display: none; }
-.footer-lockup-link.lockup-failed .footer-lockup { display: none !important; }
-.footer-lockup-link.lockup-failed .lockup-fallback { display: inline-flex; }
 .footer-brand p { color: var(--ink-3); font-size: 14px; max-width: 36ch; line-height: 1.55; margin: 0; }
 .footer-col h3 { font-size: 13px; color: var(--ink); margin: 0 0 16px; font-weight: 500; }
 .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
@@ -1927,6 +1965,38 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
   transition: transform var(--t-fast) var(--ease);
 }
 .footer-social:hover svg { transform: translateY(-1px); }
+
+/* Closing wordmark — the brand signed across the full width of the footer,
+   the way a masthead signs off a page.
+
+   The geometry lives in the SVG viewBox and is measured, not estimated: the
+   mark exports at 450x512, so at 152 units tall it is 133.6 wide, and
+   "PollockTax" in Satoshi Medium at font-size 200 with -0.035em tracking
+   advances 838.1 units and inks 843.1. Placing the text origin at x=172.6
+   leaves a 44-unit gap and lands the last glyph exactly on 1015.7 — so the
+   viewBox is the ink box of the pair, and width:100% makes the lockup span
+   the container edge to edge at any viewport.
+
+   textLength pins that advance. Satoshi loads without blocking render, so the
+   first paint can use a system fallback that is ~13% wider; lengthAdjust
+   condenses it to fit instead of letting it overflow or clip. */
+.footer-wordmark {
+  /* .footer-top already pads 56px below the columns, so this stays small. */
+  padding: clamp(6px, 1.2vw, 18px) 0 clamp(18px, 3vw, 32px);
+}
+.footer-wordmark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;   /* the ink touches the box, so never clip it */
+}
+.footer-wordmark text {
+  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 200px;
+  letter-spacing: -0.035em;
+  fill: var(--accent);
+}
 
 .footer-bottom {
   border-top: 1px solid var(--line);
@@ -2233,33 +2303,13 @@ body.opener-active {
   transform: translate(-50%, -50%) scale(1);
 }
 
-.opener-lockup {
-  width: min(440px, 80vw);
-  height: auto;
+/* Only the mark floats; holding the wordmark still keeps the type crisp
+   through the animation. */
+.opener-brand-reveal .brand-mark {
   animation: logoPulse 2s ease-in-out infinite alternate;
 }
-.opener-lockup--dark { display: none; }
-[data-theme="dark"] .opener-lockup--light { display: none; }
-[data-theme="dark"] .opener-lockup--dark { display: block; }
-.opener-fallback {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-.opener-logo {
-  height: 80px;
-  width: auto;
-  animation: logoPulse 2s ease-in-out infinite alternate;
-}
-
-.opener-brand-text {
-  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
-  font-weight: 500;
-  font-size: 36px;
-  letter-spacing: -0.02em;
-  margin: 0;
-  color: var(--ink);
+@media (prefers-reduced-motion: reduce) {
+  .opener-brand-reveal .brand-mark { animation: none; }
 }
 
 @keyframes logoPulse {

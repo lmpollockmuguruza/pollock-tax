@@ -22,6 +22,7 @@ Three details matter for quality and weight:
 Run after replacing the master, then commit the generated files:
 
     python3 tools/make-logo-assets.py
+    python3 tools/make-og-image.py    # the social card embeds the mark too
 """
 
 import io
@@ -53,18 +54,6 @@ APPLE_TOUCH = 180
 ICON_PAD = 0.06
 APPLE_PAD = 0.14
 APPLE_BG = (250, 250, 247, 255)
-
-# The social card has its type baked in, so the mark is swapped in place rather
-# than the card being redrawn. PATCH is the rectangle wiped first — generous
-# enough to clear the old emblem, and clear of the headline below it. The mark
-# then lands at MARK_POS with its left ink on the card's 80px text margin and
-# its band matching the emblem it replaces, so nothing else has to move.
-# Constants, not detection, so re-running this is idempotent.
-OG_IMAGE = IMAGES / "og-image.jpg"
-OG_PATCH = (74, 66, 196, 184)
-OG_MARK_POS = (80, 73)
-OG_MARK_HEIGHT = 100
-OG_QUALITY = 92
 
 
 def trimmed_master():
@@ -119,26 +108,6 @@ def save(im, name, **kw):
     print(f"  {name:26s} {im.size[0]:4d}x{im.size[1]:<4d} {len(best) / 1024:7.1f} KB")
 
 
-def patch_og_image(master):
-    """Swap the mark on the social card, leaving its baked-in type untouched."""
-    if not OG_IMAGE.exists():
-        print(f"  {'og-image.jpg':26s} skipped (missing)")
-        return
-
-    card = Image.open(OG_IMAGE).convert("RGB")
-    x0, y0, x1, y1 = OG_PATCH
-
-    # Sample the card's own background just right of the patch rather than
-    # assuming --bg, so the fill matches after JPEG has shifted the tone.
-    card.paste(card.getpixel((x1 + 40, y0 + 10)), OG_PATCH)
-
-    mark = scale(master, height_to_size(master, OG_MARK_HEIGHT))
-    card.paste(mark, OG_MARK_POS, mark)
-    card.save(OG_IMAGE, quality=OG_QUALITY, optimize=True, progressive=True)
-    print(f"  {'og-image.jpg':26s} {card.size[0]:4d}x{card.size[1]:<4d}"
-          f" {OG_IMAGE.stat().st_size / 1024:7.1f} KB")
-
-
 def main():
     if not MASTER.exists():
         sys.exit(f"missing master: {MASTER.relative_to(ROOT)}")
@@ -161,9 +130,6 @@ def main():
 
     save(fit_square(master, APPLE_TOUCH, APPLE_PAD, APPLE_BG).convert("RGB"),
          "apple-touch-icon.png")
-
-    print("social card:")
-    patch_og_image(master)
 
 
 if __name__ == "__main__":

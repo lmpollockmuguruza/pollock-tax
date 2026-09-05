@@ -21,7 +21,10 @@
 <meta property="og:locale:alternate" content="es_ES" />
 <meta name="twitter:card" content="summary_large_image" />
 
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+<link rel="icon" href="images/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="images/favicon-16.png" sizes="16x16" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
 <!-- Loaded without blocking render: a slow font host must never hold up the page.
@@ -30,7 +33,7 @@
       onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&f[]=jetbrains-mono@400,500&display=swap" /></noscript>
 
-<link rel="stylesheet" href="styles.css?v=d9c5018afb" />
+<link rel="stylesheet" href="styles.css?v=22d980d636" />
 
 <script type="application/ld+json">
 {
@@ -42,7 +45,7 @@
   "@id": "https://pollocktax.com/#practice",
   "name": "Pollock Tax & Consulting",
   "url": "https://pollocktax.com/",
-  "logo": "https://pollocktax.com/images/logo-lockup.svg",
+  "logo": "https://pollocktax.com/images/logo-mark-512.png",
   "image": "https://pollocktax.com/images/og-image.jpg",
   "email": "Andy@pollocktax.com",
   "telephone": "+34681099617",
@@ -217,13 +220,16 @@
     </div>
 
     <div class="opener-brand-reveal" id="opener-brand">
-      <img src="images/logo-lockup.svg" alt="Pollock — US Expat Tax | Spain" class="opener-lockup opener-lockup--light"
-           onerror="this.style.display='none';var f=document.getElementById('opener-fallback');if(f)f.style.display='flex';" />
-      <img src="images/logo-lockup-dark.svg" alt="" aria-hidden="true" class="opener-lockup opener-lockup--dark"
-           onerror="this.style.display='none';" />
-      <div id="opener-fallback" class="opener-fallback" style="display:none">
-        <img src="images/logo.png" alt="" class="opener-logo" />
-        <h1 class="opener-brand-text">PollockTax</h1>
+      <div class="brand-lockup brand-lockup--stacked">
+        <img class="brand-mark" src="images/logo-mark-256.png"
+             srcset="images/logo-mark-256.png 1x, images/logo-mark-512.png 2x"
+             width="225" height="256" alt="" />
+        <p class="brand-word">PollockTax</p>
+        <p class="brand-tagline">
+          <span class="brand-tagline-us">US Expat Tax</span>
+          <span class="brand-tagline-sep" aria-hidden="true">|</span>
+          <span class="brand-tagline-es">Spain</span>
+        </p>
       </div>
     </div>
   </div>
@@ -237,8 +243,9 @@
   <div class="container nav-inner">
     <a href="#top" class="logo" aria-label="Pollock Tax &amp; Consulting, home">
       <span class="logo-mark" aria-hidden="true">
-        <img src="images/logo-mark.svg" alt="" style="height: 34px; width: 34px; display: block;"
-             onerror="this.src='images/logo.png';this.style.width='auto';" />
+        <img src="images/logo-mark-64.png"
+             srcset="images/logo-mark-64.png 1x, images/logo-mark-128.png 2x, images/logo-mark-256.png 3x"
+             width="56" height="64" alt="" />
       </span>
       <span class="logo-word">PollockTax</span>
     </a>
@@ -1718,18 +1725,6 @@
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="#top" class="footer-lockup-link" aria-label="Pollock — US Expat Tax | Spain, home">
-          <img src="images/logo-lockup.svg" alt="Pollock — US Expat Tax | Spain" class="footer-lockup footer-lockup--light"
-               onerror="this.parentElement.classList.add('lockup-failed');" />
-          <img src="images/logo-lockup-dark.svg" alt="" aria-hidden="true" class="footer-lockup footer-lockup--dark"
-               onerror="this.parentElement.classList.add('lockup-failed');" />
-          <span class="logo lockup-fallback">
-            <span class="logo-mark" aria-hidden="true">
-              <img src="images/logo.png" alt="" style="height: 38px; width: auto; display: block;" />
-            </span>
-            <span class="logo-word">PollockTax</span>
-          </span>
-        </a>
         <p data-bilingual="block">
           <span data-lang="en">U.S. and Spanish tax &amp; consulting for Americans and others in Spain. Based in Madrid, working remotely across Spain.</span>
           <span data-lang="es">Asesoría fiscal estadounidense y española para americanos y otras personas en España. Con sede en Madrid, atendiendo en remoto en toda España.</span>
@@ -1770,6 +1765,13 @@
           <li><a href="#" data-modal-open="terms"     data-bilingual><span data-lang="en">Terms of engagement</span><span data-lang="es">Términos</span></a></li>
         </ul>
       </div>
+    </div>
+
+    <div class="footer-wordmark" aria-hidden="true">
+      <svg viewBox="0 0 1015.7 152" focusable="false">
+        <image href="images/logo-mark-512.png" x="0" y="0" width="133.6" height="152" />
+        <text x="172.6" y="144.5" textLength="838.1" lengthAdjust="spacingAndGlyphs">PollockTax</text>
+      </svg>
     </div>
 
     <div class="footer-bottom" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
@@ -1930,7 +1932,7 @@
 </div>
 
 
-<script src="site.js?v=2fcdf7456a" defer></script>
+<script src="site.js?v=d4e19cf8f2" defer></script>
 
 </body>
 </html>

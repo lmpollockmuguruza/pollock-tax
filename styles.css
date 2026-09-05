@@ -1379,14 +1379,19 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 .form-success-head p a:hover { color: var(--accent-hover); }
 .form-success .calendar-wrap { margin-top: 20px; }
 .form-success .calendar-intro { margin-bottom: 16px; font-size: 14px; color: var(--ink-2); }
+/* Cal sizes its own iframe as the booking flow gets taller (the confirm step
+   is well past the month view), so this only sets a floor. A fixed height with
+   overflow:hidden cut the last step off. */
 .cal-inline-widget {
   min-width: 280px;
-  height: 680px;
+  min-height: 680px;
   border-radius: var(--radius-md);
-  overflow: hidden;
   border: 1px solid var(--line);
   background: var(--bg-elev);
 }
+/* Round the embed's own wrapper instead of clipping it on the frame. */
+.cal-inline-widget > *,
+.cal-inline-widget iframe { border-radius: var(--radius-md); }
 .calendar-fallback {
   padding: 32px 24px;
   text-align: center;

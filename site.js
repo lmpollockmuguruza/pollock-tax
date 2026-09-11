@@ -807,337 +807,189 @@
   }
 
   /* ===== PRICING CALCULATOR =====
-     Every figure here is a published flat fee, so the panel behaves like a
-     ledger rather than a sales page: line items in, a bundle discount shown
-     as its own line, and the a-la-carte figure left visible next to the
-     bundled one. The count-up is the only theatre, and it only ever animates
-     the way a number that is already decided arrives on screen. */
+     Three choices, a range. The page is there so someone can see roughly what
+     the work costs and what it covers, not to quote them, so nothing is priced
+     line by line: the fees stay in here and only the band comes out. */
   (function () {
     const wrap = $('[data-calc]');
     if (!wrap) return;
 
-    /* Launch-year fee schedule. U.S. work is quoted in USD and Spanish work in
-       EUR because that is how each side is filed and paid; the two are never
-       converted into one another. */
+    // Launch-year fees. U.S. work in dollars, Spanish work in euros, never converted.
     const FEE = {
-      us: { simple: 425, standard: 625, complex: 875,
-            fbar: 65, f8938: 65, state: 150, pfic: 175, streamlined: 1450 },
-      es: { simple: 150, standard: 220, complex: 320,
-            m720: { a: 150, b: 220, c: 320 }, m714: 165, m151: 175, m149: 250 }
+      us: { simple: 425, standard: 625, complex: 875, fbar: 65, f8938: 65, state: 150, catchup: 1450 },
+      es: { simple: 150, standard: 220, complex: 320, m720: 150, m714: 165, beckham: 175 }
     };
-    // Published 2026 rates from the larger expat filing services, for context.
-    const MARKET = {
-      us: { simple: '$400–$565', standard: '$565–$800', complex: '$800–$1,200' },
-      es: { simple: '€40–€185', standard: '€150–€250', complex: '€250+' }
-    };
-    const BUNDLE = { base: 0.10, full: 0.15 };
-    const SECOND_RETURN = 0.15;
+    const BUNDLE = 0.10;
+    const SECOND = 0.15;   // off a second return in the same engagement
 
     const T = {
-      usSide:      { en: 'U.S. side',      es: 'Lado americano' },
-      esSide:      { en: 'Spanish side',   es: 'Lado español' },
-      was:         { en: 'à la carte',     es: 'por separado' },
-      calcing:     { en: 'calculating',    es: 'calculando' },
-      ready:       { en: 'estimate ready', es: 'estimación lista' },
-      tier:        {
-        simple:   { en: 'Simple',   es: 'Sencillo' },
-        standard: { en: 'Standard', es: 'Estándar' },
-        complex:  { en: 'Complex',  es: 'Complejo' }
-      },
-      f1040:       { en: 'Form 1040',      es: 'Formulario 1040' },
-      m100:        { en: 'Modelo 100',     es: 'Modelo 100' },
-      second:      { en: 'Second return in the household', es: 'Segunda declaración de la unidad familiar' },
-      fbar:        { en: 'FBAR (FinCEN 114)', es: 'FBAR (FinCEN 114)' },
-      f8938:       { en: 'Form 8938 (FATCA)', es: 'Formulario 8938 (FATCA)' },
-      state:       { en: 'U.S. state return', es: 'Declaración estatal' },
-      pfic:        { en: 'Form 8621, foreign funds', es: 'Formulario 8621, fondos extranjeros' },
-      streamlined: { en: 'Streamlined catch-up filing', es: 'Regularización Streamlined' },
-      m720:        {
-        a: { en: 'Modelo 720, up to 10 assets',   es: 'Modelo 720, hasta 10 bienes' },
-        b: { en: 'Modelo 720, 11 to 25 assets',   es: 'Modelo 720, de 11 a 25 bienes' },
-        c: { en: 'Modelo 720, 26 to 50 assets',   es: 'Modelo 720, de 26 a 50 bienes' }
-      },
-      m714:        { en: 'Modelo 714, wealth tax', es: 'Modelo 714, patrimonio' },
-      m151:        { en: 'Modelo 151, annual Beckham return', es: 'Modelo 151, declaración anual Beckham' },
-      m149:        { en: 'Modelo 149, Beckham election', es: 'Modelo 149, opción por el régimen Beckham' },
-      bundle:      { en: 'Cross-border bundle', es: 'Paquete transfronterizo' },
-      bundleBadge: { en: 'Both sides prepared together', es: 'Ambos lados preparados a la vez' },
-      us:          { en: 'United States', es: 'Estados Unidos' },
-      es:          { en: 'Spain', es: 'España' },
-      noteEstimate: {
-        en: 'An estimate at list prices. The fixed fee is agreed in writing after the free discovery call, and nothing changes it without your say-so.',
-        es: 'Una estimación a precios de tarifa. El precio cerrado se acuerda por escrito tras la llamada inicial gratuita, y nada lo cambia sin tu visto bueno.'
-      },
-      noteMarket:  { en: 'Comparable market rate at this level: ', es: 'Tarifa de mercado comparable a este nivel: ' },
-      noteVat:     { en: 'Spanish fees are shown before IVA (21%).', es: 'Las tarifas españolas se muestran sin IVA (21%).' },
-      noteLoyal:   { en: 'From year two, the base return drops 10% for returning clients.', es: 'A partir del segundo año, la declaración base baja un 10% para clientes que repiten.' },
-      openTitle:   { en: 'Let’s work it out on a call.', es: 'Vamos a verlo en una llamada.' },
-      openBody:    {
-        en: 'Most people cannot tell from the outside which tier their year falls into, and guessing wrong helps nobody. Thirty minutes is usually enough to scope it properly and put a number in writing.',
-        es: 'Casi nadie sabe desde fuera en qué tramo cae su año, y equivocarse no ayuda a nadie. Treinta minutos suelen bastar para definirlo bien y poner una cifra por escrito.'
-      },
-      summaryTitle: { en: 'Pollock Tax — fee estimate', es: 'Pollock Tax — estimación de tarifas' },
-      summaryTotal: { en: 'Estimated total', es: 'Total estimado' },
-      letsTalk:    { en: 'To be scoped on a call', es: 'Por definir en una llamada' }
+      us:       { en: 'U.S.', es: 'EE. UU.' },
+      es:       { en: 'Spain', es: 'España' },
+      working:  { en: 'Working', es: 'Calculando' },
+      ready:    { en: 'Ready', es: 'Lista' },
+      saving:   { en: 'Taken together, the two come out around 10% under what they cost apart.', es: 'Juntas, las dos salen en torno a un 10% por debajo de lo que cuestan por separado.' },
+      note:     { en: 'A range rather than a quote. The number is fixed in writing after the call, and nothing moves it afterwards without your agreement.', es: 'Un rango, no un presupuesto. La cifra se cierra por escrito tras la llamada, y después no se mueve sin que estés de acuerdo.' },
+      noteVat:  { en: 'Spanish fees are shown before IVA.', es: 'Las tarifas españolas se muestran sin IVA.' },
+      talk:     { en: 'Let’s talk', es: 'Hablemos' },
+      openTitle:{ en: 'Then let’s work it out together.', es: 'Pues lo vemos juntos.' },
+      openBody: { en: 'Thirty minutes on a call, at no charge and with nothing to sign. You come away knowing what your year actually needs and what it would cost, whether or not you go ahead.', es: 'Treinta minutos de llamada, sin coste y sin firmar nada. Sales sabiendo qué necesita de verdad tu año y cuánto costaría, decidas seguir o no.' },
+      item: {
+        f1040:   { en: 'Federal return (Form 1040)', es: 'Declaración federal (Formulario 1040)' },
+        fbar:    { en: 'FBAR', es: 'FBAR' },
+        f8938:   { en: 'Form 8938 (FATCA)', es: 'Formulario 8938 (FATCA)' },
+        state:   { en: 'A state return', es: 'Una declaración estatal' },
+        catchup: { en: 'Three catch-up years (Streamlined)', es: 'Tres años atrasados (Streamlined)' },
+        m100:    { en: 'Spanish return (Modelo 100)', es: 'Declaración española (Modelo 100)' },
+        m151:    { en: 'Beckham return (Modelo 151)', es: 'Declaración Beckham (Modelo 151)' },
+        m720:    { en: 'Modelo 720', es: 'Modelo 720' },
+        m714:    { en: 'Modelo 714 (wealth tax)', es: 'Modelo 714 (patrimonio)' },
+        second:  { en: 'A second return in the household', es: 'Una segunda declaración en la unidad familiar' }
+      }
     };
 
-    const root = document.documentElement;
-    const lang = () => (root.getAttribute('lang') === 'es' ? 'es' : 'en');
-    const t = (node) => (node && node[lang()]) || '';
+    const html = document.documentElement;
+    const lang = () => (html.getAttribute('lang') === 'es' ? 'es' : 'en');
+    const t = (n) => (n && n[lang()]) || '';
 
-    function money(cur, n) {
-      const sym = cur === 'usd' ? '$' : '€';
-      return sym + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
+    const rangesEl  = $('[data-calc-ranges]');
+    const savingEl  = $('[data-calc-saving]');
+    const listEl    = $('[data-calc-list]');
+    const includedEl= $('[data-calc-included]');
+    const noteEl    = $('[data-calc-note]');
+    const statusEl  = $('[data-calc-status]');
+    const resultEl  = $('[data-calc-result]');
+    const minibar   = $('[data-calc-minibar]');
+    const minibarVal= $('[data-calc-minibar-value]');
+
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const state = {
       scope: 'both',
       tier: 'standard',
-      m720band: 'a',
-      addons: {
-        fbar: true, f8938: false, state: false, pfic: false, streamlined: false,
-        m720: false, m714: false, beckham: false, beckham149: false, second: false
-      }
+      addons: { fbar: true, f8938: false, state: false, catchup: false, m720: false, m714: false, beckham: false, second: false }
     };
 
-    const resultEl   = $('[data-calc-result]');
-    const statusEl   = $('[data-calc-status]', resultEl);
-    const totalsEl   = $('[data-calc-totals]', resultEl);
-    const badgesEl   = $('[data-calc-badges]', resultEl);
-    const ledgerEl   = $('[data-calc-ledger]', resultEl);
-    const notesEl    = $('[data-calc-notes]', resultEl);
-    const summaryEl  = $('#estimate-summary');
-    const minibar    = $('[data-calc-minibar]');
-    const minibarVal = $('[data-calc-minibar-value]');
+    const group = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const money = (cur, n) => (cur === 'usd' ? '$' : '€') + group(n);
 
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* A band rather than a figure: rounded outward to a round number, so it
+       reads as an indication and not as an invoice. */
+    function band(total) {
+      const step = total < 400 ? 25 : 50;
+      return { lo: Math.floor(total / step) * step, hi: Math.ceil((total * 1.05) / step) * step };
+    }
 
-    /* ---- compute ---- */
     function compute() {
-      const usOn = state.scope === 'us' || state.scope === 'both';
-      const esOn = state.scope === 'es' || state.scope === 'both';
+      const usOn = state.scope !== 'es';
+      const esOn = state.scope !== 'us';
       const a = state.addons;
-      const unsure = state.tier === 'unsure';
-      const out = { unsure: unsure, usOn: usOn, esOn: esOn, us: null, es: null, pct: 0 };
-      if (unsure) return out;
+      if (state.tier === 'unsure') return { unsure: true, usOn: usOn, esOn: esOn, sides: [] };
 
-      const tierKey = state.tier;
-
+      const sides = [];
       if (usOn) {
-        const items = [];
-        items.push({ label: t(T.f1040) + ' — ' + t(T.tier[tierKey]), amount: FEE.us[tierKey] });
-        if (a.second) items.push({ label: t(T.second) + ' (−15%)', amount: Math.round(FEE.us[tierKey] * (1 - SECOND_RETURN)) });
-        if (a.fbar)        items.push({ label: t(T.fbar), amount: FEE.us.fbar });
-        if (a.f8938)       items.push({ label: t(T.f8938), amount: FEE.us.f8938 });
-        if (a.state)       items.push({ label: t(T.state), amount: FEE.us.state });
-        if (a.pfic)        items.push({ label: t(T.pfic), amount: FEE.us.pfic });
-        if (a.streamlined) items.push({ label: t(T.streamlined), amount: FEE.us.streamlined });
-        out.us = { cur: 'usd', items: items, list: items.reduce((s, i) => s + i.amount, 0) };
+        const items = [T.item.f1040];
+        let sum = FEE.us[state.tier];
+        if (a.second)  { sum += Math.round(FEE.us[state.tier] * (1 - SECOND)); }
+        if (a.fbar)    { items.push(T.item.fbar);    sum += FEE.us.fbar; }
+        if (a.f8938)   { items.push(T.item.f8938);   sum += FEE.us.f8938; }
+        if (a.state)   { items.push(T.item.state);   sum += FEE.us.state; }
+        if (a.catchup) { items.push(T.item.catchup); sum += FEE.us.catchup; }
+        sides.push({ key: 'us', cur: 'usd', label: T.us, items: items, sum: sum });
       }
-
       if (esOn) {
-        const items = [];
-        const base = a.beckham ? FEE.es.m151 : FEE.es[tierKey];
-        items.push(a.beckham
-          ? { label: t(T.m151), amount: FEE.es.m151 }
-          : { label: t(T.m100) + ' — ' + t(T.tier[tierKey]), amount: FEE.es[tierKey] });
-        if (a.beckham && a.beckham149) items.push({ label: t(T.m149), amount: FEE.es.m149 });
-        if (a.second) items.push({ label: t(T.second) + ' (−15%)', amount: Math.round(base * (1 - SECOND_RETURN)) });
-        if (a.m720) items.push({ label: t(T.m720[state.m720band]), amount: FEE.es.m720[state.m720band] });
-        if (a.m714) items.push({ label: t(T.m714), amount: FEE.es.m714 });
-        out.es = { cur: 'eur', items: items, list: items.reduce((s, i) => s + i.amount, 0) };
+        const base = a.beckham ? FEE.es.beckham : FEE.es[state.tier];
+        const items = [a.beckham ? T.item.m151 : T.item.m100];
+        let sum = base;
+        if (a.second) { sum += Math.round(base * (1 - SECOND)); }
+        if (a.m720) { items.push(T.item.m720); sum += FEE.es.m720; }
+        if (a.m714) { items.push(T.item.m714); sum += FEE.es.m714; }
+        sides.push({ key: 'es', cur: 'eur', label: T.es, items: items, sum: sum });
       }
 
-      /* The bundle is the whole point of a Spain-based practice preparing both
-         sides: one set of facts, entered once. It deepens when the foreign-asset
-         reporting is in scope on both sides too. */
-      if (usOn && esOn) {
-        const bothReported = (a.fbar || a.f8938) && (a.m720 || a.m714);
-        out.pct = bothReported ? BUNDLE.full : BUNDLE.base;
-      }
-
-      ['us', 'es'].forEach(k => {
-        const side = out[k];
-        if (!side) return;
-        side.discount = Math.round(side.list * out.pct);
-        side.total = side.list - side.discount;
-      });
-
-      out.market = [];
-      if (usOn) out.market.push(MARKET.us[tierKey]);
-      if (esOn && !a.beckham) out.market.push(MARKET.es[tierKey]);
-      return out;
+      const bundled = usOn && esOn;
+      sides.forEach(s => { s.band = band(bundled ? s.sum * (1 - BUNDLE) : s.sum); });
+      return { unsure: false, usOn: usOn, esOn: esOn, bundled: bundled, second: a.second, sides: sides };
     }
 
-    /* ---- number count-up ---- */
-    const shown = {};
-    function countTo(el, key, cur, target) {
-      const from = typeof shown[key] === 'number' ? shown[key] : target;
-      shown[key] = target;
-      if (reduce || from === target) { el.textContent = money(cur, target); return; }
-      const start = performance.now();
-      const dur = 520;
+    /* The figures climb into place, so a change reads as being worked out. */
+    const seen = {};
+    function countTo(el, cur, lo, hi) {
+      const key = el.getAttribute('data-side');
+      const from = seen[key] || { lo: lo, hi: hi };
+      seen[key] = { lo: lo, hi: hi };
+      const write = (a, b) => { el.textContent = money(cur, a) + '–' + money(cur, b); };
+      if (reduce || (from.lo === lo && from.hi === hi)) { write(lo, hi); return; }
+      const t0 = performance.now();
       (function frame(now) {
-        const p = Math.min(1, (now - start) / dur);
-        const eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = money(cur, from + (target - from) * eased);
+        const p = Math.min(1, (now - t0) / 480);
+        const e = 1 - Math.pow(1 - p, 3);
+        write(from.lo + (lo - from.lo) * e, from.hi + (hi - from.hi) * e);
         if (p < 1) requestAnimationFrame(frame);
-      })(start);
-    }
-
-    /* ---- render ---- */
-    function render(animate) {
-      const r = compute();
-      const L = lang();
-
-      resultEl.classList.toggle('is-open-ended', r.unsure);
-      totalsEl.classList.toggle('calc-totals--two', !r.unsure && r.usOn && r.esOn);
-
-      badgesEl.innerHTML = '';
-      ledgerEl.innerHTML = '';
-      notesEl.innerHTML = '';
-
-      if (r.unsure) {
-        totalsEl.innerHTML =
-          '<div><p class="calc-openended-title">' + t(T.openTitle) + '</p>' +
-          '<p class="calc-openended-body">' + t(T.openBody) + '</p></div>';
-        $('.calc-ledger-wrap', resultEl).hidden = true;
-        summaryEl.textContent = t(T.summaryTitle) + '\n' + t(T.letsTalk);
-        if (minibarVal) minibarVal.textContent = t(T.letsTalk);
-        setStatus(animate);
-        return;
-      }
-      $('.calc-ledger-wrap', resultEl).hidden = false;
-
-      /* Totals. The à-la-carte figure stays on screen next to the bundled one
-         rather than being quietly replaced by it. */
-      const blocks = [];
-      if (r.usOn) blocks.push({ key: 'us', label: t(T.usSide), side: r.us });
-      if (r.esOn) blocks.push({ key: 'es', label: t(T.esSide), side: r.es });
-
-      totalsEl.innerHTML = blocks.map(b =>
-        '<div class="calc-total"><span class="calc-total-label">' + b.label + '</span>' +
-        '<span class="calc-total-value" data-total="' + b.key + '">' + money(b.side.cur, b.side.total) + '</span>' +
-        (b.side.discount > 0
-          ? '<span class="calc-total-was"><s>' + money(b.side.cur, b.side.list) + '</s> ' + t(T.was) + '</span>'
-          : '') +
-        '</div>'
-      ).join('');
-
-      blocks.forEach(b => {
-        const el = $('[data-total="' + b.key + '"]', totalsEl);
-        if (el) countTo(el, b.key, b.side.cur, b.side.total);
-      });
-
-      if (r.pct > 0) {
-        badgesEl.innerHTML =
-          '<span class="calc-badge">' + t(T.bundle) + ' −' + Math.round(r.pct * 100) + '%</span>' +
-          '<span class="calc-badge" style="border-color:var(--line);background:transparent;color:var(--ink-3)">' +
-          t(T.bundleBadge) + '</span>';
-      }
-
-      // Ledger
-      const rows = [];
-      blocks.forEach(b => {
-        if (blocks.length > 1) {
-          rows.push('<li style="color:var(--ink-4);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding-top:12px">' +
-            '<span>' + (b.key === 'us' ? t(T.us) : t(T.es)) + '</span><span></span></li>');
-        }
-        b.side.items.forEach(it => {
-          rows.push('<li><span>' + it.label + '</span><span class="amt">' + money(b.side.cur, it.amount) + '</span></li>');
-        });
-        if (b.side.discount > 0) {
-          rows.push('<li class="is-discount"><span>' + t(T.bundle) + ' −' + Math.round(r.pct * 100) + '%</span>' +
-            '<span class="amt">−' + money(b.side.cur, b.side.discount) + '</span></li>');
-        }
-      });
-      ledgerEl.innerHTML = rows.join('');
-      if (!reduce) {
-        $$('li', ledgerEl).forEach((li, i) => { li.style.animationDelay = (i * 26) + 'ms'; });
-      }
-
-      // Notes
-      const notes = ['<p class="calc-note">' + t(T.noteEstimate) + '</p>'];
-      if (r.market.length) {
-        notes.push('<p class="calc-note">' + t(T.noteMarket) + '<strong>' + r.market.join(' · ') + '</strong></p>');
-      }
-      if (r.esOn) notes.push('<p class="calc-note">' + t(T.noteVat) + '</p>');
-      notes.push('<p class="calc-note">' + t(T.noteLoyal) + '</p>');
-      notesEl.innerHTML = notes.join('');
-
-      // Plain-text version, for the copy button and for pasting into an email.
-      const lines = [t(T.summaryTitle), ''];
-      blocks.forEach(b => {
-        lines.push((b.key === 'us' ? t(T.us) : t(T.es)).toUpperCase());
-        b.side.items.forEach(it => lines.push('  ' + it.label + '  ' + money(b.side.cur, it.amount)));
-        if (b.side.discount > 0) {
-          lines.push('  ' + t(T.bundle) + ' −' + Math.round(r.pct * 100) + '%  −' + money(b.side.cur, b.side.discount));
-        }
-        lines.push('  ' + t(T.summaryTotal) + ': ' + money(b.side.cur, b.side.total));
-        lines.push('');
-      });
-      lines.push(t(T.noteEstimate));
-      summaryEl.textContent = lines.join('\n');
-
-      if (minibarVal) {
-        minibarVal.textContent = blocks.map(b => money(b.side.cur, b.side.total)).join('  +  ');
-      }
-      setStatus(animate);
+      })(t0);
     }
 
     let statusTimer = null;
-    function setStatus(animate) {
-      if (!statusEl) return;
+    function flash(animate) {
       if (!animate || reduce) { statusEl.textContent = t(T.ready); return; }
-      resultEl.classList.remove('is-calculating');
-      void resultEl.offsetWidth;           // restart the sweep on every change
-      resultEl.classList.add('is-calculating');
-      statusEl.textContent = t(T.calcing) + '…';
+      resultEl.classList.remove('is-working');
+      void resultEl.offsetWidth;
+      resultEl.classList.add('is-working');
+      statusEl.textContent = t(T.working) + '…';
       clearTimeout(statusTimer);
       statusTimer = setTimeout(() => {
-        resultEl.classList.remove('is-calculating');
+        resultEl.classList.remove('is-working');
         statusEl.textContent = t(T.ready);
-      }, 560);
+      }, 540);
     }
 
-    /* ---- the inputs ---- */
-    function syncTierPrices() {
-      const usOn = state.scope === 'us' || state.scope === 'both';
-      const esOn = state.scope === 'es' || state.scope === 'both';
-      ['simple', 'standard', 'complex'].forEach(k => {
-        const el = $('[data-tier-price="' + k + '"]');
-        if (!el) return;
-        const parts = [];
-        if (usOn) parts.push(money('usd', FEE.us[k]));
-        if (esOn) parts.push(money('eur', state.addons.beckham ? FEE.es.m151 : FEE.es[k]));
-        el.textContent = parts.join(' · ');
-      });
-    }
+    function render(animate) {
+      const r = compute();
 
-    function syncGroups() {
-      const usOn = state.scope === 'us' || state.scope === 'both';
-      const esOn = state.scope === 'es' || state.scope === 'both';
-      const g = k => $('[data-addon-group="' + k + '"]');
-      if (g('us')) g('us').hidden = !usOn;
-      if (g('es')) g('es').hidden = !esOn;
-      const sub720 = $('[data-subchoice="m720"]');
-      if (sub720) sub720.hidden = !(esOn && state.addons.m720);
-      const subB = $('[data-subchoice="beckham"]');
-      if (subB) subB.hidden = !(esOn && state.addons.beckham);
-      const amt720 = $('[data-addon-amount="m720"]');
-      if (amt720) amt720.textContent = money('eur', FEE.es.m720[state.m720band]);
+      if (r.unsure) {
+        rangesEl.innerHTML = '<div><p class="calc-openended-title">' + t(T.openTitle) + '</p>' +
+                             '<p class="calc-openended-body">' + t(T.openBody) + '</p></div>';
+        savingEl.textContent = '';
+        includedEl.hidden = true;
+        noteEl.textContent = '';
+        if (minibarVal) minibarVal.textContent = t(T.talk);
+        flash(animate);
+        return;
+      }
+      includedEl.hidden = false;
+
+      rangesEl.innerHTML = r.sides.map(s =>
+        '<div><span class="calc-range-label">' + t(s.label) + '</span>' +
+        '<span class="calc-range-value" data-side="' + s.key + '"></span></div>'
+      ).join('');
+      r.sides.forEach(s => countTo($('[data-side="' + s.key + '"]', rangesEl), s.cur, s.band.lo, s.band.hi));
+
+      savingEl.textContent = r.bundled ? t(T.saving) : '';
+
+      const items = r.sides.reduce((all, s) => all.concat(s.items), []);
+      if (r.second) items.push(T.item.second);
+      listEl.innerHTML = items.map(i => '<li>' + t(i) + '</li>').join('');
+      if (!reduce) $$('li', listEl).forEach((li, i) => { li.style.animationDelay = (i * 30) + 'ms'; });
+
+      noteEl.textContent = t(T.note) + (r.esOn ? ' ' + t(T.noteVat) : '');
+
+      if (minibarVal) {
+        minibarVal.textContent = r.sides.map(s => money(s.cur, s.band.lo) + '–' + money(s.cur, s.band.hi)).join(' · ');
+      }
+      flash(animate);
     }
 
     function update() {
-      syncGroups();
-      syncTierPrices();
+      const usOn = state.scope !== 'es';
+      const esOn = state.scope !== 'us';
+      const g = k => $('[data-addon-group="' + k + '"]');
+      if (g('us')) g('us').hidden = !usOn;
+      if (g('es')) g('es').hidden = !esOn;
       render(true);
     }
 
-    // Radio groups: scope, tier, Modelo 720 asset band.
-    $$('[data-calc-group]', wrap).forEach(group => {
-      const name = group.getAttribute('data-calc-group');
-      const opts = $$('[role="radio"]', group);
+    $$('[data-calc-group]', wrap).forEach(grp => {
+      const name = grp.getAttribute('data-calc-group');
+      const opts = $$('[role="radio"]', grp);
       function select(opt, moveFocus) {
         opts.forEach(o => {
           const on = o === opt;
@@ -1164,38 +1016,26 @@
     $$('[data-addon]', wrap).forEach(input => {
       const key = input.getAttribute('data-addon');
       input.checked = !!state.addons[key];
-      input.addEventListener('change', () => {
-        state.addons[key] = input.checked;
-        // The Modelo 149 election only exists inside the Beckham regime.
-        if (key === 'beckham' && !input.checked) {
-          state.addons.beckham149 = false;
-          const sub = $('[data-addon="beckham149"]', wrap);
-          if (sub) sub.checked = false;
-        }
-        update();
-      });
+      input.addEventListener('change', () => { state.addons[key] = input.checked; update(); });
     });
 
-    /* Running total on phones, where the card sits below the controls. */
+    // Running total on phones, where the card sits below the choices.
     if (minibar && 'IntersectionObserver' in window) {
-      let cardVisible = true, sectionVisible = false;
+      let cardSeen = true, sectionSeen = false;
       const paint = () => {
         minibar.hidden = false;
-        minibar.classList.toggle('is-visible', sectionVisible && !cardVisible);
+        minibar.classList.toggle('is-visible', sectionSeen && !cardSeen);
       };
-      new IntersectionObserver(e => { cardVisible = e[0].isIntersecting; paint(); },
-        { threshold: 0.15 }).observe(resultEl);
-      new IntersectionObserver(e => { sectionVisible = e[0].isIntersecting; paint(); },
-        { threshold: 0 }).observe($('.calc-section'));
+      new IntersectionObserver(e => { cardSeen = e[0].isIntersecting; paint(); }, { threshold: 0.15 }).observe(resultEl);
+      new IntersectionObserver(e => { sectionSeen = e[0].isIntersecting; paint(); }, { threshold: 0 }).observe($('.calc-section'));
       const jump = $('[data-calc-minibar-jump]');
       if (jump) jump.addEventListener('click', () => resultEl.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }));
     }
 
-    // The language toggle rewrites nothing inside the card, so redraw it here.
-    new MutationObserver(() => render(false)).observe(root, { attributes: true, attributeFilter: ['lang'] });
+    // The language toggle does not touch the card, so redraw it here.
+    new MutationObserver(() => render(false)).observe(html, { attributes: true, attributeFilter: ['lang'] });
 
-    syncGroups();
-    syncTierPrices();
+    update();
     render(false);
   })();
 

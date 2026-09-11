@@ -806,6 +806,399 @@
     });
   }
 
+  /* ===== PRICING CALCULATOR =====
+     Every figure here is a published flat fee, so the panel behaves like a
+     ledger rather than a sales page: line items in, a bundle discount shown
+     as its own line, and the a-la-carte figure left visible next to the
+     bundled one. The count-up is the only theatre, and it only ever animates
+     the way a number that is already decided arrives on screen. */
+  (function () {
+    const wrap = $('[data-calc]');
+    if (!wrap) return;
+
+    /* Launch-year fee schedule. U.S. work is quoted in USD and Spanish work in
+       EUR because that is how each side is filed and paid; the two are never
+       converted into one another. */
+    const FEE = {
+      us: { simple: 425, standard: 625, complex: 875,
+            fbar: 65, f8938: 65, state: 150, pfic: 175, streamlined: 1450 },
+      es: { simple: 150, standard: 220, complex: 320,
+            m720: { a: 150, b: 220, c: 320 }, m714: 165, m151: 175, m149: 250 }
+    };
+    // Published 2026 rates from the larger expat filing services, for context.
+    const MARKET = {
+      us: { simple: '$400–$565', standard: '$565–$800', complex: '$800–$1,200' },
+      es: { simple: '€40–€185', standard: '€150–€250', complex: '€250+' }
+    };
+    const BUNDLE = { base: 0.10, full: 0.15 };
+    const SECOND_RETURN = 0.15;
+
+    const T = {
+      usSide:      { en: 'U.S. side',      es: 'Lado americano' },
+      esSide:      { en: 'Spanish side',   es: 'Lado español' },
+      was:         { en: 'à la carte',     es: 'por separado' },
+      calcing:     { en: 'calculating',    es: 'calculando' },
+      ready:       { en: 'estimate ready', es: 'estimación lista' },
+      tier:        {
+        simple:   { en: 'Simple',   es: 'Sencillo' },
+        standard: { en: 'Standard', es: 'Estándar' },
+        complex:  { en: 'Complex',  es: 'Complejo' }
+      },
+      f1040:       { en: 'Form 1040',      es: 'Formulario 1040' },
+      m100:        { en: 'Modelo 100',     es: 'Modelo 100' },
+      second:      { en: 'Second return in the household', es: 'Segunda declaración de la unidad familiar' },
+      fbar:        { en: 'FBAR (FinCEN 114)', es: 'FBAR (FinCEN 114)' },
+      f8938:       { en: 'Form 8938 (FATCA)', es: 'Formulario 8938 (FATCA)' },
+      state:       { en: 'U.S. state return', es: 'Declaración estatal' },
+      pfic:        { en: 'Form 8621, foreign funds', es: 'Formulario 8621, fondos extranjeros' },
+      streamlined: { en: 'Streamlined catch-up filing', es: 'Regularización Streamlined' },
+      m720:        {
+        a: { en: 'Modelo 720, up to 10 assets',   es: 'Modelo 720, hasta 10 bienes' },
+        b: { en: 'Modelo 720, 11 to 25 assets',   es: 'Modelo 720, de 11 a 25 bienes' },
+        c: { en: 'Modelo 720, 26 to 50 assets',   es: 'Modelo 720, de 26 a 50 bienes' }
+      },
+      m714:        { en: 'Modelo 714, wealth tax', es: 'Modelo 714, patrimonio' },
+      m151:        { en: 'Modelo 151, annual Beckham return', es: 'Modelo 151, declaración anual Beckham' },
+      m149:        { en: 'Modelo 149, Beckham election', es: 'Modelo 149, opción por el régimen Beckham' },
+      bundle:      { en: 'Cross-border bundle', es: 'Paquete transfronterizo' },
+      bundleBadge: { en: 'Both sides prepared together', es: 'Ambos lados preparados a la vez' },
+      us:          { en: 'United States', es: 'Estados Unidos' },
+      es:          { en: 'Spain', es: 'España' },
+      noteEstimate: {
+        en: 'An estimate at list prices. The fixed fee is agreed in writing after the free discovery call, and nothing changes it without your say-so.',
+        es: 'Una estimación a precios de tarifa. El precio cerrado se acuerda por escrito tras la llamada inicial gratuita, y nada lo cambia sin tu visto bueno.'
+      },
+      noteMarket:  { en: 'Comparable market rate at this level: ', es: 'Tarifa de mercado comparable a este nivel: ' },
+      noteVat:     { en: 'Spanish fees are shown before IVA (21%).', es: 'Las tarifas españolas se muestran sin IVA (21%).' },
+      noteLoyal:   { en: 'From year two, the base return drops 10% for returning clients.', es: 'A partir del segundo año, la declaración base baja un 10% para clientes que repiten.' },
+      openTitle:   { en: 'Let’s work it out on a call.', es: 'Vamos a verlo en una llamada.' },
+      openBody:    {
+        en: 'Most people cannot tell from the outside which tier their year falls into, and guessing wrong helps nobody. Thirty minutes is usually enough to scope it properly and put a number in writing.',
+        es: 'Casi nadie sabe desde fuera en qué tramo cae su año, y equivocarse no ayuda a nadie. Treinta minutos suelen bastar para definirlo bien y poner una cifra por escrito.'
+      },
+      summaryTitle: { en: 'Pollock Tax — fee estimate', es: 'Pollock Tax — estimación de tarifas' },
+      summaryTotal: { en: 'Estimated total', es: 'Total estimado' },
+      letsTalk:    { en: 'To be scoped on a call', es: 'Por definir en una llamada' }
+    };
+
+    const root = document.documentElement;
+    const lang = () => (root.getAttribute('lang') === 'es' ? 'es' : 'en');
+    const t = (node) => (node && node[lang()]) || '';
+
+    function money(cur, n) {
+      const sym = cur === 'usd' ? '$' : '€';
+      return sym + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    const state = {
+      scope: 'both',
+      tier: 'standard',
+      m720band: 'a',
+      addons: {
+        fbar: true, f8938: false, state: false, pfic: false, streamlined: false,
+        m720: false, m714: false, beckham: false, beckham149: false, second: false
+      }
+    };
+
+    const resultEl   = $('[data-calc-result]');
+    const statusEl   = $('[data-calc-status]', resultEl);
+    const totalsEl   = $('[data-calc-totals]', resultEl);
+    const badgesEl   = $('[data-calc-badges]', resultEl);
+    const ledgerEl   = $('[data-calc-ledger]', resultEl);
+    const notesEl    = $('[data-calc-notes]', resultEl);
+    const summaryEl  = $('#estimate-summary');
+    const minibar    = $('[data-calc-minibar]');
+    const minibarVal = $('[data-calc-minibar-value]');
+
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---- compute ---- */
+    function compute() {
+      const usOn = state.scope === 'us' || state.scope === 'both';
+      const esOn = state.scope === 'es' || state.scope === 'both';
+      const a = state.addons;
+      const unsure = state.tier === 'unsure';
+      const out = { unsure: unsure, usOn: usOn, esOn: esOn, us: null, es: null, pct: 0 };
+      if (unsure) return out;
+
+      const tierKey = state.tier;
+
+      if (usOn) {
+        const items = [];
+        items.push({ label: t(T.f1040) + ' — ' + t(T.tier[tierKey]), amount: FEE.us[tierKey] });
+        if (a.second) items.push({ label: t(T.second) + ' (−15%)', amount: Math.round(FEE.us[tierKey] * (1 - SECOND_RETURN)) });
+        if (a.fbar)        items.push({ label: t(T.fbar), amount: FEE.us.fbar });
+        if (a.f8938)       items.push({ label: t(T.f8938), amount: FEE.us.f8938 });
+        if (a.state)       items.push({ label: t(T.state), amount: FEE.us.state });
+        if (a.pfic)        items.push({ label: t(T.pfic), amount: FEE.us.pfic });
+        if (a.streamlined) items.push({ label: t(T.streamlined), amount: FEE.us.streamlined });
+        out.us = { cur: 'usd', items: items, list: items.reduce((s, i) => s + i.amount, 0) };
+      }
+
+      if (esOn) {
+        const items = [];
+        const base = a.beckham ? FEE.es.m151 : FEE.es[tierKey];
+        items.push(a.beckham
+          ? { label: t(T.m151), amount: FEE.es.m151 }
+          : { label: t(T.m100) + ' — ' + t(T.tier[tierKey]), amount: FEE.es[tierKey] });
+        if (a.beckham && a.beckham149) items.push({ label: t(T.m149), amount: FEE.es.m149 });
+        if (a.second) items.push({ label: t(T.second) + ' (−15%)', amount: Math.round(base * (1 - SECOND_RETURN)) });
+        if (a.m720) items.push({ label: t(T.m720[state.m720band]), amount: FEE.es.m720[state.m720band] });
+        if (a.m714) items.push({ label: t(T.m714), amount: FEE.es.m714 });
+        out.es = { cur: 'eur', items: items, list: items.reduce((s, i) => s + i.amount, 0) };
+      }
+
+      /* The bundle is the whole point of a Spain-based practice preparing both
+         sides: one set of facts, entered once. It deepens when the foreign-asset
+         reporting is in scope on both sides too. */
+      if (usOn && esOn) {
+        const bothReported = (a.fbar || a.f8938) && (a.m720 || a.m714);
+        out.pct = bothReported ? BUNDLE.full : BUNDLE.base;
+      }
+
+      ['us', 'es'].forEach(k => {
+        const side = out[k];
+        if (!side) return;
+        side.discount = Math.round(side.list * out.pct);
+        side.total = side.list - side.discount;
+      });
+
+      out.market = [];
+      if (usOn) out.market.push(MARKET.us[tierKey]);
+      if (esOn && !a.beckham) out.market.push(MARKET.es[tierKey]);
+      return out;
+    }
+
+    /* ---- number count-up ---- */
+    const shown = {};
+    function countTo(el, key, cur, target) {
+      const from = typeof shown[key] === 'number' ? shown[key] : target;
+      shown[key] = target;
+      if (reduce || from === target) { el.textContent = money(cur, target); return; }
+      const start = performance.now();
+      const dur = 520;
+      (function frame(now) {
+        const p = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = money(cur, from + (target - from) * eased);
+        if (p < 1) requestAnimationFrame(frame);
+      })(start);
+    }
+
+    /* ---- render ---- */
+    function render(animate) {
+      const r = compute();
+      const L = lang();
+
+      resultEl.classList.toggle('is-open-ended', r.unsure);
+      totalsEl.classList.toggle('calc-totals--two', !r.unsure && r.usOn && r.esOn);
+
+      badgesEl.innerHTML = '';
+      ledgerEl.innerHTML = '';
+      notesEl.innerHTML = '';
+
+      if (r.unsure) {
+        totalsEl.innerHTML =
+          '<div><p class="calc-openended-title">' + t(T.openTitle) + '</p>' +
+          '<p class="calc-openended-body">' + t(T.openBody) + '</p></div>';
+        $('.calc-ledger-wrap', resultEl).hidden = true;
+        summaryEl.textContent = t(T.summaryTitle) + '\n' + t(T.letsTalk);
+        if (minibarVal) minibarVal.textContent = t(T.letsTalk);
+        setStatus(animate);
+        return;
+      }
+      $('.calc-ledger-wrap', resultEl).hidden = false;
+
+      /* Totals. The à-la-carte figure stays on screen next to the bundled one
+         rather than being quietly replaced by it. */
+      const blocks = [];
+      if (r.usOn) blocks.push({ key: 'us', label: t(T.usSide), side: r.us });
+      if (r.esOn) blocks.push({ key: 'es', label: t(T.esSide), side: r.es });
+
+      totalsEl.innerHTML = blocks.map(b =>
+        '<div class="calc-total"><span class="calc-total-label">' + b.label + '</span>' +
+        '<span class="calc-total-value" data-total="' + b.key + '">' + money(b.side.cur, b.side.total) + '</span>' +
+        (b.side.discount > 0
+          ? '<span class="calc-total-was"><s>' + money(b.side.cur, b.side.list) + '</s> ' + t(T.was) + '</span>'
+          : '') +
+        '</div>'
+      ).join('');
+
+      blocks.forEach(b => {
+        const el = $('[data-total="' + b.key + '"]', totalsEl);
+        if (el) countTo(el, b.key, b.side.cur, b.side.total);
+      });
+
+      if (r.pct > 0) {
+        badgesEl.innerHTML =
+          '<span class="calc-badge">' + t(T.bundle) + ' −' + Math.round(r.pct * 100) + '%</span>' +
+          '<span class="calc-badge" style="border-color:var(--line);background:transparent;color:var(--ink-3)">' +
+          t(T.bundleBadge) + '</span>';
+      }
+
+      // Ledger
+      const rows = [];
+      blocks.forEach(b => {
+        if (blocks.length > 1) {
+          rows.push('<li style="color:var(--ink-4);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding-top:12px">' +
+            '<span>' + (b.key === 'us' ? t(T.us) : t(T.es)) + '</span><span></span></li>');
+        }
+        b.side.items.forEach(it => {
+          rows.push('<li><span>' + it.label + '</span><span class="amt">' + money(b.side.cur, it.amount) + '</span></li>');
+        });
+        if (b.side.discount > 0) {
+          rows.push('<li class="is-discount"><span>' + t(T.bundle) + ' −' + Math.round(r.pct * 100) + '%</span>' +
+            '<span class="amt">−' + money(b.side.cur, b.side.discount) + '</span></li>');
+        }
+      });
+      ledgerEl.innerHTML = rows.join('');
+      if (!reduce) {
+        $$('li', ledgerEl).forEach((li, i) => { li.style.animationDelay = (i * 26) + 'ms'; });
+      }
+
+      // Notes
+      const notes = ['<p class="calc-note">' + t(T.noteEstimate) + '</p>'];
+      if (r.market.length) {
+        notes.push('<p class="calc-note">' + t(T.noteMarket) + '<strong>' + r.market.join(' · ') + '</strong></p>');
+      }
+      if (r.esOn) notes.push('<p class="calc-note">' + t(T.noteVat) + '</p>');
+      notes.push('<p class="calc-note">' + t(T.noteLoyal) + '</p>');
+      notesEl.innerHTML = notes.join('');
+
+      // Plain-text version, for the copy button and for pasting into an email.
+      const lines = [t(T.summaryTitle), ''];
+      blocks.forEach(b => {
+        lines.push((b.key === 'us' ? t(T.us) : t(T.es)).toUpperCase());
+        b.side.items.forEach(it => lines.push('  ' + it.label + '  ' + money(b.side.cur, it.amount)));
+        if (b.side.discount > 0) {
+          lines.push('  ' + t(T.bundle) + ' −' + Math.round(r.pct * 100) + '%  −' + money(b.side.cur, b.side.discount));
+        }
+        lines.push('  ' + t(T.summaryTotal) + ': ' + money(b.side.cur, b.side.total));
+        lines.push('');
+      });
+      lines.push(t(T.noteEstimate));
+      summaryEl.textContent = lines.join('\n');
+
+      if (minibarVal) {
+        minibarVal.textContent = blocks.map(b => money(b.side.cur, b.side.total)).join('  +  ');
+      }
+      setStatus(animate);
+    }
+
+    let statusTimer = null;
+    function setStatus(animate) {
+      if (!statusEl) return;
+      if (!animate || reduce) { statusEl.textContent = t(T.ready); return; }
+      resultEl.classList.remove('is-calculating');
+      void resultEl.offsetWidth;           // restart the sweep on every change
+      resultEl.classList.add('is-calculating');
+      statusEl.textContent = t(T.calcing) + '…';
+      clearTimeout(statusTimer);
+      statusTimer = setTimeout(() => {
+        resultEl.classList.remove('is-calculating');
+        statusEl.textContent = t(T.ready);
+      }, 560);
+    }
+
+    /* ---- the inputs ---- */
+    function syncTierPrices() {
+      const usOn = state.scope === 'us' || state.scope === 'both';
+      const esOn = state.scope === 'es' || state.scope === 'both';
+      ['simple', 'standard', 'complex'].forEach(k => {
+        const el = $('[data-tier-price="' + k + '"]');
+        if (!el) return;
+        const parts = [];
+        if (usOn) parts.push(money('usd', FEE.us[k]));
+        if (esOn) parts.push(money('eur', state.addons.beckham ? FEE.es.m151 : FEE.es[k]));
+        el.textContent = parts.join(' · ');
+      });
+    }
+
+    function syncGroups() {
+      const usOn = state.scope === 'us' || state.scope === 'both';
+      const esOn = state.scope === 'es' || state.scope === 'both';
+      const g = k => $('[data-addon-group="' + k + '"]');
+      if (g('us')) g('us').hidden = !usOn;
+      if (g('es')) g('es').hidden = !esOn;
+      const sub720 = $('[data-subchoice="m720"]');
+      if (sub720) sub720.hidden = !(esOn && state.addons.m720);
+      const subB = $('[data-subchoice="beckham"]');
+      if (subB) subB.hidden = !(esOn && state.addons.beckham);
+      const amt720 = $('[data-addon-amount="m720"]');
+      if (amt720) amt720.textContent = money('eur', FEE.es.m720[state.m720band]);
+    }
+
+    function update() {
+      syncGroups();
+      syncTierPrices();
+      render(true);
+    }
+
+    // Radio groups: scope, tier, Modelo 720 asset band.
+    $$('[data-calc-group]', wrap).forEach(group => {
+      const name = group.getAttribute('data-calc-group');
+      const opts = $$('[role="radio"]', group);
+      function select(opt, moveFocus) {
+        opts.forEach(o => {
+          const on = o === opt;
+          o.setAttribute('aria-checked', on ? 'true' : 'false');
+          o.setAttribute('tabindex', on ? '0' : '-1');
+        });
+        state[name] = opt.getAttribute('data-value');
+        update();
+        if (moveFocus) opt.focus();
+      }
+      opts.forEach((opt, i) => {
+        opt.setAttribute('tabindex', opt.getAttribute('aria-checked') === 'true' ? '0' : '-1');
+        opt.addEventListener('click', () => select(opt, false));
+        opt.addEventListener('keydown', e => {
+          const map = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+          if (e.key in map) {
+            e.preventDefault();
+            select(opts[(i + map[e.key] + opts.length) % opts.length], true);
+          }
+        });
+      });
+    });
+
+    $$('[data-addon]', wrap).forEach(input => {
+      const key = input.getAttribute('data-addon');
+      input.checked = !!state.addons[key];
+      input.addEventListener('change', () => {
+        state.addons[key] = input.checked;
+        // The Modelo 149 election only exists inside the Beckham regime.
+        if (key === 'beckham' && !input.checked) {
+          state.addons.beckham149 = false;
+          const sub = $('[data-addon="beckham149"]', wrap);
+          if (sub) sub.checked = false;
+        }
+        update();
+      });
+    });
+
+    /* Running total on phones, where the card sits below the controls. */
+    if (minibar && 'IntersectionObserver' in window) {
+      let cardVisible = true, sectionVisible = false;
+      const paint = () => {
+        minibar.hidden = false;
+        minibar.classList.toggle('is-visible', sectionVisible && !cardVisible);
+      };
+      new IntersectionObserver(e => { cardVisible = e[0].isIntersecting; paint(); },
+        { threshold: 0.15 }).observe(resultEl);
+      new IntersectionObserver(e => { sectionVisible = e[0].isIntersecting; paint(); },
+        { threshold: 0 }).observe($('.calc-section'));
+      const jump = $('[data-calc-minibar-jump]');
+      if (jump) jump.addEventListener('click', () => resultEl.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }));
+    }
+
+    // The language toggle rewrites nothing inside the card, so redraw it here.
+    new MutationObserver(() => render(false)).observe(root, { attributes: true, attributeFilter: ['lang'] });
+
+    syncGroups();
+    syncTierPrices();
+    render(false);
+  })();
+
   /* ===== YEAR ===== */
   $$('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
 

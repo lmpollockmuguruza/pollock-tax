@@ -820,6 +820,7 @@
       es: { simple: 150, standard: 220, complex: 320, m720: 150, m714: 165, beckham: 175 }
     };
     const BUNDLE = 0.10;
+    const SECOND = 0.15;   // off a second return in the same engagement
 
     const T = {
       us:       { en: 'U.S.', es: 'EE. UU.' },
@@ -841,7 +842,8 @@
         m100:    { en: 'Spanish return (Modelo 100)', es: 'Declaración española (Modelo 100)' },
         m151:    { en: 'Beckham return (Modelo 151)', es: 'Declaración Beckham (Modelo 151)' },
         m720:    { en: 'Modelo 720', es: 'Modelo 720' },
-        m714:    { en: 'Modelo 714 (wealth tax)', es: 'Modelo 714 (patrimonio)' }
+        m714:    { en: 'Modelo 714 (wealth tax)', es: 'Modelo 714 (patrimonio)' },
+        second:  { en: 'A second return in the household', es: 'Una segunda declaración en la unidad familiar' }
       }
     };
 
@@ -864,7 +866,7 @@
     const state = {
       scope: 'both',
       tier: 'standard',
-      addons: { fbar: true, f8938: false, state: false, catchup: false, m720: false, m714: false, beckham: false }
+      addons: { fbar: true, f8938: false, state: false, catchup: false, m720: false, m714: false, beckham: false, second: false }
     };
 
     const group = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -887,6 +889,7 @@
       if (usOn) {
         const items = [T.item.f1040];
         let sum = FEE.us[state.tier];
+        if (a.second)  { sum += Math.round(FEE.us[state.tier] * (1 - SECOND)); }
         if (a.fbar)    { items.push(T.item.fbar);    sum += FEE.us.fbar; }
         if (a.f8938)   { items.push(T.item.f8938);   sum += FEE.us.f8938; }
         if (a.state)   { items.push(T.item.state);   sum += FEE.us.state; }
@@ -894,8 +897,10 @@
         sides.push({ key: 'us', cur: 'usd', label: T.us, items: items, sum: sum });
       }
       if (esOn) {
+        const base = a.beckham ? FEE.es.beckham : FEE.es[state.tier];
         const items = [a.beckham ? T.item.m151 : T.item.m100];
-        let sum = a.beckham ? FEE.es.beckham : FEE.es[state.tier];
+        let sum = base;
+        if (a.second) { sum += Math.round(base * (1 - SECOND)); }
         if (a.m720) { items.push(T.item.m720); sum += FEE.es.m720; }
         if (a.m714) { items.push(T.item.m714); sum += FEE.es.m714; }
         sides.push({ key: 'es', cur: 'eur', label: T.es, items: items, sum: sum });
@@ -903,7 +908,7 @@
 
       const bundled = usOn && esOn;
       sides.forEach(s => { s.band = band(bundled ? s.sum * (1 - BUNDLE) : s.sum); });
-      return { unsure: false, usOn: usOn, esOn: esOn, bundled: bundled, sides: sides };
+      return { unsure: false, usOn: usOn, esOn: esOn, bundled: bundled, second: a.second, sides: sides };
     }
 
     /* The figures climb into place, so a change reads as being worked out. */
@@ -961,6 +966,7 @@
       savingEl.textContent = r.bundled ? t(T.saving) : '';
 
       const items = r.sides.reduce((all, s) => all.concat(s.items), []);
+      if (r.second) items.push(T.item.second);
       listEl.innerHTML = items.map(i => '<li>' + t(i) + '</li>').join('');
       if (!reduce) $$('li', listEl).forEach((li, i) => { li.style.animationDelay = (i * 30) + 'ms'; });
 

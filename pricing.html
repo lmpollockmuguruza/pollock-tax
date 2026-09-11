@@ -38,7 +38,7 @@
       onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&f[]=jetbrains-mono@400,500&display=swap" /></noscript>
 
-<link rel="stylesheet" href="styles.css?v=b6798f55d2" />
+<link rel="stylesheet" href="styles.css?v=a674ebdbf3" />
 
 <script type="application/ld+json">
 {
@@ -132,12 +132,12 @@
     </a>
     <span class="eyebrow" data-bilingual><span data-lang="en">What does it cost</span><span data-lang="es">Cuánto cuesta</span></span>
     <h1 class="display-1" data-bilingual="block">
-      <span data-lang="en">Flat fees, up front.</span>
-      <span data-lang="es">Tarifas cerradas, por delante.</span>
+      <span data-lang="en">Roughly what it costs, before you ask.</span>
+      <span data-lang="es">Cuánto cuesta, más o menos, antes de preguntar.</span>
     </h1>
     <p class="lede body-lg" data-bilingual="block">
-      <span data-lang="en">Pick what you need and you'll see a range. The exact fee is agreed in writing after a free call.</span>
-      <span data-lang="es">Elige lo que necesitas y verás un rango. El precio exacto se acuerda por escrito tras una llamada gratuita.</span>
+      <span data-lang="en">Fees here are flat and agreed before any work starts, so there is never an hourly meter running in the background. Tell the calculator what your year involves and it will give you a range. The exact number comes out of a free call, in writing.</span>
+      <span data-lang="es">Las tarifas son cerradas y se acuerdan antes de empezar, así que nunca hay un contador por horas corriendo de fondo. Dile a la calculadora qué hay en tu año y te dará un rango. La cifra exacta sale de una llamada gratuita, por escrito.</span>
     </p>
   </div>
 </section>
@@ -150,72 +150,58 @@
 
       <div class="calc-form">
 
-        <div class="calc-step" data-reveal>
+        <div class="calc-step calc-step--wide" data-reveal>
           <div class="calc-step-head">
-            <span class="calc-step-num">01</span>
-            <h3 data-bilingual><span data-lang="en">Which returns?</span><span data-lang="es">¿Qué declaraciones?</span></h3>
-            <p data-bilingual><span data-lang="en">Most people living here file both.</span><span data-lang="es">La mayoría de quienes viven aquí declaran en los dos sitios.</span></p>
+            <h3><span class="calc-step-num">01</span><span data-bilingual><span data-lang="en">Which returns do you need?</span><span data-lang="es">¿Qué declaraciones necesitas?</span></span></h3>
+            <p data-bilingual><span data-lang="en">The two systems overlap a good deal, so when both are on the table much of the work is shared.</span><span data-lang="es">Los dos sistemas se solapan bastante, así que cuando hay que presentar ambas buena parte del trabajo se comparte.</span></p>
           </div>
 
-          <div class="calc-options" data-calc-group="scope" role="radiogroup" aria-label="Which returns">
-            <button type="button" class="calc-opt" data-value="us" role="radio" aria-checked="false">
-              <span class="calc-opt-top">
-                <span class="calc-flag calc-flag--us" aria-hidden="true"></span>
-                <span class="calc-opt-title" data-bilingual><span data-lang="en">United States</span><span data-lang="es">Estados Unidos</span></span>
-              </span>
-              <span class="calc-opt-desc" data-bilingual><span data-lang="en">Form 1040 and the forms that go with it.</span><span data-lang="es">El Formulario 1040 y los formularios que lo acompañan.</span></span>
+          <div class="calc-scope" data-calc-group="scope" role="radiogroup" aria-label="Which returns do you need">
+            <button type="button" class="calc-scope-opt" data-value="us" role="radio" aria-checked="false">
+              <span class="calc-flag calc-flag--us" aria-hidden="true"></span>
+              <span data-bilingual><span data-lang="en">The U.S. side</span><span data-lang="es">El lado americano</span></span>
             </button>
-            <button type="button" class="calc-opt" data-value="es" role="radio" aria-checked="false">
-              <span class="calc-opt-top">
-                <span class="calc-flag calc-flag--es" aria-hidden="true"></span>
-                <span class="calc-opt-title" data-bilingual><span data-lang="en">Spain</span><span data-lang="es">España</span></span>
-              </span>
-              <span class="calc-opt-desc" data-bilingual><span data-lang="en">Modelo 100 and the reporting that comes with living here.</span><span data-lang="es">El Modelo 100 y las obligaciones que trae vivir aquí.</span></span>
+            <button type="button" class="calc-scope-opt" data-value="es" role="radio" aria-checked="false">
+              <span class="calc-flag calc-flag--es" aria-hidden="true"></span>
+              <span data-bilingual><span data-lang="en">The Spanish side</span><span data-lang="es">El lado español</span></span>
             </button>
-            <button type="button" class="calc-opt" data-value="both" role="radio" aria-checked="true">
-              <span class="calc-opt-top">
-                <span class="calc-flag calc-flag--both" aria-hidden="true"></span>
-                <span class="calc-opt-title" data-bilingual><span data-lang="en">Both</span><span data-lang="es">Ambas</span></span>
-              </span>
-              <span class="calc-opt-desc" data-bilingual><span data-lang="en">One advisor, both sides, prepared together.</span><span data-lang="es">Un solo asesor, los dos lados, preparados a la vez.</span></span>
-              <span class="calc-opt-note" data-bilingual><span data-lang="en">Most common</span><span data-lang="es">Lo más común</span></span>
+            <button type="button" class="calc-scope-opt" data-value="both" role="radio" aria-checked="true">
+              <span class="calc-flag calc-flag--both" aria-hidden="true"></span>
+              <span data-bilingual><span data-lang="en">Both, together</span><span data-lang="es">Ambas, a la vez</span></span>
             </button>
           </div>
         </div>
 
         <div class="calc-step" data-reveal>
           <div class="calc-step-head">
-            <span class="calc-step-num">02</span>
-            <h3 data-bilingual><span data-lang="en">How complex is your year?</span><span data-lang="es">¿Cómo de complejo es tu año?</span></h3>
-            <p data-bilingual><span data-lang="en">A rough idea is enough.</span><span data-lang="es">Basta con una idea aproximada.</span></p>
+            <h3><span class="calc-step-num">02</span><span data-bilingual><span data-lang="en">What's in your year?</span><span data-lang="es">¿Qué hay en tu año?</span></span></h3>
+            <p data-bilingual><span data-lang="en">Whichever sits closest is close enough.</span><span data-lang="es">Lo que más se acerque ya vale.</span></p>
           </div>
 
-          <div class="calc-tiers" data-calc-group="tier" role="radiogroup" aria-label="How complex is your year">
+          <div class="calc-tiers" data-calc-group="tier" role="radiogroup" aria-label="What does your year look like">
             <button type="button" class="calc-tier" data-value="simple" role="radio" aria-checked="false">
-              <span class="calc-tier-name" data-bilingual><span data-lang="en">Simple</span><span data-lang="es">Sencillo</span></span>
-              <span class="calc-tier-desc" data-bilingual><span data-lang="en">One income source: a salary, a pension, Social Security.</span><span data-lang="es">Una fuente de ingresos: nómina, pensión o Seguridad Social.</span></span>
+              <span class="calc-tier-name" data-bilingual><span data-lang="en">One source of income</span><span data-lang="es">Una fuente de ingresos</span></span>
+              <span class="calc-tier-desc" data-bilingual><span data-lang="en">A salary, a pension or Social Security, with the foreign-income exclusion or the credit on top.</span><span data-lang="es">Una nómina, una pensión o la Seguridad Social, con la exclusión por renta extranjera o el crédito por impuestos.</span></span>
             </button>
             <button type="button" class="calc-tier" data-value="standard" role="radio" aria-checked="true">
-              <span class="calc-tier-name" data-bilingual><span data-lang="en">Standard</span><span data-lang="es">Estándar</span></span>
-              <span class="calc-tier-desc" data-bilingual><span data-lang="en">Investments, capital gains, or a rental property.</span><span data-lang="es">Inversiones, ganancias patrimoniales o un piso en alquiler.</span></span>
-              <span class="calc-tier-note" data-bilingual><span data-lang="en">Most common</span><span data-lang="es">Lo más común</span></span>
+              <span class="calc-tier-name" data-bilingual><span data-lang="en">Investments or a property</span><span data-lang="es">Inversiones o un inmueble</span></span>
+              <span class="calc-tier-desc" data-bilingual><span data-lang="en">Interest and dividends, capital gains, a flat you rent out, or a spouse filing alongside you.</span><span data-lang="es">Intereses y dividendos, ganancias patrimoniales, un piso en alquiler, o un cónyuge que declara contigo.</span></span>
             </button>
             <button type="button" class="calc-tier" data-value="complex" role="radio" aria-checked="false">
-              <span class="calc-tier-name" data-bilingual><span data-lang="en">Complex</span><span data-lang="es">Complejo</span></span>
-              <span class="calc-tier-desc" data-bilingual><span data-lang="en">Self-employed, a business, several properties, K-1s.</span><span data-lang="es">Autónomo, empresa, varios inmuebles, K-1.</span></span>
+              <span class="calc-tier-name" data-bilingual><span data-lang="en">A business, or several of those at once</span><span data-lang="es">Un negocio, o varias de esas a la vez</span></span>
+              <span class="calc-tier-desc" data-bilingual><span data-lang="en">Autónomo or company income, more than one property, several pensions and accounts abroad, K-1s.</span><span data-lang="es">Ingresos de autónomo o de una sociedad, más de un inmueble, varias pensiones y cuentas fuera, K-1 de sociedades.</span></span>
             </button>
             <button type="button" class="calc-tier calc-tier--unsure" data-value="unsure" role="radio" aria-checked="false">
-              <span class="calc-tier-name" data-bilingual><span data-lang="en">I'm not sure</span><span data-lang="es">No lo tengo claro</span></span>
-              <span class="calc-tier-desc" data-bilingual><span data-lang="en">We'll work it out on the call.</span><span data-lang="es">Lo vemos en la llamada.</span></span>
+              <span class="calc-tier-name" data-bilingual><span data-lang="en">Still working that out</span><span data-lang="es">Todavía lo estoy viendo</span></span>
+              <span class="calc-tier-desc" data-bilingual><span data-lang="en">Which is exactly what the call is for.</span><span data-lang="es">Que es justo para lo que está la llamada.</span></span>
             </button>
           </div>
         </div>
 
         <div class="calc-step" data-reveal>
           <div class="calc-step-head">
-            <span class="calc-step-num">03</span>
-            <h3 data-bilingual><span data-lang="en">Anything else?</span><span data-lang="es">¿Algo más?</span></h3>
-            <p data-bilingual><span data-lang="en">Only if it applies to you.</span><span data-lang="es">Solo si te aplica.</span></p>
+            <h3><span class="calc-step-num">03</span><span data-bilingual><span data-lang="en">Anything else in the picture?</span><span data-lang="es">¿Algo más en juego?</span></span></h3>
+            <p data-bilingual><span data-lang="en">If you are not sure whether one applies, leave it be.</span><span data-lang="es">Si no sabes si algo te aplica, déjalo estar.</span></p>
           </div>
 
           <div class="calc-addons">
@@ -229,7 +215,7 @@
               <label class="calc-addon">
                 <span>
                   <span class="calc-addon-title">FBAR</span>
-                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Foreign accounts over $10,000 at any point in the year.</span><span data-lang="es">Cuentas en el extranjero por encima de 10.000 $ en algún momento del año.</span></span>
+                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Your accounts abroad crossed $10,000 together.</span><span data-lang="es">Tus cuentas fuera sumaron más de 10.000 $.</span></span>
                 </span>
                 <input type="checkbox" class="calc-switch-input" data-addon="fbar" checked />
                 <span class="calc-switch" aria-hidden="true"></span>
@@ -238,7 +224,7 @@
               <label class="calc-addon">
                 <span>
                   <span class="calc-addon-title" data-bilingual><span data-lang="en">Form 8938</span><span data-lang="es">Formulario 8938</span></span>
-                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Foreign assets over the FATCA threshold.</span><span data-lang="es">Activos en el extranjero por encima del umbral FATCA.</span></span>
+                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Your assets abroad sit above the FATCA threshold.</span><span data-lang="es">Tus activos fuera superan el umbral FATCA.</span></span>
                 </span>
                 <input type="checkbox" class="calc-switch-input" data-addon="f8938" />
                 <span class="calc-switch" aria-hidden="true"></span>
@@ -247,7 +233,7 @@
               <label class="calc-addon">
                 <span>
                   <span class="calc-addon-title" data-bilingual><span data-lang="en">A state return</span><span data-lang="es">Una declaración estatal</span></span>
-                  <span class="calc-addon-help" data-bilingual><span data-lang="en">If a state still expects one after the move.</span><span data-lang="es">Si algún estado sigue esperándola tras la mudanza.</span></span>
+                  <span class="calc-addon-help" data-bilingual><span data-lang="en">A state you have left still expects one.</span><span data-lang="es">Un estado del que te fuiste aún te la reclama.</span></span>
                 </span>
                 <input type="checkbox" class="calc-switch-input" data-addon="state" />
                 <span class="calc-switch" aria-hidden="true"></span>
@@ -255,8 +241,8 @@
 
               <label class="calc-addon">
                 <span>
-                  <span class="calc-addon-title" data-bilingual><span data-lang="en">Past years to catch up</span><span data-lang="es">Años atrasados</span></span>
-                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Three years of returns under the Streamlined procedure.</span><span data-lang="es">Tres años de declaraciones por el procedimiento Streamlined.</span></span>
+                  <span class="calc-addon-title" data-bilingual><span data-lang="en">Years to catch up on</span><span data-lang="es">Años que poner al día</span></span>
+                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Three years of returns, through Streamlined.</span><span data-lang="es">Tres años de declaraciones, vía Streamlined.</span></span>
                 </span>
                 <input type="checkbox" class="calc-switch-input" data-addon="catchup" />
                 <span class="calc-switch" aria-hidden="true"></span>
@@ -272,7 +258,7 @@
               <label class="calc-addon">
                 <span>
                   <span class="calc-addon-title">Modelo 720</span>
-                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Foreign assets over €50,000 in any category.</span><span data-lang="es">Bienes en el extranjero por encima de 50.000 € en alguna categoría.</span></span>
+                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Assets abroad over €50,000 in one category.</span><span data-lang="es">Bienes fuera por encima de 50.000 € en una categoría.</span></span>
                 </span>
                 <input type="checkbox" class="calc-switch-input" data-addon="m720" />
                 <span class="calc-switch" aria-hidden="true"></span>
@@ -281,7 +267,7 @@
               <label class="calc-addon">
                 <span>
                   <span class="calc-addon-title">Modelo 714</span>
-                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Wealth tax, if you pass your region's threshold.</span><span data-lang="es">Patrimonio, si superas el mínimo exento de tu comunidad.</span></span>
+                  <span class="calc-addon-help" data-bilingual><span data-lang="en">Wealth tax, above your region's threshold.</span><span data-lang="es">Patrimonio, por encima del mínimo de tu comunidad.</span></span>
                 </span>
                 <input type="checkbox" class="calc-switch-input" data-addon="m714" />
                 <span class="calc-switch" aria-hidden="true"></span>
@@ -289,8 +275,8 @@
 
               <label class="calc-addon">
                 <span>
-                  <span class="calc-addon-title" data-bilingual><span data-lang="en">Beckham regime</span><span data-lang="es">Régimen Beckham</span></span>
-                  <span class="calc-addon-help" data-bilingual><span data-lang="en">You're on it, or applying. Your Modelo 100 becomes a Modelo 151.</span><span data-lang="es">Ya estás o lo vas a solicitar. Tu Modelo 100 pasa a ser un Modelo 151.</span></span>
+                  <span class="calc-addon-title" data-bilingual><span data-lang="en">The Beckham regime</span><span data-lang="es">El régimen Beckham</span></span>
+                  <span class="calc-addon-help" data-bilingual><span data-lang="en">You are on it, or about to elect into it.</span><span data-lang="es">Ya estás dentro, o vas a acogerte.</span></span>
                 </span>
                 <input type="checkbox" class="calc-switch-input" data-addon="beckham" />
                 <span class="calc-switch" aria-hidden="true"></span>
@@ -298,11 +284,6 @@
             </div>
 
           </div>
-
-          <p class="calc-help-line" data-bilingual="block">
-            <span data-lang="en">Not sure what applies to you? <a href="https://cal.com/pollocktax/30min" target="_blank" rel="noopener">Book a call</a> and we'll go through it.</span>
-            <span data-lang="es">¿No sabes qué te aplica? <a href="https://cal.com/pollocktax/30min" target="_blank" rel="noopener">Reserva una llamada</a> y lo repasamos.</span>
-          </p>
         </div>
       </div>
 
@@ -358,12 +339,12 @@
       <span class="eyebrow" data-bilingual><span data-lang="en">Included</span><span data-lang="es">Incluido</span></span>
       <div>
         <h2 class="display-2" data-bilingual="block">
-          <span data-lang="en">What comes with the fee.</span>
-          <span data-lang="es">Lo que va con la tarifa.</span>
+          <span data-lang="en">What already comes with the fee.</span>
+          <span data-lang="es">Lo que ya va con la tarifa.</span>
         </h2>
         <p class="lede body-lg" style="margin-top: 20px;" data-bilingual="block">
-          <span data-lang="en">The discovery call is free. So is your U.S. extension, if Andy is filing that year's return. Short questions through the year are part of the work, not billed by the hour. And returning clients pay 10% less from year two.</span>
-          <span data-lang="es">La llamada inicial es gratis. También la prórroga americana, si Andy presenta la declaración de ese año. Las dudas breves durante el año forman parte del trabajo, no se facturan por horas. Y quien repite paga un 10% menos a partir del segundo año.</span>
+          <span data-lang="en">The first call costs nothing, whether or not it turns into work. Your U.S. extension is filed at no charge if Andy is preparing that year's return. Short questions through the year are part of the engagement rather than a line on an invoice. And from the second year onward, returning clients take 10% off the base return, because the hard part of a cross-border file is the first year of it.</span>
+          <span data-lang="es">La primera llamada no cuesta nada, acabe en encargo o no. La prórroga americana se presenta sin coste si Andy prepara la declaración de ese año. Las dudas breves a lo largo del año forman parte del encargo, no son una línea en la factura. Y a partir del segundo año, quien repite tiene un 10% de descuento sobre la declaración base, porque lo difícil de un expediente transfronterizo es el primer año.</span>
         </p>
       </div>
     </div>
@@ -511,7 +492,7 @@
   </div>
 </div>
 
-<script src="site.js?v=15d4c376a0" defer></script>
+<script src="site.js?v=73084977fb" defer></script>
 
 </body>
 </html>

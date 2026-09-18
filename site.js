@@ -832,17 +832,42 @@
       });
     }
 
+    // The bar rides under the header, so anything scrolled to by anchor has to
+    // clear both. Measuring beats hard-coding here: the bar wraps to two lines
+    // under reduced motion, and the header settles once the webfont lands.
+    const navEl = $('#nav');
+    function measureBars() {
+      if (navEl) root.style.setProperty('--nav-h', navEl.offsetHeight + 'px');
+      root.style.setProperty(
+        '--notice-h',
+        notice.classList.contains('is-visible') ? notice.offsetHeight + 'px' : '0px'
+      );
+    }
+
     let dismissed = false;
     try { dismissed = !!localStorage.getItem(noticeKey); } catch (e) {}
     // The bar should stand through the whole of its final day wherever it is
     // being read, so the cutoff is local end-of-day rather than UTC midnight.
     const current = !expires || new Date(expires + 'T23:59:59') >= new Date();
     if (!dismissed && current) notice.classList.add('is-visible');
+    measureBars();
+
+    // Neither custom property feeds back into either bar's height, so watching
+    // both for resize cannot loop. This also catches the language switch, which
+    // changes the wrapped height of the Spanish copy.
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(measureBars);
+      ro.observe(notice);
+      if (navEl) ro.observe(navEl);
+    } else {
+      window.addEventListener('resize', measureBars);
+    }
 
     const noticeClose = $('[data-notice-dismiss]', notice);
     if (noticeClose) {
       noticeClose.addEventListener('click', () => {
         notice.classList.remove('is-visible');
+        measureBars();
         try { localStorage.setItem(noticeKey, '1'); } catch (e) {}
       });
     }

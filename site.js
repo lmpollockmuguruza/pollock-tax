@@ -806,6 +806,76 @@
     });
   }
 
+  /* ===== DEADLINE NOTICE =====
+     A dated announcement strip under the header. Two things keep it from going
+     stale on its own: it retires after the date it advertises, and the
+     dismissal is keyed to this notice's id, so the next one comes back for
+     everyone who closed this one. Clicking through opens the intake with the
+     services it is about already ticked — that is the point of the bar. */
+  const notice = $('#deadline-notice');
+  if (notice) {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const noticeId = notice.getAttribute('data-notice-id') || 'current';
+    const noticeKey = 'pollock.notice.' + noticeId;
+    const expires = notice.getAttribute('data-notice-expires');
+    const services = (notice.getAttribute('data-notice-services') || '').split(/\s+/).filter(Boolean);
+    const start = $('#start');
+
+    function seedIntake() {
+      const group = $('[data-chips][data-name="services"]');
+      if (!group) return;
+      services.forEach(value => {
+        const chip = $('.chip[data-value="' + value + '"]', group);
+        // Replaying a real click keeps the form's own handler the only thing
+        // that knows how a chip maps into the submitted intake.
+        if (chip && !chip.classList.contains('is-selected')) chip.click();
+      });
+    }
+
+    let dismissed = false;
+    try { dismissed = !!localStorage.getItem(noticeKey); } catch (e) {}
+    // The bar should stand through the whole of its final day wherever it is
+    // being read, so the cutoff is local end-of-day rather than UTC midnight.
+    const current = !expires || new Date(expires + 'T23:59:59') >= new Date();
+    if (!dismissed && current) notice.classList.add('is-visible');
+
+    const noticeClose = $('[data-notice-dismiss]', notice);
+    if (noticeClose) {
+      noticeClose.addEventListener('click', () => {
+        notice.classList.remove('is-visible');
+        try { localStorage.setItem(noticeKey, '1'); } catch (e) {}
+      });
+    }
+
+    // Only the page carrying the intake handles the click itself; on the other
+    // pages the link keeps its plain cross-page href to index.html.
+    const noticeCta = $('[data-notice-start]', notice);
+    if (noticeCta && start) {
+      noticeCta.addEventListener('click', e => {
+        e.preventDefault();
+        seedIntake();
+        start.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        const firstField = $('#f-firstName');
+        // Focusing mid-scroll fights the scroll, so it waits for it to settle.
+        if (firstField) setTimeout(() => firstField.focus({ preventScroll: true }), reduce ? 0 : 700);
+      });
+    }
+
+    // Arriving from another page's bar, which links to index.html?case=<id>#start.
+    // The id has to match so a stale link from an older notice cannot tick
+    // services this one is not about.
+    if (start) {
+      let arrived = false;
+      try { arrived = new URLSearchParams(location.search).get('case') === noticeId; } catch (e) {}
+      if (arrived) {
+        seedIntake();
+        // The hash already scrolled the page; drop the marker so a reload or a
+        // shared URL is just the page.
+        try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+      }
+    }
+  }
+
   /* ===== PRICING CALCULATOR =====
      Three choices, a range. The page is there so someone can see roughly what
      the work costs and what it covers, not to quote them, so nothing is priced

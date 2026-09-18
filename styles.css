@@ -31,6 +31,11 @@
   --prep-soft:    rgba(138, 147, 166, 0.08);
   --prep-border:  rgba(138, 147, 166, 0.25);
 
+  /* The announcement bar carries white text on a solid fill, so it keeps its
+     own red rather than --accent-hover: that token lightens in dark mode and
+     would drop the contrast under 4.5:1. Old Glory Red either way. */
+  --notice-bg:    #B31942;
+
   --font-sans:  'Satoshi', system-ui, -apple-system, sans-serif;
   --font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -74,6 +79,8 @@
   --prep-primary: #9AA3B5;
   --prep-soft:    rgba(154, 163, 181, 0.08);
   --prep-border:  rgba(154, 163, 181, 0.25);
+
+  --notice-bg:    #8E1435;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -2123,6 +2130,88 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 .cookies-actions button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .cookies-actions button:hover { border-color: var(--accent-hover); color: var(--accent-hover); }
 .cookies-actions button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+
+/* ===== DEADLINE NOTICE =====
+   A dismissible announcement strip under the header. The message is a full
+   sentence and the strip is one line tall, so it marquees sideways instead of
+   wrapping. The whole strip is the link; the x sits outside it so closing the
+   bar never counts as clicking through. */
+.notice {
+  display: none;
+  align-items: center;
+  background: var(--notice-bg);
+  color: #fff;
+  /* The header above is translucent and blurred; a hairline keeps the two
+     from bleeding into each other as content scrolls under the nav. */
+  border-bottom: 1px solid color-mix(in oklab, #000 20%, var(--notice-bg));
+}
+.notice.is-visible { display: flex; }
+
+/* min-width:0 lets this flex item shrink below its content width, which is
+   what gives the marquee something to be clipped by. */
+.notice-cta {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  padding-block: 11px;
+  color: inherit;
+}
+
+.notice-track {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: notice-marquee 48s linear infinite;
+}
+/* Three copies travelling exactly one copy's width: the strip is never wider
+   than two copies on any viewport, so the loop has no visible seam. */
+@keyframes notice-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.3333%); }
+}
+.notice:hover .notice-track,
+.notice:focus-within .notice-track { animation-play-state: paused; }
+
+.notice-item {
+  padding-inline: 2.75rem;
+  font-size: 13.5px;
+  font-weight: 450;
+  letter-spacing: 0.01em;
+}
+.notice-item .notice-link {
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.notice-cta:hover .notice-link { text-decoration-thickness: 2px; }
+
+.notice-close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  align-self: stretch;
+  color: #fff;
+  opacity: 0.75;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.notice-close:hover { opacity: 1; }
+.notice-close svg { width: 15px; height: 15px; }
+
+/* Keyboard focus has to stay visible against the red, where the site's normal
+   accent outline would not read. */
+.notice-cta:focus-visible,
+.notice-close:focus-visible { outline: 2px solid #fff; outline-offset: -3px; }
+
+/* No motion: drop to a single copy and let the sentence wrap, so the whole
+   message is readable at once instead of scrolling past. */
+@media (prefers-reduced-motion: reduce) {
+  .notice-cta { overflow: visible; padding-inline: var(--grid-pad) 0; }
+  .notice-track { display: block; white-space: normal; animation: none; }
+  .notice-item { padding-inline: 0; }
+  .notice-item + .notice-item { display: none; }
+}
 
 /* SCROLL ANIMATIONS */
 [data-reveal] {

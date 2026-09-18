@@ -36,6 +36,11 @@
      would drop the contrast under 4.5:1. Old Glory Red either way. */
   --notice-bg:    #B31942;
 
+  /* Header height, and the notice bar's when it is up. Anchored scrolling and
+     the notice's own sticky offset are both measured off these. */
+  --nav-h:        73px;
+  --notice-h:     0px;
+
   --font-sans:  'Satoshi', system-ui, -apple-system, sans-serif;
   --font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -85,7 +90,8 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 /* scroll-padding keeps anchored sections clear of the sticky header */
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 84px; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth;
+       scroll-padding-top: calc(var(--nav-h) + var(--notice-h) + 11px); }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 /* Skip link — first thing in the tab order, visible only when focused */
@@ -2139,6 +2145,12 @@ html[lang="es"] .hero-headline { font-size: clamp(30px, 4.4vw, 60px); }
 .notice {
   display: none;
   align-items: center;
+  /* Rides under the header rather than scrolling off: the nav is sticky at
+     top 0 and z-index 100, so this sits one step down on both counts. The
+     drawer, modals and intro overlay are all above 100 and still cover it. */
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 99;
   background: var(--notice-bg);
   color: #fff;
   /* The header above is translucent and blurred; a hairline keeps the two

@@ -902,9 +902,9 @@
   }
 
   /* ===== PRICING CALCULATOR =====
-     Three choices, a range. The page is there so someone can see roughly what
-     the work costs and what it covers, not to quote them, so nothing is priced
-     line by line: the fees stay in here and only the band comes out. */
+     The year, the extras, a range. The page is there so someone can see roughly
+     what the work costs and what it covers, not to quote them, so nothing is
+     priced line by line: the fees stay in here and only the band comes out. */
   (function () {
     const wrap = $('[data-calc]');
     if (!wrap) return;
@@ -917,6 +917,31 @@
     const BUNDLE = 0.10;
     const SECOND = 0.15;   // off a second return in the same engagement
 
+    // Which tier each answer in step 02 puts a return in, side by side. A return
+    // sits in the highest tier any one answer reaches; the separately priced
+    // forms in step 03 never count. Mirrors "How tiers are set" on the page.
+    const CRIT = {
+      two_incomes:       { us: 'standard' },
+      self_employed:     { us: 'complex',  es: 'complex' },
+      outside_spain:     {                 es: 'standard' },
+      several_countries: {                 es: 'complex' },
+      foreign_pensions:  { us: 'complex' },
+      k1:                { us: 'complex' },
+      accounts:          { us: 'standard' },
+      trades:            { us: 'standard', es: 'standard' },
+      trades_many:       { us: 'complex',  es: 'complex' },
+      crypto:            { us: 'complex',  es: 'complex' },
+      foreign_funds:     {                 es: 'complex' },
+      fx:                { us: 'complex' },
+      property:          { us: 'standard', es: 'standard' },
+      property_many:     { us: 'complex',  es: 'complex' },
+      sold_home:         { us: 'standard', es: 'standard' },
+      sold_other:        { us: 'standard', es: 'complex' },   // a sale on Schedule D for the U.S.
+      itemize:           { us: 'standard' },
+      amt:               { us: 'complex' }
+    };
+    const RANK = ['simple', 'standard', 'complex'];
+
     const T = {
       us:       { en: 'U.S.', es: 'EE. UU.' },
       es:       { en: 'Spain', es: 'España' },
@@ -924,10 +949,18 @@
       ready:    { en: 'Ready', es: 'Lista' },
       saving:   { en: 'Taken together, the two come out around 10% under what they cost apart.', es: 'Juntas, las dos salen en torno a un 10% por debajo de lo que cuestan por separado.' },
       note:     { en: 'A range rather than a quote. The number is fixed in writing after the call, and nothing moves it afterwards without your agreement.', es: 'Un rango, no un presupuesto. La cifra se cierra por escrito tras la llamada, y después no se mueve sin que estés de acuerdo.' },
-      noteVat:  { en: 'Spanish fees are shown before IVA.', es: 'Las tarifas españolas se muestran sin IVA.' },
+      noteVat:  { en: 'All fees exclude Spanish IVA (21%), added where applicable.', es: 'Ninguna tarifa incluye el IVA español (21%), que se añade cuando corresponde.' },
+      usReturn: { en: 'U.S. return', es: 'Declaración americana' },
+      esReturn: { en: 'Spanish return', es: 'Declaración española' },
+      beckham:  { en: 'Modelo 151 (Beckham)', es: 'Modelo 151 (Beckham)' },
+      tier: {
+        simple:   { en: 'Simple', es: 'Simple' },
+        standard: { en: 'Standard', es: 'Estándar' },
+        complex:  { en: 'Complex', es: 'Complejo' }
+      },
       talk:     { en: 'Let’s talk', es: 'Hablemos' },
       openTitle:{ en: 'Then let’s work it out together.', es: 'Pues lo vemos juntos.' },
-      openBody: { en: 'Thirty minutes on a call, at no charge and with nothing to sign. You come away knowing what your year actually needs and what it would cost, whether or not you go ahead.', es: 'Treinta minutos de llamada, sin coste y sin firmar nada. Sales sabiendo qué necesita de verdad tu año y cuánto costaría, decidas seguir o no.' },
+      openBody: { en: 'A 15–20 minute call, at no charge and with nothing to sign. You come away knowing what your year actually needs and what it would cost, whether or not you go ahead.', es: 'Una llamada de 15–20 minutos, sin coste y sin firmar nada. Sales sabiendo qué necesita de verdad tu año y cuánto costaría, decidas seguir o no.' },
       item: {
         f1040:   { en: 'Federal return (Form 1040)', es: 'Declaración federal (Formulario 1040)' },
         fbar:    { en: 'FBAR', es: 'FBAR' },
@@ -955,14 +988,28 @@
     const resultEl  = $('[data-calc-result]');
     const minibar   = $('[data-calc-minibar]');
     const minibarVal= $('[data-calc-minibar-value]');
+    const readoutEl = $('[data-calc-tier-readout]');
 
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const state = {
       scope: 'both',
-      tier: 'standard',
-      addons: { fbar: true, f8938: false, state: false, catchup: false, m720: false, m714: false, beckham: false, second: false }
+      crit: {},
+      addons: { fbar: true, f8938: false, state: false, catchup: false, m720: false, m714: false, beckham: false, second: false, unsure: false }
     };
+
+    function tierFor(side) {
+      return Object.keys(CRIT).reduce((tier, k) => {
+        const hit = state.crit[k] && CRIT[k][side];
+        return hit && RANK.indexOf(hit) > RANK.indexOf(tier) ? hit : tier;
+      }, 'simple');
+    }
+
+    // "Federal return (Form 1040)" becomes "Federal return (Form 1040), Standard".
+    const withTier = (item, tier) => ({
+      en: item.en + ', ' + T.tier[tier].en,
+      es: item.es + ', nivel ' + T.tier[tier].es
+    });
 
     const group = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const money = (cur, n) => (cur === 'usd' ? '$' : '€') + group(n);
@@ -978,13 +1025,14 @@
       const usOn = state.scope !== 'es';
       const esOn = state.scope !== 'us';
       const a = state.addons;
-      if (state.tier === 'unsure') return { unsure: true, usOn: usOn, esOn: esOn, sides: [] };
+      if (a.unsure) return { unsure: true, usOn: usOn, esOn: esOn, sides: [] };
 
       const sides = [];
       if (usOn) {
-        const items = [T.item.f1040];
-        let sum = FEE.us[state.tier];
-        if (a.second)  { sum += Math.round(FEE.us[state.tier] * (1 - SECOND)); }
+        const tier = tierFor('us');
+        const items = [withTier(T.item.f1040, tier)];
+        let sum = FEE.us[tier];
+        if (a.second)  { sum += Math.round(FEE.us[tier] * (1 - SECOND)); }
         if (a.fbar)    { items.push(T.item.fbar);    sum += FEE.us.fbar; }
         if (a.f8938)   { items.push(T.item.f8938);   sum += FEE.us.f8938; }
         if (a.state)   { items.push(T.item.state);   sum += FEE.us.state; }
@@ -992,8 +1040,9 @@
         sides.push({ key: 'us', cur: 'usd', label: T.us, items: items, sum: sum });
       }
       if (esOn) {
-        const base = a.beckham ? FEE.es.beckham : FEE.es[state.tier];
-        const items = [a.beckham ? T.item.m151 : T.item.m100];
+        const tier = tierFor('es');
+        const base = a.beckham ? FEE.es.beckham : FEE.es[tier];
+        const items = [a.beckham ? T.item.m151 : withTier(T.item.m100, tier)];
         let sum = base;
         if (a.second) { sum += Math.round(base * (1 - SECOND)); }
         if (a.m720) { items.push(T.item.m720); sum += FEE.es.m720; }
@@ -1037,7 +1086,16 @@
       }, 540);
     }
 
+    function readout() {
+      if (!readoutEl) return;
+      const parts = [];
+      if (state.scope !== 'es') parts.push(t(T.usReturn) + ': ' + t(T.tier[tierFor('us')]));
+      if (state.scope !== 'us') parts.push(t(T.esReturn) + ': ' + (state.addons.beckham ? t(T.beckham) : t(T.tier[tierFor('es')])));
+      readoutEl.textContent = parts.join(' · ');
+    }
+
     function render(animate) {
+      readout();
       const r = compute();
 
       if (r.unsure) {
@@ -1065,7 +1123,7 @@
       listEl.innerHTML = items.map(i => '<li>' + t(i) + '</li>').join('');
       if (!reduce) $$('li', listEl).forEach((li, i) => { li.style.animationDelay = (i * 30) + 'ms'; });
 
-      noteEl.textContent = t(T.note) + (r.esOn ? ' ' + t(T.noteVat) : '');
+      noteEl.textContent = t(T.note) + ' ' + t(T.noteVat);
 
       if (minibarVal) {
         minibarVal.textContent = r.sides.map(s => money(s.cur, s.band.lo) + '–' + money(s.cur, s.band.hi)).join(' · ');
@@ -1079,6 +1137,15 @@
       const g = k => $('[data-addon-group="' + k + '"]');
       if (g('us')) g('us').hidden = !usOn;
       if (g('es')) g('es').hidden = !esOn;
+      // A question that only moves a side that is switched off is left out,
+      // and so is a group left with nothing in it.
+      $$('[data-crit]', wrap).forEach(input => {
+        const sides = Object.keys(CRIT[input.getAttribute('data-crit')] || {});
+        input.closest('.calc-addon').hidden = !sides.some(s => (s === 'us' ? usOn : esOn));
+      });
+      $$('.calc-crit .calc-addon-group', wrap).forEach(grp => {
+        grp.hidden = !$$('.calc-addon', grp).some(row => !row.hidden);
+      });
       render(true);
     }
 
@@ -1112,6 +1179,12 @@
       const key = input.getAttribute('data-addon');
       input.checked = !!state.addons[key];
       input.addEventListener('change', () => { state.addons[key] = input.checked; update(); });
+    });
+
+    $$('[data-crit]', wrap).forEach(input => {
+      const key = input.getAttribute('data-crit');
+      input.checked = !!state.crit[key];
+      input.addEventListener('change', () => { state.crit[key] = input.checked; update(); });
     });
 
     // Running total on phones, where the card sits below the choices.

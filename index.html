@@ -33,14 +33,10 @@
 <link rel="icon" type="image/png" href="images/favicon-16.png" sizes="16x16" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-<!-- Loaded without blocking render: a slow font host must never hold up the page.
-     The URL already carries display=swap, so the swap behavior is unchanged. -->
-<link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&f[]=jetbrains-mono@400,500&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'" />
-<noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&f[]=jetbrains-mono@400,500&display=swap" /></noscript>
+<link rel="preload" href="fonts/Satoshi-400.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="fonts/Satoshi-500.woff2" as="font" type="font/woff2" crossorigin />
 
-<link rel="stylesheet" href="styles.css?v=76c4a26615" />
+<link rel="stylesheet" href="styles.css?v=8d1558ced2" />
 
 <script type="application/ld+json">
 {
@@ -188,7 +184,7 @@
       "name": "What does it cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Flat fees, scoped after the intake form and the discovery call. A standard expat return with FBAR sits in a clear, predictable range, quoted in writing before any work starts. No hourly meter."
+        "text": "Flat fees, scoped after the intake form and the discovery call. A standard expat return with FBAR sits in a clear, predictable range, quoted in writing before any work starts. No meter running."
       }
     },
     {
@@ -284,20 +280,6 @@
     </div>
   </div>
 </header>
-
-<div class="notice" id="deadline-notice" role="region" aria-label="Filing deadline notice"
-     data-notice-id="oct15-2026" data-notice-expires="2026-10-15" data-notice-services="federal extension">
-  <a class="notice-cta" href="#start" data-notice-start>
-    <span class="notice-track">
-      <span class="notice-item" data-bilingual><span data-lang="en">Americans abroad: October 15 is the final deadline to file your 2025 U.S. federal tax return if you filed for an extension—don’t miss it! <span class="notice-link">Start a case with Andy →</span></span><span data-lang="es">Estadounidenses en el extranjero: el 15 de octubre es la fecha límite para presentar tu declaración federal de EE.&nbsp;UU. de 2025 si pediste prórroga—¡no la dejes pasar! <span class="notice-link">Abre un caso con Andy →</span></span></span>
-      <span class="notice-item" data-bilingual aria-hidden="true"><span data-lang="en">Americans abroad: October 15 is the final deadline to file your 2025 U.S. federal tax return if you filed for an extension—don’t miss it! <span class="notice-link">Start a case with Andy →</span></span><span data-lang="es">Estadounidenses en el extranjero: el 15 de octubre es la fecha límite para presentar tu declaración federal de EE.&nbsp;UU. de 2025 si pediste prórroga—¡no la dejes pasar! <span class="notice-link">Abre un caso con Andy →</span></span></span>
-      <span class="notice-item" data-bilingual aria-hidden="true"><span data-lang="en">Americans abroad: October 15 is the final deadline to file your 2025 U.S. federal tax return if you filed for an extension—don’t miss it! <span class="notice-link">Start a case with Andy →</span></span><span data-lang="es">Estadounidenses en el extranjero: el 15 de octubre es la fecha límite para presentar tu declaración federal de EE.&nbsp;UU. de 2025 si pediste prórroga—¡no la dejes pasar! <span class="notice-link">Abre un caso con Andy →</span></span></span>
-    </span>
-  </a>
-  <button class="notice-close" type="button" data-notice-dismiss aria-label="Dismiss this notice">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-  </button>
-</div>
 
 <div class="mobile-drawer-overlay" id="mobile-overlay"></div>
 <div class="mobile-drawer" id="mobile-drawer">
@@ -1259,7 +1241,7 @@
       <div class="process-step">
         <div class="process-num">02</div>
         <h3 data-bilingual><span data-lang="en">Discovery call</span><span data-lang="es">Llamada inicial</span></h3>
-        <p data-bilingual><span data-lang="en">A 30-minute call to walk through the year, your accounts, your residency and any moving parts. You leave with a written plan and a flat-fee quote.</span><span data-lang="es">Una llamada de 30 minutos para repasar el año, tus cuentas, tu residencia y cualquier circunstancia particular. Sales con un plan por escrito y un presupuesto cerrado.</span></p>
+        <p data-bilingual><span data-lang="en">A 15–20 minute call to walk through the year, your accounts, your residency and any moving parts. You leave with a written plan and a flat-fee quote.</span><span data-lang="es">Una llamada de 15–20 minutos para repasar el año, tus cuentas, tu residencia y cualquier circunstancia particular. Sales con un plan por escrito y un presupuesto cerrado.</span></p>
         <div class="process-art" aria-hidden="true">
           <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round">
@@ -1269,13 +1251,13 @@
             <path d="M98 14a36 36 0 0 1 0 30M107 10a46 46 0 0 1 0 38"/>
           </svg>
         </div>
-        <div class="duration" data-bilingual><span data-lang="en">30 minutes, by video</span><span data-lang="es">30 minutos, por vídeo</span></div>
+        <div class="duration" data-bilingual><span data-lang="en">15–20 minutes, by video</span><span data-lang="es">15–20 minutos, por vídeo</span></div>
       </div>
 
       <div class="process-step">
         <div class="process-num">03</div>
         <h3 data-bilingual><span data-lang="en">Filing and follow-through</span><span data-lang="es">Presentación y seguimiento</span></h3>
-        <p data-bilingual><span data-lang="en">Documents come in through a secure portal. I draft the returns, go through them with you, then file. You can reach me through the rest of the year for any questions that come up.</span><span data-lang="es">Los documentos llegan por un portal seguro. Preparo los borradores, los repasamos juntos y se presentan. Puedes contactarme durante el resto del año para las dudas que surjan.</span></p>
+        <p data-bilingual><span data-lang="en">Documents come in through a secure portal. I draft the returns, go through them with you, then file. Each return fee includes one round of questions and clarifications, e-filing and a PDF copy of the filed return.</span><span data-lang="es">Los documentos llegan por un portal seguro. Preparo los borradores, los repasamos juntos y se presentan. Cada tarifa por declaración incluye una ronda de preguntas y aclaraciones, la presentación electrónica y una copia en PDF de la declaración presentada.</span></p>
         <div class="process-art" aria-hidden="true">
           <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round">
@@ -1347,14 +1329,14 @@
           <span data-lang="es">Un formulario breve. Luego una llamada. Sin más.</span>
         </h2>
         <p class="body-lg" data-bilingual="block">
-          <span data-lang="en">Three light steps, with no SSN, no account numbers and no document uploads. Once you submit, you'll be invited to book a 30-minute discovery call directly on this page.</span>
-          <span data-lang="es">Tres pasos sencillos, sin SSN, sin números de cuenta y sin subir documentos. Al enviarlo, podrás reservar una llamada de 30 minutos en esta misma página.</span>
+          <span data-lang="en">Three light steps, with no SSN, no account numbers and no document uploads. Once you submit, you'll be invited to book a 15–20 minute discovery call directly on this page.</span>
+          <span data-lang="es">Tres pasos sencillos, sin SSN, sin números de cuenta y sin subir documentos. Al enviarlo, podrás reservar una llamada de 15–20 minutos en esta misma página.</span>
         </p>
 
         <ul>
           <li data-bilingual><span data-lang="en">Personal reply within two business days</span><span data-lang="es">Respuesta personal en dos días laborables</span></li>
           <li data-bilingual><span data-lang="en">No automated triage, no chatbot</span><span data-lang="es">Sin triaje automático ni chatbots</span></li>
-          <li data-bilingual><span data-lang="en">Free 30-minute discovery call if it makes sense</span><span data-lang="es">Llamada gratuita de 30 minutos si encaja</span></li>
+          <li data-bilingual><span data-lang="en">Free 15–20 minute discovery call if it makes sense</span><span data-lang="es">Llamada gratuita de 15–20 minutos si encaja</span></li>
         </ul>
       </aside>
 
@@ -1544,8 +1526,8 @@
 
           <div class="calendar-wrap">
             <p class="calendar-intro" data-bilingual="block">
-              <span data-lang="en"><strong>While you're here, book your free 30-minute discovery call.</strong> Pick a time that works and Andy will be on the line.</span>
-              <span data-lang="es"><strong>Ya que estás aquí, reserva tu llamada gratuita de 30 minutos.</strong> Elige una hora que te venga bien y Andy estará al otro lado.</span>
+              <span data-lang="en"><strong>While you're here, book your free 15–20 minute discovery call.</strong> Pick a time that works and Andy will be on the line.</span>
+              <span data-lang="es"><strong>Ya que estás aquí, reserva tu llamada gratuita de 15–20 minutos.</strong> Elige el momento que te venga bien y Andy estará al otro lado.</span>
             </p>
 
             <div class="cal-inline-widget"
@@ -1647,8 +1629,8 @@
           <span class="plus" aria-hidden="true"></span>
         </button>
         <div class="faq-a" id="faq-a12" role="region" aria-labelledby="faq-q12"><div><div class="faq-a-inner" data-bilingual="block">
-          <span data-lang="en">Flat fees, scoped after your intake form and the discovery call. A standard expat return with FBAR sits in a clear, predictable range, quoted in writing before any work starts. No hourly meter, no surprises on the invoice. The <a href="pricing.html">fee calculator</a> will give you a range in under a minute.</span>
-          <span data-lang="es">Tarifas fijas, definidas tras tu formulario inicial y la llamada de descubrimiento. Una declaración expatriada estándar con FBAR se mueve en un rango claro y predecible, cotizado por escrito antes de empezar. Sin contador por horas ni sorpresas en la factura. La <a href="pricing.html">calculadora de tarifas</a> te da un rango en menos de un minuto.</span>
+          <span data-lang="en">Flat fees, scoped after your intake form and the discovery call. A standard expat return with FBAR sits in a clear, predictable range, quoted in writing before any work starts. No meter running, no surprises on the invoice. The <a href="pricing.html">fee calculator</a> will give you a range in under a minute.</span>
+          <span data-lang="es">Tarifas fijas, definidas tras tu formulario inicial y la llamada de descubrimiento. Una declaración expatriada estándar con FBAR se mueve en un rango claro y predecible, cotizado por escrito antes de empezar. Sin contador en marcha ni sorpresas en la factura. La <a href="pricing.html">calculadora de tarifas</a> te da un rango en menos de un minuto.</span>
         </div></div></div>
       </div>
 
@@ -1801,10 +1783,10 @@
       <div class="footer-col">
         <h3 data-bilingual><span data-lang="en">Policies</span><span data-lang="es">Políticas</span></h3>
         <ul>
-          <li><a href="#" data-modal-open="privacy"   data-bilingual><span data-lang="en">Privacy</span><span data-lang="es">Privacidad</span></a></li>
-          <li><a href="#" data-modal-open="cookies"   data-bilingual><span data-lang="en">Cookies</span><span data-lang="es">Cookies</span></a></li>
-          <li><a href="#" data-modal-open="ethics"    data-bilingual><span data-lang="en">Ethics &amp; standards</span><span data-lang="es">Ética y estándares</span></a></li>
-          <li><a href="#" data-modal-open="terms"     data-bilingual><span data-lang="en">Terms of engagement</span><span data-lang="es">Términos</span></a></li>
+          <li><a href="#privacy" data-modal-open="privacy"   data-bilingual><span data-lang="en">Privacy</span><span data-lang="es">Privacidad</span></a></li>
+          <li><a href="#cookies" data-modal-open="cookies"   data-bilingual><span data-lang="en">Cookies</span><span data-lang="es">Cookies</span></a></li>
+          <li><a href="#ethics" data-modal-open="ethics"    data-bilingual><span data-lang="en">Ethics &amp; standards</span><span data-lang="es">Ética y estándares</span></a></li>
+          <li><a href="#terms" data-modal-open="terms"     data-bilingual><span data-lang="en">Terms of engagement</span><span data-lang="es">Términos</span></a></li>
         </ul>
       </div>
     </div>
@@ -1850,7 +1832,7 @@
 
       <div class="modal-pane is-active" data-modal-pane="privacy">
         <h2 id="modal-title" data-bilingual><span data-lang="en">Privacy Policy</span><span data-lang="es">Política de Privacidad</span></h2>
-        <p class="updated" data-bilingual><span data-lang="en">Last updated: June 2026</span><span data-lang="es">Última actualización: junio de 2026</span></p>
+        <p class="updated" data-bilingual><span data-lang="en">Last updated: October 2026</span><span data-lang="es">Última actualización: octubre de 2026</span></p>
 
         <h3 data-bilingual><span data-lang="en">Data controller</span><span data-lang="es">Responsable</span></h3>
         <p data-bilingual="block">
@@ -1862,8 +1844,26 @@
         <ul>
           <li data-bilingual><span data-lang="en">Intake-form data: first name, email, residency status, services of interest, high-level financial markers (yes/no questions).</span><span data-lang="es">Datos del formulario: nombre, correo, situación residencial, servicios de interés, indicadores financieros generales (preguntas sí/no).</span></li>
           <li data-bilingual><span data-lang="en">Booking metadata via Cal.com when scheduling a discovery call.</span><span data-lang="es">Metadatos de reserva vía Cal.com al programar una llamada.</span></li>
-          <li data-bilingual><span data-lang="en">Standard server logs (IP, browser, time) retained briefly for security.</span><span data-lang="es">Registros estándar del servidor (IP, navegador, hora) por seguridad y por poco tiempo.</span></li>
+          <li data-bilingual><span data-lang="en">Hosting logs. This site is hosted by GitHub Pages (GitHub, Inc., USA). When you visit, GitHub logs your IP address and request data for security purposes under its own privacy statement. This involves a transfer to the United States, covered by the EU–U.S. Data Privacy Framework and/or Standard Contractual Clauses.</span><span data-lang="es">Registros del alojamiento. Este sitio está alojado en GitHub Pages (GitHub, Inc., EE.&nbsp;UU.). Cuando lo visitas, GitHub registra tu dirección IP y los datos de la solicitud por motivos de seguridad, conforme a su propia declaración de privacidad. Esto implica una transferencia a Estados Unidos, amparada por el Marco de Privacidad de Datos UE-EE.&nbsp;UU. y/o por Cláusulas Contractuales Tipo.</span></li>
         </ul>
+
+        <h3 data-bilingual><span data-lang="en">Service providers</span><span data-lang="es">Proveedores de servicios</span></h3>
+        <p data-bilingual="block">
+          <span data-lang="en">The Practice uses these providers to run the website and serve clients. Each one processes personal data only as needed to provide its service:</span>
+          <span data-lang="es">La Práctica utiliza estos proveedores para mantener el sitio web y atender a sus clientes. Cada uno trata datos personales solo en la medida necesaria para prestar su servicio:</span>
+        </p>
+        <ul>
+          <li data-bilingual><span data-lang="en">GitHub (GitHub, Inc., USA): website hosting.</span><span data-lang="es">GitHub (GitHub, Inc., EE.&nbsp;UU.): alojamiento del sitio web.</span></li>
+          <li data-bilingual><span data-lang="en">Cal.com (Cal.com, Inc., USA): booking the discovery call.</span><span data-lang="es">Cal.com (Cal.com, Inc., EE.&nbsp;UU.): reserva de la llamada inicial.</span></li>
+          <li data-bilingual><span data-lang="en">Microsoft (Outlook / Microsoft 365): email.</span><span data-lang="es">Microsoft (Outlook / Microsoft 365): correo electrónico.</span></li>
+          <li data-bilingual><span data-lang="en">Intuit (Intuit Inc., USA): ProConnect tax software and the secure client document portal.</span><span data-lang="es">Intuit (Intuit Inc., EE.&nbsp;UU.): el software fiscal ProConnect y el portal seguro de documentos para clientes.</span></li>
+        </ul>
+
+        <h3 data-bilingual><span data-lang="en">International transfers</span><span data-lang="es">Transferencias internacionales</span></h3>
+        <p data-bilingual="block">
+          <span data-lang="en">GitHub, Cal.com and Intuit are U.S. companies, so using them involves transferring personal data to the United States. These transfers are covered by the EU–U.S. Data Privacy Framework and/or Standard Contractual Clauses approved by the European Commission.</span>
+          <span data-lang="es">GitHub, Cal.com e Intuit son empresas estadounidenses, por lo que su uso implica transferir datos personales a Estados Unidos. Estas transferencias están amparadas por el Marco de Privacidad de Datos UE-EE.&nbsp;UU. y/o por Cláusulas Contractuales Tipo aprobadas por la Comisión Europea.</span>
+        </p>
 
         <h3 data-bilingual><span data-lang="en">What we do not ask for here</span><span data-lang="es">Qué no pedimos aquí</span></h3>
         <p data-bilingual="block">
@@ -1892,7 +1892,7 @@
 
       <div class="modal-pane" data-modal-pane="cookies">
         <h2 data-bilingual><span data-lang="en">Cookies</span><span data-lang="es">Cookies</span></h2>
-        <p class="updated" data-bilingual><span data-lang="en">Last updated: June 2026</span><span data-lang="es">Última actualización: junio de 2026</span></p>
+        <p class="updated" data-bilingual><span data-lang="en">Last updated: October 2026</span><span data-lang="es">Última actualización: octubre de 2026</span></p>
 
         <h3 data-bilingual><span data-lang="en">What this site uses</span><span data-lang="es">Qué usa este sitio</span></h3>
         <p data-bilingual="block">
@@ -1965,8 +1965,8 @@
 
 <div class="cookies" id="cookie-banner" role="region" aria-label="Cookies">
   <span data-bilingual="block">
-    <span data-lang="en">This site uses only strictly necessary cookies to remember your language and theme. No analytics, no tracking. <a href="#" data-modal-open="cookies" style="color: var(--accent); text-decoration: underline;">More info</a>.</span>
-    <span data-lang="es">Este sitio solo usa cookies estrictamente necesarias para recordar tu idioma y tema. Sin analítica, sin seguimiento. <a href="#" data-modal-open="cookies" style="color: var(--accent); text-decoration: underline;">Más info</a>.</span>
+    <span data-lang="en">This site uses only strictly necessary cookies to remember your language and theme. No analytics, no tracking. <a href="#cookies" data-modal-open="cookies" style="color: var(--accent); text-decoration: underline;">More info</a>.</span>
+    <span data-lang="es">Este sitio solo usa cookies estrictamente necesarias para recordar tu idioma y tema. Sin analítica, sin seguimiento. <a href="#cookies" data-modal-open="cookies" style="color: var(--accent); text-decoration: underline;">Más info</a>.</span>
   </span>
   <div class="cookies-actions">
     <button data-cookie-action="accept" class="primary" data-bilingual><span data-lang="en">Got it</span><span data-lang="es">Entendido</span></button>
@@ -1974,7 +1974,7 @@
 </div>
 
 
-<script src="site.js?v=a2f4b9dadf" defer></script>
+<script src="site.js?v=2f7c758a06" defer></script>
 
 </body>
 </html>

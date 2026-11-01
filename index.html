@@ -281,6 +281,20 @@
   </div>
 </header>
 
+<div class="notice" id="deadline-notice" role="region" aria-label="Year-end planning notice"
+     data-notice-id="yearend-2026" data-notice-expires="2026-12-31" data-notice-services="planning">
+  <a class="notice-cta" href="#start" data-notice-start>
+    <span class="notice-track">
+      <span class="notice-item" data-bilingual><span data-lang="en">The year closes December 31, a good moment to get your U.S. and Spanish taxes in order. <span class="notice-link">Plan your year-end with Andy →</span></span><span data-lang="es">El año cierra el 31 de diciembre, buen momento para poner en orden tus impuestos en EE.&nbsp;UU. y en España. <span class="notice-link">Planifica el cierre del año con Andy →</span></span></span>
+      <span class="notice-item" data-bilingual aria-hidden="true"><span data-lang="en">The year closes December 31, a good moment to get your U.S. and Spanish taxes in order. <span class="notice-link">Plan your year-end with Andy →</span></span><span data-lang="es">El año cierra el 31 de diciembre, buen momento para poner en orden tus impuestos en EE.&nbsp;UU. y en España. <span class="notice-link">Planifica el cierre del año con Andy →</span></span></span>
+      <span class="notice-item" data-bilingual aria-hidden="true"><span data-lang="en">The year closes December 31, a good moment to get your U.S. and Spanish taxes in order. <span class="notice-link">Plan your year-end with Andy →</span></span><span data-lang="es">El año cierra el 31 de diciembre, buen momento para poner en orden tus impuestos en EE.&nbsp;UU. y en España. <span class="notice-link">Planifica el cierre del año con Andy →</span></span></span>
+    </span>
+  </a>
+  <button class="notice-close" type="button" data-notice-dismiss aria-label="Dismiss this notice">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+</div>
+
 <div class="mobile-drawer-overlay" id="mobile-overlay"></div>
 <div class="mobile-drawer" id="mobile-drawer">
   <button class="icon-btn close-btn" id="menu-close-btn" aria-label="Close menu">
@@ -1483,6 +1497,41 @@
           </div>
 
           <div class="field" style="margin-top: 28px;">
+            <span class="field-label" id="grp-label-5" data-bilingual><span data-lang="en">How did you hear about Pollock Tax?</span><span data-lang="es">¿Cómo conociste Pollock Tax?</span></span>
+            <div class="chips" data-chips data-name="referral" data-mode="single" role="group" aria-labelledby="grp-label-5">
+              <button type="button" class="chip" aria-pressed="false" data-value="word-of-mouth" data-bilingual><span data-lang="en">Word of mouth</span><span data-lang="es">Recomendación</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="retail" data-bilingual><span data-lang="en">In a shop or business</span><span data-lang="es">En un comercio o negocio</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="association" data-bilingual><span data-lang="en">Through an association</span><span data-lang="es">A través de una asociación</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="google" data-bilingual><span data-lang="en">Google search</span><span data-lang="es">Búsqueda en Google</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="social" data-bilingual><span data-lang="en">Social media or online group</span><span data-lang="es">Redes sociales o grupo online</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="ai" data-bilingual><span data-lang="en">AI assistant (ChatGPT, etc.)</span><span data-lang="es">Asistente de IA (ChatGPT, etc.)</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="event" data-bilingual><span data-lang="en">Event or talk</span><span data-lang="es">Evento o charla</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otro</span></button>
+            </div>
+          </div>
+
+          <div class="field" data-show-when="referral:retail" hidden>
+            <label for="f-referral-retail" data-bilingual><span data-lang="en">Which shop or business?</span><span data-lang="es">¿Qué comercio o negocio?</span></label>
+            <input id="f-referral-retail" class="input" type="text" name="referralRetail" placeholder="" />
+          </div>
+          <div class="field" data-show-when="referral:association" hidden>
+            <label for="f-referral-association" data-bilingual><span data-lang="en">Which association?</span><span data-lang="es">¿Qué asociación?</span></label>
+            <input id="f-referral-association" class="input" type="text" name="referralAssociation" placeholder="" />
+          </div>
+          <div class="field" data-show-when="referral:social" hidden>
+            <label for="f-referral-social" data-bilingual><span data-lang="en">Which platform or group? (optional)</span><span data-lang="es">¿Qué plataforma o grupo? (opcional)</span></label>
+            <input id="f-referral-social" class="input" type="text" name="referralSocial" placeholder="" />
+          </div>
+          <div class="field" data-show-when="referral:event" hidden>
+            <label for="f-referral-event" data-bilingual><span data-lang="en">Which event? (optional)</span><span data-lang="es">¿Qué evento? (opcional)</span></label>
+            <input id="f-referral-event" class="input" type="text" name="referralEvent" placeholder="" />
+          </div>
+          <div class="field" data-show-when="referral:other" hidden>
+            <label for="f-referral-other" data-bilingual><span data-lang="en">Tell us where</span><span data-lang="es">Cuéntanos dónde</span></label>
+            <input id="f-referral-other" class="input" type="text" name="referralOther" placeholder="" />
+          </div>
+
+          <div class="field">
             <label for="f-notes" data-bilingual><span data-lang="en">Anything else? (optional)</span><span data-lang="es">¿Algo más? (opcional)</span></label>
             <textarea id="f-notes" class="textarea" name="notes" placeholder=""></textarea>
           </div>
@@ -1531,14 +1580,14 @@
             </p>
 
             <div class="cal-inline-widget"
-                 data-cal-link="pollocktax/30min"
+                 data-cal-link="pollocktax/20min"
                  id="cal-embed"
                  style="min-width:280px;min-height:680px;"></div>
 
             <noscript>
               <div class="calendar-fallback">
                 <span data-bilingual><span data-lang="en">Booking widget requires JavaScript.</span><span data-lang="es">El calendario requiere JavaScript.</span></span>
-                <a href="https://cal.com/pollocktax/30min" class="btn btn-primary" data-bilingual><span data-lang="en">Open booking page</span><span data-lang="es">Abrir página de reserva</span></a>
+                <a href="https://cal.com/pollocktax/20min" class="btn btn-primary" data-bilingual><span data-lang="en">Open booking page</span><span data-lang="es">Abrir página de reserva</span></a>
               </div>
             </noscript>
           </div>
@@ -1842,7 +1891,7 @@
 
         <h3 data-bilingual><span data-lang="en">What we collect</span><span data-lang="es">Qué recogemos</span></h3>
         <ul>
-          <li data-bilingual><span data-lang="en">Intake-form data: first name, email, residency status, services of interest, high-level financial markers (yes/no questions).</span><span data-lang="es">Datos del formulario: nombre, correo, situación residencial, servicios de interés, indicadores financieros generales (preguntas sí/no).</span></li>
+          <li data-bilingual><span data-lang="en">Intake-form data: first name, email, residency status, services of interest, high-level financial markers (yes/no questions), how you heard about us.</span><span data-lang="es">Datos del formulario: nombre, correo, situación residencial, servicios de interés, indicadores financieros generales (preguntas sí/no), cómo nos conociste.</span></li>
           <li data-bilingual><span data-lang="en">Booking metadata via Cal.com when scheduling a discovery call.</span><span data-lang="es">Metadatos de reserva vía Cal.com al programar una llamada.</span></li>
           <li data-bilingual><span data-lang="en">Hosting logs. This site is hosted by GitHub Pages (GitHub, Inc., USA). When you visit, GitHub logs your IP address and request data for security purposes under its own privacy statement. This involves a transfer to the United States, covered by the EU–U.S. Data Privacy Framework and/or Standard Contractual Clauses.</span><span data-lang="es">Registros del alojamiento. Este sitio está alojado en GitHub Pages (GitHub, Inc., EE.&nbsp;UU.). Cuando lo visitas, GitHub registra tu dirección IP y los datos de la solicitud por motivos de seguridad, conforme a su propia declaración de privacidad. Esto implica una transferencia a Estados Unidos, amparada por el Marco de Privacidad de Datos UE-EE.&nbsp;UU. y/o por Cláusulas Contractuales Tipo.</span></li>
         </ul>
@@ -1974,7 +2023,7 @@
 </div>
 
 
-<script src="site.js?v=2f7c758a06" defer></script>
+<script src="site.js?v=c480313bd1" defer></script>
 
 </body>
 </html>

@@ -349,7 +349,7 @@
   /* ===== BOOKING CALENDAR (Cal.com) =====
      The embed script is only fetched once someone actually reaches the booking
      step, so no third-party code loads for a visitor who never gets there. */
-  const CAL_LINK = 'pollocktax/30min';
+  const CAL_LINK = 'pollocktax/20min';
   const CAL_NS   = 'discovery';
   let calMounted = false;
 
@@ -412,7 +412,9 @@
       data: {
         firstName: '', email: '', based: '', usStatus: '',
         services: [], timeInSpain: '', visa: '',
-        selfEmployed: '', fbarTrigger: '', investments: '', realEstate: '', unfiled: '', notes: ''
+        selfEmployed: '', fbarTrigger: '', investments: '', realEstate: '', unfiled: '',
+        referral: '', referralRetail: '', referralAssociation: '', referralSocial: '', referralEvent: '', referralOther: '',
+        notes: ''
       }
     };
 
@@ -430,6 +432,7 @@
             chip.classList.add('is-selected');
             chip.setAttribute('aria-pressed', 'true');
             state.data[name] = value;
+            syncConditionalFields();
           } else {
             chip.classList.toggle('is-selected');
             chip.setAttribute('aria-pressed', chip.classList.contains('is-selected') ? 'true' : 'false');
@@ -443,6 +446,15 @@
         });
       });
     });
+
+    // Follow-up fields that only apply to one answer, e.g. "Which association?"
+    // appears only once "Through an association" is picked.
+    function syncConditionalFields() {
+      $$('[data-show-when]', form).forEach(field => {
+        const [name, value] = field.getAttribute('data-show-when').split(':');
+        field.hidden = state.data[name] !== value;
+      });
+    }
 
     $$('[data-yn]', form).forEach(group => {
       const name = group.getAttribute('data-name');
@@ -488,6 +500,20 @@
         extension: 'Extension', student: 'Student return', sme: 'SME / business', other: 'Other'
       };
 
+      const referralLabels = {
+        'word-of-mouth': 'Word of mouth', retail: 'Shop or business', association: 'Association',
+        google: 'Google search', social: 'Social media / online group', ai: 'AI assistant',
+        event: 'Event or talk', other: 'Other'
+      };
+      const referralDetail = {
+        retail: state.data.referralRetail, association: state.data.referralAssociation,
+        social: state.data.referralSocial, event: state.data.referralEvent, other: state.data.referralOther
+      }[state.data.referral];
+      const referral = state.data.referral
+        ? (referralLabels[state.data.referral] || state.data.referral) +
+          (referralDetail && referralDetail.trim() ? ` (${referralDetail.trim()})` : '')
+        : '—';
+
       const lines = [
         `New intake: ${state.data.firstName || '(no name)'}`,
         ``,
@@ -506,6 +532,8 @@
         `— Investment / brokerage accounts?  ${state.data.investments || '—'}`,
         `— Real estate ownership?  ${state.data.realEstate || '—'}`,
         `— Years of unfiled U.S. returns:  ${state.data.unfiled || '—'}`,
+        ``,
+        `Heard about Pollock Tax: ${referral}`,
         ``,
         `Notes:`,
         state.data.notes || '—',

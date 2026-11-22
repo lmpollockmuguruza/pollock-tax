@@ -282,7 +282,7 @@
 </header>
 
 <div class="notice" id="deadline-notice" role="region" aria-label="Year-end planning notice"
-     data-notice-id="yearend-2026" data-notice-expires="2026-12-31" data-notice-services="planning">
+     data-notice-id="yearend-2026" data-notice-expires="2026-12-31" data-notice-services="advisory">
   <a class="notice-cta" href="#start" data-notice-start>
     <span class="notice-track">
       <span class="notice-item" data-bilingual><span data-lang="en">The year closes December 31, a good moment to get your U.S. and Spanish taxes in order. <span class="notice-link">Plan your year-end with Andy →</span></span><span data-lang="es">El año cierra el 31 de diciembre, buen momento para poner en orden tus impuestos en EE.&nbsp;UU. y en España. <span class="notice-link">Planifica el cierre del año con Andy →</span></span></span>
@@ -1355,13 +1355,13 @@
         </div>
 
         <div class="form-step is-active" data-step="1">
-          <h3 data-bilingual><span data-lang="en">Let's start with the basics</span><span data-lang="es">Empecemos por lo básico</span></h3>
-          <p class="step-sub" data-bilingual><span data-lang="en">Just your first name and email for now.</span><span data-lang="es">Por ahora basta con tu nombre y tu correo.</span></p>
+          <h3 data-bilingual><span data-lang="en">Let's start with you</span><span data-lang="es">Empecemos por ti</span></h3>
+          <p class="step-sub" data-bilingual><span data-lang="en">Please keep free-text answers brief. There's no need to include account details, amounts or comments about other people.</span><span data-lang="es">Responde brevemente en los campos de texto libre. No hace falta incluir datos de cuentas, importes ni comentarios sobre otras personas.</span></p>
 
           <div class="field-row">
             <div class="field">
-              <label for="f-firstName" data-bilingual><span data-lang="en">First name</span><span data-lang="es">Nombre</span></label>
-              <input id="f-firstName" class="input" type="text" name="firstName" autocomplete="given-name" placeholder="" />
+              <label for="f-name" data-bilingual><span data-lang="en">Full name</span><span data-lang="es">Nombre y apellidos</span></label>
+              <input id="f-name" class="input" type="text" name="name" autocomplete="name" placeholder="" />
             </div>
             <div class="field">
               <label for="f-email" data-bilingual><span data-lang="en">Email</span><span data-lang="es">Correo</span></label>
@@ -1370,165 +1370,152 @@
           </div>
 
           <div class="field">
-            <span class="field-label" id="grp-label-1" data-bilingual><span data-lang="en">Where are you based?</span><span data-lang="es">¿Dónde resides?</span></span>
-            <div class="chips" data-chips data-name="based" data-mode="single" role="group" aria-labelledby="grp-label-1">
-              <button type="button" class="chip" aria-pressed="false" data-value="spain" data-bilingual><span data-lang="en">In Spain</span><span data-lang="es">En España</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="moving" data-bilingual><span data-lang="en">Planning a move</span><span data-lang="es">Pensando mudarme</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="us" data-bilingual><span data-lang="en">Still in the U.S.</span><span data-lang="es">Aún en EE.&nbsp;UU.</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Elsewhere</span><span data-lang="es">Otro país</span></button>
+            <span class="field-label" id="grp-label-1" data-bilingual><span data-lang="en">Are you a… (pick all that apply)</span><span data-lang="es">¿Eres… (marca todo lo que aplique)</span></span>
+            <div class="chips" data-chips data-name="citizenship" data-mode="multi" role="group" aria-labelledby="grp-label-1">
+              <button type="button" class="chip" aria-pressed="false" data-value="us-citizen" data-bilingual><span data-lang="en">U.S. citizen</span><span data-lang="es">Ciudadano de EE.&nbsp;UU.</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="green-card" data-bilingual><span data-lang="en">U.S. green card holder</span><span data-lang="es">Titular de green card de EE.&nbsp;UU.</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="es-citizen" data-bilingual><span data-lang="en">Spanish citizen</span><span data-lang="es">Ciudadano español</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otro</span></button>
             </div>
+          </div>
+          <div class="field" data-show-when="citizenship:other" hidden>
+            <label for="f-citizenship-other" data-bilingual><span data-lang="en">Please explain</span><span data-lang="es">Explícalo, por favor</span></label>
+            <input id="f-citizenship-other" class="input" type="text" name="citizenshipOther" placeholder="" />
           </div>
 
           <div class="field">
-            <span class="field-label" id="grp-label-2" data-bilingual><span data-lang="en">U.S. tax status</span><span data-lang="es">Estatus fiscal en EE.&nbsp;UU.</span></span>
-            <div class="chips" data-chips data-name="usStatus" data-mode="single" role="group" aria-labelledby="grp-label-2">
-              <button type="button" class="chip" aria-pressed="false" data-value="citizen" data-bilingual><span data-lang="en">U.S. citizen</span><span data-lang="es">Ciudadano EE.&nbsp;UU.</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="green" data-bilingual><span data-lang="en">Green card holder</span><span data-lang="es">Residente permanente</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="dual" data-bilingual><span data-lang="en">Dual citizen</span><span data-lang="es">Doble nacionalidad</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="unsure" data-bilingual><span data-lang="en">Not sure</span><span data-lang="es">No estoy seguro</span></button>
+            <span class="field-label" id="grp-label-2" data-bilingual><span data-lang="en">What is your situation right now?</span><span data-lang="es">¿Cuál es tu situación ahora mismo?</span></span>
+            <div class="chips" data-chips data-name="situation" data-mode="single" role="group" aria-labelledby="grp-label-2">
+              <button type="button" class="chip" aria-pressed="false" data-value="arrived" data-bilingual><span data-lang="en">Recently arrived in Spain</span><span data-lang="es">Acabo de llegar a España</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="established" data-bilingual><span data-lang="en">Living in Spain for more than a year</span><span data-lang="es">Vivo en España desde hace más de un año</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="considering" data-bilingual><span data-lang="en">Living outside Spain, thinking of moving</span><span data-lang="es">Vivo fuera de España y pienso mudarme</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="abroad-es-ties" data-bilingual><span data-lang="en">Living outside Spain, with Spanish income or property</span><span data-lang="es">Vivo fuera de España, con ingresos o bienes en España</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otra</span></button>
             </div>
+          </div>
+          <div class="field" data-show-when="situation:considering" hidden>
+            <p class="field-note" data-bilingual><span data-lang="en">Good timing. We can go over the tax consequences of the move on the call.</span><span data-lang="es">Buen momento. En la llamada podemos repasar las consecuencias fiscales de la mudanza.</span></p>
+          </div>
+          <div class="field" data-show-when="situation:other" hidden>
+            <label for="f-situation-other" data-bilingual><span data-lang="en">Please explain</span><span data-lang="es">Explícalo, por favor</span></label>
+            <input id="f-situation-other" class="input" type="text" name="situationOther" placeholder="" />
           </div>
         </div>
 
         <div class="form-step" data-step="2">
-          <h3 data-bilingual><span data-lang="en">What do you need help with?</span><span data-lang="es">¿En qué necesitas ayuda?</span></h3>
-          <p class="step-sub" data-bilingual><span data-lang="en">Pick all that apply.</span><span data-lang="es">Marca todo lo que aplique.</span></p>
+          <h3 data-bilingual><span data-lang="en">What are you looking for?</span><span data-lang="es">¿Qué estás buscando?</span></h3>
+          <p class="step-sub" data-bilingual><span data-lang="en">A rough idea is enough. We'll go into detail on the call.</span><span data-lang="es">Basta con una idea aproximada. Entraremos en detalle en la llamada.</span></p>
 
           <div class="field">
-            <span class="field-label" id="grp-label-3" data-bilingual><span data-lang="en">Services of interest</span><span data-lang="es">Servicios de interés</span></span>
+            <span class="field-label" id="grp-label-3" data-bilingual><span data-lang="en">Help you need (pick all that apply)</span><span data-lang="es">Ayuda que necesitas (marca todo lo que aplique)</span></span>
             <div class="chips" data-chips data-name="services" data-mode="multi" role="group" aria-labelledby="grp-label-3">
-              <button type="button" class="chip" aria-pressed="false" data-value="federal" data-bilingual><span data-lang="en">Federal return</span><span data-lang="es">Declaración federal</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="fbar" data-bilingual><span data-lang="en">FBAR</span><span data-lang="es">FBAR</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="fatca" data-bilingual><span data-lang="en">FATCA / 8938</span><span data-lang="es">FATCA / 8938</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="state" data-bilingual><span data-lang="en">State return</span><span data-lang="es">Declaración estatal</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="spanish" data-bilingual><span data-lang="en">Spanish IRPF (Modelo 100/720)</span><span data-lang="es">IRPF español (Modelo 100/720)</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="streamlined" data-bilingual><span data-lang="en">Catch-up filings</span><span data-lang="es">Regularización</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="planning" data-bilingual><span data-lang="en">Tax planning</span><span data-lang="es">Planificación fiscal</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="se" data-bilingual><span data-lang="en">Self-employed</span><span data-lang="es">Autónomo</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="military" data-bilingual><span data-lang="en">Military</span><span data-lang="es">Militar</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="extension" data-bilingual><span data-lang="en">Extension</span><span data-lang="es">Prórroga</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="student" data-bilingual><span data-lang="en">Student return</span><span data-lang="es">Estudiante</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="sme" data-bilingual><span data-lang="en">SME / business</span><span data-lang="es">Pyme / empresa</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Something else</span><span data-lang="es">Otra cosa</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="us-prep" data-bilingual><span data-lang="en">U.S. tax filing preparation</span><span data-lang="es">Preparación de declaraciones de EE.&nbsp;UU.</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="es-prep" data-bilingual><span data-lang="en">Spanish tax filing preparation</span><span data-lang="es">Preparación de declaraciones españolas</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="advisory" data-bilingual><span data-lang="en">Cross-border tax advisory</span><span data-lang="es">Asesoría fiscal transfronteriza</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="specific" data-bilingual><span data-lang="en">Clarification on one specific tax issue</span><span data-lang="es">Aclarar una cuestión fiscal concreta</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otra cosa</span></button>
+            </div>
+          </div>
+          <div class="field" data-show-when="services:specific" hidden>
+            <label for="f-services-specific" data-bilingual><span data-lang="en">In a sentence, what is the issue?</span><span data-lang="es">En una frase, ¿cuál es la cuestión?</span></label>
+            <input id="f-services-specific" class="input" type="text" name="servicesSpecific" placeholder="" />
+          </div>
+          <div class="field" data-show-when="services:other" hidden>
+            <label for="f-services-other" data-bilingual><span data-lang="en">Please explain</span><span data-lang="es">Explícalo, por favor</span></label>
+            <input id="f-services-other" class="input" type="text" name="servicesOther" placeholder="" />
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="grp-label-4" data-bilingual><span data-lang="en">What brings you here today?</span><span data-lang="es">¿Qué te trae hoy por aquí?</span></span>
+            <div class="chips" data-chips data-name="reason" data-mode="single" role="group" aria-labelledby="grp-label-4">
+              <button type="button" class="chip" aria-pressed="false" data-value="hire" data-bilingual><span data-lang="en">I need to hire a tax specialist</span><span data-lang="es">Necesito contratar a un especialista fiscal</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="shopping" data-bilingual><span data-lang="en">Shopping around to consider my options</span><span data-lang="es">Estoy comparando opciones</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="second-opinion" data-bilingual><span data-lang="en">I want a second opinion on my tax work</span><span data-lang="es">Quiero una segunda opinión sobre mis declaraciones</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otro motivo</span></button>
+            </div>
+          </div>
+          <div class="field" data-show-when="reason:other" hidden>
+            <label for="f-reason-other" data-bilingual><span data-lang="en">Please explain</span><span data-lang="es">Explícalo, por favor</span></label>
+            <input id="f-reason-other" class="input" type="text" name="reasonOther" placeholder="" />
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="grp-label-5" data-bilingual><span data-lang="en">How soon do you need help?</span><span data-lang="es">¿Para cuándo necesitas ayuda?</span></span>
+            <div class="chips" data-chips data-name="timing" data-mode="single" role="group" aria-labelledby="grp-label-5">
+              <button type="button" class="chip" aria-pressed="false" data-value="urgent" data-bilingual><span data-lang="en">Urgent (within the month)</span><span data-lang="es">Urgente (este mes)</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="short-term" data-bilingual><span data-lang="en">Soon, not urgent (2–4 months)</span><span data-lang="es">Pronto, sin urgencia (2–4 meses)</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="next-season" data-bilingual><span data-lang="en">For the next filing season</span><span data-lang="es">Para la próxima campaña</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="unsure" data-bilingual><span data-lang="en">Not sure yet</span><span data-lang="es">Aún no lo sé</span></button>
             </div>
           </div>
 
           <div class="field">
-            <span class="field-label" id="grp-label-4" data-bilingual><span data-lang="en">Time in Spain</span><span data-lang="es">Tiempo en España</span></span>
-            <div class="chips" data-chips data-name="timeInSpain" data-mode="single" role="group" aria-labelledby="grp-label-4">
-              <button type="button" class="chip" aria-pressed="false" data-value="planning" data-bilingual><span data-lang="en">Not yet</span><span data-lang="es">Aún no</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="lt1" data-bilingual><span data-lang="en">Less than 1 year</span><span data-lang="es">Menos de 1 año</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="1to3" data-bilingual><span data-lang="en">1–3 years</span><span data-lang="es">1–3 años</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="3to7" data-bilingual><span data-lang="en">3–7 years</span><span data-lang="es">3–7 años</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="gt7" data-bilingual><span data-lang="en">7+ years</span><span data-lang="es">7+ años</span></button>
+            <span class="field-label" id="grp-label-6" data-bilingual><span data-lang="en">Are you willing to pay for tax services?</span><span data-lang="es">¿Estás dispuesto a pagar por servicios fiscales?</span></span>
+            <div class="chips" data-chips data-name="willingToPay" data-mode="single" role="group" aria-labelledby="grp-label-6">
+              <button type="button" class="chip" aria-pressed="false" data-value="yes" data-bilingual><span data-lang="en">Yes</span><span data-lang="es">Sí</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="depends" data-bilingual><span data-lang="en">It depends on the fee</span><span data-lang="es">Depende del precio</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="no" data-bilingual><span data-lang="en">No</span><span data-lang="es">No</span></button>
             </div>
-          </div>
-
-          <div class="field">
-            <label for="f-visa" data-bilingual><span data-lang="en">Visa or residency type, if you know it</span><span data-lang="es">Tipo de visado o residencia, si lo sabes</span></label>
-            <input id="f-visa" class="input" type="text" name="visa" placeholder="NLV, DNV, work permit, EU, none, etc." />
           </div>
         </div>
 
         <div class="form-step" data-step="3">
-          <h3 data-bilingual><span data-lang="en">A few quick yes/no questions</span><span data-lang="es">Algunas preguntas rápidas (sí/no)</span></h3>
-          <p class="step-sub" data-bilingual><span data-lang="en">No specifics needed, just enough to gauge complexity before we talk.</span><span data-lang="es">No hace falta dar detalles, solo lo justo para entender la complejidad antes de hablar.</span></p>
+          <h3 data-bilingual><span data-lang="en">Your advisors and next season</span><span data-lang="es">Tus asesores y la próxima campaña</span></h3>
+          <p class="step-sub" data-bilingual><span data-lang="en">Last step. Anything marked optional can be left blank.</span><span data-lang="es">Último paso. Lo marcado como opcional puede quedar en blanco.</span></p>
 
-          <div class="toggle-row">
-            <div>
-              <div class="label" id="yn-label-1" data-bilingual><span data-lang="en">Self-employed or business owner?</span><span data-lang="es">¿Autónomo o propietario de empresa?</span></div>
-              <div class="help" data-bilingual><span data-lang="en">Includes freelance and contractor income</span><span data-lang="es">Incluye ingresos como freelance o contratista</span></div>
-            </div>
-            <div class="yn" data-yn role="group" aria-labelledby="yn-label-1" data-name="selfEmployed">
-              <button type="button" data-value="yes" aria-pressed="false" data-bilingual><span data-lang="en">Yes</span><span data-lang="es">Sí</span></button>
-              <button type="button" data-value="no"  aria-pressed="false" data-bilingual><span data-lang="en">No</span><span data-lang="es">No</span></button>
-            </div>
-          </div>
-
-          <div class="toggle-row">
-            <div>
-              <div class="label" id="yn-label-2" data-bilingual><span data-lang="en">Foreign accounts over $10,000 aggregate at any point in the year?</span><span data-lang="es">¿Cuentas en el extranjero que sumaron más de 10.000 USD en algún momento del año?</span></div>
-              <div class="help" data-bilingual><span data-lang="en">This is the FBAR threshold</span><span data-lang="es">Es el umbral del FBAR</span></div>
-            </div>
-            <div class="yn" data-yn role="group" aria-labelledby="yn-label-2" data-name="fbarTrigger">
-              <button type="button" data-value="yes" aria-pressed="false" data-bilingual><span data-lang="en">Yes</span><span data-lang="es">Sí</span></button>
-              <button type="button" data-value="no"  aria-pressed="false" data-bilingual><span data-lang="en">No</span><span data-lang="es">No</span></button>
-              <button type="button" data-value="unsure" aria-pressed="false" data-bilingual><span data-lang="en">Unsure</span><span data-lang="es">No sé</span></button>
+          <div class="field">
+            <span class="field-label" id="grp-label-7" data-bilingual><span data-lang="en">Do you currently have a tax advisor?</span><span data-lang="es">¿Tienes actualmente un asesor fiscal?</span></span>
+            <div class="chips" data-chips data-name="advisor" data-mode="single" role="group" aria-labelledby="grp-label-7">
+              <button type="button" class="chip" aria-pressed="false" data-value="self" data-bilingual><span data-lang="en">No, I do my own returns</span><span data-lang="es">No, hago yo mis declaraciones</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="none" data-bilingual><span data-lang="en">No, I haven't needed one yet</span><span data-lang="es">No, aún no lo he necesitado</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="us-only" data-bilingual><span data-lang="en">Yes, for U.S. taxes only</span><span data-lang="es">Sí, solo para EE.&nbsp;UU.</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="es-only" data-bilingual><span data-lang="en">Yes, for Spanish taxes only</span><span data-lang="es">Sí, solo para España</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="same" data-bilingual><span data-lang="en">Yes, one advisor for both</span><span data-lang="es">Sí, el mismo asesor para ambos</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="separate" data-bilingual><span data-lang="en">Yes, a different advisor for each</span><span data-lang="es">Sí, un asesor distinto para cada uno</span></button>
             </div>
           </div>
-
-          <div class="toggle-row">
-            <div>
-              <div class="label" id="yn-label-3" data-bilingual><span data-lang="en">Investment or brokerage accounts?</span><span data-lang="es">¿Cuentas de inversión o brokerage?</span></div>
-              <div class="help" data-bilingual><span data-lang="en">Stocks, ETFs, crypto, retirement</span><span data-lang="es">Acciones, ETFs, criptomonedas, planes de jubilación</span></div>
-            </div>
-            <div class="yn" data-yn role="group" aria-labelledby="yn-label-3" data-name="investments">
-              <button type="button" data-value="yes" aria-pressed="false" data-bilingual><span data-lang="en">Yes</span><span data-lang="es">Sí</span></button>
-              <button type="button" data-value="no"  aria-pressed="false" data-bilingual><span data-lang="en">No</span><span data-lang="es">No</span></button>
-            </div>
-          </div>
-
-          <div class="toggle-row">
-            <div>
-              <div class="label" id="yn-label-4" data-bilingual><span data-lang="en">Real estate ownership anywhere?</span><span data-lang="es">¿Propiedad inmobiliaria en algún lugar?</span></div>
-              <div class="help" data-bilingual><span data-lang="en">Owned, sold, or rented out</span><span data-lang="es">En propiedad, vendida o alquilada</span></div>
-            </div>
-            <div class="yn" data-yn role="group" aria-labelledby="yn-label-4" data-name="realEstate">
-              <button type="button" data-value="yes" aria-pressed="false" data-bilingual><span data-lang="en">Yes</span><span data-lang="es">Sí</span></button>
-              <button type="button" data-value="no"  aria-pressed="false" data-bilingual><span data-lang="en">No</span><span data-lang="es">No</span></button>
-            </div>
-          </div>
-
-          <div class="toggle-row">
-            <div>
-              <div class="label" id="yn-label-5" data-bilingual><span data-lang="en">Years of unfiled U.S. returns?</span><span data-lang="es">¿Años de declaraciones americanas pendientes?</span></div>
-              <div class="help" data-bilingual><span data-lang="en">Helpful if you may need catch-up filings</span><span data-lang="es">Útil si podrías necesitar regularización</span></div>
-            </div>
-            <div class="yn" data-yn role="group" aria-labelledby="yn-label-5" data-name="unfiled">
-              <button type="button" data-value="0"   aria-pressed="false">0</button>
-              <button type="button" data-value="1-2" aria-pressed="false">1–2</button>
-              <button type="button" data-value="3+"  aria-pressed="false">3+</button>
-            </div>
-          </div>
-
-          <div class="field" style="margin-top: 28px;">
-            <span class="field-label" id="grp-label-5" data-bilingual><span data-lang="en">How did you hear about Pollock Tax?</span><span data-lang="es">¿Cómo conociste Pollock Tax?</span></span>
-            <div class="chips" data-chips data-name="referral" data-mode="single" role="group" aria-labelledby="grp-label-5">
-              <button type="button" class="chip" aria-pressed="false" data-value="word-of-mouth" data-bilingual><span data-lang="en">Word of mouth</span><span data-lang="es">Recomendación</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="retail" data-bilingual><span data-lang="en">In a shop or business</span><span data-lang="es">En un comercio o negocio</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="association" data-bilingual><span data-lang="en">Through an association</span><span data-lang="es">A través de una asociación</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="google" data-bilingual><span data-lang="en">Google search</span><span data-lang="es">Búsqueda en Google</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="social" data-bilingual><span data-lang="en">Social media or online group</span><span data-lang="es">Redes sociales o grupo online</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="ai" data-bilingual><span data-lang="en">AI assistant (ChatGPT, etc.)</span><span data-lang="es">Asistente de IA (ChatGPT, etc.)</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="event" data-bilingual><span data-lang="en">Event or talk</span><span data-lang="es">Evento o charla</span></button>
-              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otro</span></button>
-            </div>
-          </div>
-
-          <div class="field" data-show-when="referral:retail" hidden>
-            <label for="f-referral-retail" data-bilingual><span data-lang="en">Which shop or business?</span><span data-lang="es">¿Qué comercio o negocio?</span></label>
-            <input id="f-referral-retail" class="input" type="text" name="referralRetail" placeholder="" />
-          </div>
-          <div class="field" data-show-when="referral:association" hidden>
-            <label for="f-referral-association" data-bilingual><span data-lang="en">Which association?</span><span data-lang="es">¿Qué asociación?</span></label>
-            <input id="f-referral-association" class="input" type="text" name="referralAssociation" placeholder="" />
-          </div>
-          <div class="field" data-show-when="referral:social" hidden>
-            <label for="f-referral-social" data-bilingual><span data-lang="en">Which platform or group? (optional)</span><span data-lang="es">¿Qué plataforma o grupo? (opcional)</span></label>
-            <input id="f-referral-social" class="input" type="text" name="referralSocial" placeholder="" />
-          </div>
-          <div class="field" data-show-when="referral:event" hidden>
-            <label for="f-referral-event" data-bilingual><span data-lang="en">Which event? (optional)</span><span data-lang="es">¿Qué evento? (opcional)</span></label>
-            <input id="f-referral-event" class="input" type="text" name="referralEvent" placeholder="" />
-          </div>
-          <div class="field" data-show-when="referral:other" hidden>
-            <label for="f-referral-other" data-bilingual><span data-lang="en">Tell us where</span><span data-lang="es">Cuéntanos dónde</span></label>
-            <input id="f-referral-other" class="input" type="text" name="referralOther" placeholder="" />
+          <div class="field" data-show-when="advisor:us-only|es-only|same|separate" hidden>
+            <label for="f-advisor-name" data-bilingual><span data-lang="en">If you're willing to share it, who is your advisor? (optional)</span><span data-lang="es">Si quieres compartirlo, ¿quién es tu asesor? (opcional)</span></label>
+            <input id="f-advisor-name" class="input" type="text" name="advisorName" placeholder="" />
           </div>
 
           <div class="field">
-            <label for="f-notes" data-bilingual><span data-lang="en">Anything else? (optional)</span><span data-lang="es">¿Algo más? (opcional)</span></label>
-            <textarea id="f-notes" class="textarea" name="notes" placeholder=""></textarea>
+            <span class="field-label" id="grp-label-8" data-bilingual><span data-lang="en">Whether or not you want advisory help, would you like to reserve a spot for me to prepare your returns in the 2027 filing season (tax year 2026)?</span><span data-lang="es">Quieras o no asesoría, ¿te gustaría reservar plaza para que prepare tus declaraciones en la campaña de 2027 (ejercicio 2026)?</span></span>
+            <div class="chips" data-chips data-name="reservation" data-mode="multi" role="group" aria-labelledby="grp-label-8">
+              <button type="button" class="chip" aria-pressed="false" data-value="us" data-bilingual><span data-lang="en">Yes, U.S. returns</span><span data-lang="es">Sí, declaraciones de EE.&nbsp;UU.</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="es" data-bilingual><span data-lang="en">Yes, Spanish returns</span><span data-lang="es">Sí, declaraciones españolas</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Yes, something else</span><span data-lang="es">Sí, otra cosa</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="no" data-exclusive data-bilingual><span data-lang="en">No, not at this time</span><span data-lang="es">No, por ahora no</span></button>
+            </div>
+          </div>
+          <div class="field" data-show-when="reservation:us" hidden>
+            <span class="field-label" id="grp-label-9" data-bilingual><span data-lang="en">Which U.S. returns? (pick all that apply)</span><span data-lang="es">¿Qué declaraciones de EE.&nbsp;UU.? (marca todo lo que aplique)</span></span>
+            <div class="chips" data-chips data-name="reservationUS" data-mode="multi" role="group" aria-labelledby="grp-label-9">
+              <button type="button" class="chip" aria-pressed="false" data-value="1040" data-bilingual><span data-lang="en">Form 1040</span><span data-lang="es">Formulario 1040</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="fbar" data-bilingual><span data-lang="en">FBAR</span><span data-lang="es">FBAR</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="8938" data-bilingual><span data-lang="en">Form 8938</span><span data-lang="es">Formulario 8938</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otra</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="unsure" data-bilingual><span data-lang="en">Not sure</span><span data-lang="es">No lo sé</span></button>
+            </div>
+          </div>
+          <div class="field" data-show-when="reservation:es" hidden>
+            <span class="field-label" id="grp-label-10" data-bilingual><span data-lang="en">Which Spanish returns? (pick all that apply)</span><span data-lang="es">¿Qué declaraciones españolas? (marca todo lo que aplique)</span></span>
+            <div class="chips" data-chips data-name="reservationES" data-mode="multi" role="group" aria-labelledby="grp-label-10">
+              <button type="button" class="chip" aria-pressed="false" data-value="100" data-bilingual><span data-lang="en">Modelo 100</span><span data-lang="es">Modelo 100</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="210" data-bilingual><span data-lang="en">Modelo 210</span><span data-lang="es">Modelo 210</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="720" data-bilingual><span data-lang="en">Modelo 720</span><span data-lang="es">Modelo 720</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="other" data-bilingual><span data-lang="en">Other</span><span data-lang="es">Otro</span></button>
+              <button type="button" class="chip" aria-pressed="false" data-value="unsure" data-bilingual><span data-lang="en">Not sure</span><span data-lang="es">No lo sé</span></button>
+            </div>
+          </div>
+          <div class="field" data-show-when="reservation:other" hidden>
+            <label for="f-reservation-other" data-bilingual><span data-lang="en">Please explain</span><span data-lang="es">Explícalo, por favor</span></label>
+            <input id="f-reservation-other" class="input" type="text" name="reservationOther" placeholder="" />
+          </div>
+
+          <div class="field">
+            <label for="f-priorities" data-bilingual><span data-lang="en">What is especially important to you if and when you work with a tax advisor? (optional)</span><span data-lang="es">¿Qué es especialmente importante para ti si trabajas con un asesor fiscal? (opcional)</span></label>
+            <textarea id="f-priorities" class="textarea" name="priorities" placeholder=""></textarea>
           </div>
         </div>
 
@@ -1876,7 +1863,7 @@
 
       <div class="modal-pane is-active" data-modal-pane="privacy">
         <h2 id="modal-title" data-bilingual><span data-lang="en">Privacy Policy</span><span data-lang="es">Política de Privacidad</span></h2>
-        <p class="updated" data-bilingual><span data-lang="en">Last updated: October 2026</span><span data-lang="es">Última actualización: octubre de 2026</span></p>
+        <p class="updated" data-bilingual><span data-lang="en">Last updated: November 2026</span><span data-lang="es">Última actualización: noviembre de 2026</span></p>
 
         <h3 data-bilingual><span data-lang="en">Data controller</span><span data-lang="es">Responsable</span></h3>
         <p data-bilingual="block">
@@ -1884,9 +1871,16 @@
           <span data-lang="es">Pollock Tax &amp; Consulting (la «Práctica») es el responsable de los datos personales enviados a través de este sitio web. Contacto: Andy@pollocktax.com.</span>
         </p>
 
-        <h3 data-bilingual><span data-lang="en">What we collect</span><span data-lang="es">Qué recogemos</span></h3>
+        <h3 data-bilingual><span data-lang="en">Data we collect</span><span data-lang="es">Datos que recogemos</span></h3>
+        <p data-bilingual="block">
+          <span data-lang="en">When you reach out through the "Let's get started" form on this site, I collect the information you provide to assess whether I'm a good fit for your situation and, if so, to prepare for our discovery call. This includes your name and email address; your citizenship and residency status; the services you're interested in (U.S. tax preparation, Spanish tax preparation, cross-border advisory, or a specific question); what brings you to the page (needing to hire a tax specialist, comparing your options, or seeking a second opinion on existing tax work); how urgent your need is; whether you currently work with a U.S. advisor, a Spanish advisor, or both, and, only if you choose to share it, that advisor's name; your current stage with Spain (recently arrived, established, still abroad and considering a move, or living abroad with Spanish income or property); whether you're willing to pay for tax services; whether you're reserving a tax-filing engagement for the upcoming filing season and which forms it involves (for example, Form 1040, FBAR, Form 8938, Modelo 100, Modelo 210, or Modelo 720); and anything else you choose to tell me about what matters to you in working with an advisor. I process this information under Article 6(1)(b) GDPR, as steps taken at your request before entering into an engagement, and, where you mention another advisor, under Article 6(1)(f), my legitimate interest in understanding your current situation. As Spanish anti-money-laundering law requires, I also check names against official sanctions lists (Article 6(1)(c) GDPR). Please avoid including sensitive personal details, such as health information, in the free-text fields. If you go on to sign an engagement letter, this information becomes part of your client file and is retained under my document retention policy. If you don't, I keep it for 90 days and then delete it, unless the law, including anti-money-laundering legislation, requires me to keep it longer.</span>
+          <span data-lang="es">Cuando me escribes a través del formulario «Empecemos» de este sitio, recojo la información que me facilitas para valorar si encajo con tu situación y, en su caso, preparar nuestra llamada inicial. Esto incluye tu nombre y correo electrónico; tu nacionalidad y situación de residencia; los servicios que te interesan (preparación de declaraciones de EE.&nbsp;UU., preparación de declaraciones españolas, asesoría transfronteriza o una consulta concreta); qué te trae a la página (necesitas contratar a un especialista fiscal, estás comparando opciones o buscas una segunda opinión sobre declaraciones ya hechas); la urgencia de tu necesidad; si trabajas actualmente con un asesor en EE.&nbsp;UU., en España o en ambos y, solo si decides compartirlo, el nombre de ese asesor; tu situación respecto a España (recién llegado, establecido, aún en el extranjero y pensando en mudarte, o residente en el extranjero con ingresos o bienes en España); si estás dispuesto a pagar por servicios fiscales; si reservas la preparación de tus declaraciones para la próxima campaña y qué modelos incluye (por ejemplo, Formulario 1040, FBAR, Formulario 8938, Modelo 100, Modelo 210 o Modelo 720); y cualquier otra cosa que quieras contarme sobre lo que te importa al trabajar con un asesor. Trato esta información conforme al art. 6.1.b RGPD, como medidas precontractuales adoptadas a petición tuya, y, cuando mencionas a otro asesor, conforme al art. 6.1.f, mi interés legítimo en conocer tu situación actual. Como exige la normativa española de prevención del blanqueo de capitales, también compruebo los nombres en las listas oficiales de sanciones (art. 6.1.c RGPD). Evita incluir datos personales sensibles, como información de salud, en los campos de texto libre. Si llegas a firmar una carta de encargo, esta información pasa a formar parte de tu expediente de cliente y se conserva según mi política de conservación de documentos. Si no, la conservo 90 días y después la elimino, salvo que la ley, incluida la de prevención del blanqueo de capitales, me obligue a conservarla más tiempo.</span>
+        </p>
+        <p data-bilingual="block">
+          <span data-lang="en">Beyond the form, the site also involves:</span>
+          <span data-lang="es">Además del formulario, el sitio también implica:</span>
+        </p>
         <ul>
-          <li data-bilingual><span data-lang="en">Intake-form data: first name, email, residency status, services of interest, high-level financial markers (yes/no questions), how you heard about us.</span><span data-lang="es">Datos del formulario: nombre, correo, situación residencial, servicios de interés, indicadores financieros generales (preguntas sí/no), cómo nos conociste.</span></li>
           <li data-bilingual><span data-lang="en">Booking metadata via Cal.com when scheduling a discovery call.</span><span data-lang="es">Metadatos de reserva vía Cal.com al programar una llamada.</span></li>
           <li data-bilingual><span data-lang="en">Hosting logs. This site is hosted by GitHub Pages (GitHub, Inc., USA). When you visit, GitHub logs your IP address and request data for security purposes under its own privacy statement. This involves a transfer to the United States, covered by the EU–U.S. Data Privacy Framework and/or Standard Contractual Clauses.</span><span data-lang="es">Registros del alojamiento. Este sitio está alojado en GitHub Pages (GitHub, Inc., EE.&nbsp;UU.). Cuando lo visitas, GitHub registra tu dirección IP y los datos de la solicitud por motivos de seguridad, conforme a su propia declaración de privacidad. Esto implica una transferencia a Estados Unidos, amparada por el Marco de Privacidad de Datos UE-EE.&nbsp;UU. y/o por Cláusulas Contractuales Tipo.</span></li>
         </ul>
@@ -1917,14 +1911,14 @@
 
         <h3 data-bilingual><span data-lang="en">Legal basis</span><span data-lang="es">Base jurídica</span></h3>
         <p data-bilingual="block">
-          <span data-lang="en">Article 6(1)(b) GDPR, pre-contractual measures at your request; and Article 6(1)(f), legitimate interests in operating and securing the website.</span>
-          <span data-lang="es">Art. 6.1.b RGPD, medidas precontractuales a petición tuya; y art. 6.1.f, intereses legítimos en operar y proteger el sitio.</span>
+          <span data-lang="en">For the intake form, as set out under "Data we collect" above: Article 6(1)(b) GDPR, Article 6(1)(f) where you mention another advisor, and Article 6(1)(c) for sanctions-list checks. For booking and running the website: Article 6(1)(b), pre-contractual measures at your request; and Article 6(1)(f), legitimate interests in operating and securing the website.</span>
+          <span data-lang="es">Para el formulario, según se indica en «Datos que recogemos»: art. 6.1.b RGPD, art. 6.1.f cuando mencionas a otro asesor y art. 6.1.c para la comprobación en listas de sanciones. Para la reserva y el funcionamiento del sitio: art. 6.1.b, medidas precontractuales a petición tuya; y art. 6.1.f, intereses legítimos en operar y proteger el sitio.</span>
         </p>
 
         <h3 data-bilingual><span data-lang="en">Retention</span><span data-lang="es">Conservación</span></h3>
         <p data-bilingual="block">
-          <span data-lang="en">Intake-form data is retained for 12 months unless an engagement begins; engaged-client data is governed by the engagement letter and applicable record-keeping rules (Circular 230, EU professional standards).</span>
-          <span data-lang="es">Los datos del formulario se conservan 12 meses salvo que se inicie una colaboración; los datos de clientes contratados se rigen por la carta de encargo y las normas aplicables (Circular 230, normas profesionales europeas).</span>
+          <span data-lang="en">Intake-form data is deleted after 90 days unless an engagement begins or the law, including anti-money-laundering legislation, requires it to be kept longer; engaged-client data is governed by the engagement letter, the document retention policy and applicable record-keeping rules (Circular 230, EU professional standards).</span>
+          <span data-lang="es">Los datos del formulario se eliminan a los 90 días salvo que se inicie una colaboración o que la ley, incluida la de prevención del blanqueo de capitales, obligue a conservarlos más tiempo; los datos de clientes contratados se rigen por la carta de encargo, la política de conservación de documentos y las normas aplicables (Circular 230, normas profesionales europeas).</span>
         </p>
 
         <h3 data-bilingual><span data-lang="en">Your rights</span><span data-lang="es">Tus derechos</span></h3>

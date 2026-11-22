@@ -407,65 +407,55 @@
     const currentLabel = $('[data-current-step]', form);
     const formNav = $('[data-form-nav]', form);
 
-    const state = {
-      step: 1,
-      data: {
-        firstName: '', email: '', based: '', usStatus: '',
-        services: [], timeInSpain: '', visa: '',
-        selfEmployed: '', fbarTrigger: '', investments: '', realEstate: '', unfiled: '',
-        referral: '', referralRetail: '', referralAssociation: '', referralSocial: '', referralEvent: '', referralOther: '',
-        notes: ''
-      }
-    };
+    // Every chip group and text field registers itself, so adding a question to
+    // the markup is enough for it to be tracked.
+    const state = { step: 1, data: {} };
+    $$('[data-chips]', form).forEach(group => {
+      state.data[group.getAttribute('data-name')] = group.getAttribute('data-mode') === 'multi' ? [] : '';
+    });
+    $$('.input, .textarea', form).forEach(el => { if (el.name) state.data[el.name] = ''; });
+
+    function setChip(chip, on) {
+      chip.classList.toggle('is-selected', on);
+      chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
 
     $$('[data-chips]', form).forEach(group => {
       const name = group.getAttribute('data-name');
       const mode = group.getAttribute('data-mode') || 'single';
-      $$('.chip', group).forEach(chip => {
+      const chips = $$('.chip', group);
+      chips.forEach(chip => {
         chip.addEventListener('click', () => {
-          const value = chip.getAttribute('data-value');
           if (mode === 'single') {
-            $$('.chip', group).forEach(c => {
-              c.classList.remove('is-selected');
-              c.setAttribute('aria-pressed', 'false');
-            });
-            chip.classList.add('is-selected');
-            chip.setAttribute('aria-pressed', 'true');
-            state.data[name] = value;
-            syncConditionalFields();
+            chips.forEach(c => setChip(c, c === chip));
           } else {
-            chip.classList.toggle('is-selected');
-            chip.setAttribute('aria-pressed', chip.classList.contains('is-selected') ? 'true' : 'false');
-            if (!Array.isArray(state.data[name])) state.data[name] = [];
-            if (chip.classList.contains('is-selected')) {
-              if (!state.data[name].includes(value)) state.data[name].push(value);
-            } else {
-              state.data[name] = state.data[name].filter(v => v !== value);
+            const on = !chip.classList.contains('is-selected');
+            setChip(chip, on);
+            // A "No" answer (data-exclusive) cannot sit alongside a "Yes" one.
+            if (on) {
+              const exclusive = chip.hasAttribute('data-exclusive');
+              chips.forEach(c => {
+                if (c !== chip && (exclusive || c.hasAttribute('data-exclusive'))) setChip(c, false);
+              });
             }
           }
+          const values = chips.filter(c => c.classList.contains('is-selected')).map(c => c.getAttribute('data-value'));
+          state.data[name] = mode === 'single' ? (values[0] || '') : values;
+          syncConditionalFields();
         });
       });
     });
 
-    // Follow-up fields that only apply to one answer, e.g. "Which association?"
-    // appears only once "Through an association" is picked.
+    // Follow-up fields that only apply to some answers. data-show-when reads
+    // "group:value" or "group:a|b|c", and matches single and multi groups alike.
     function syncConditionalFields() {
       $$('[data-show-when]', form).forEach(field => {
-        const [name, value] = field.getAttribute('data-show-when').split(':');
-        field.hidden = state.data[name] !== value;
+        const [name, values] = field.getAttribute('data-show-when').split(':');
+        const v = state.data[name];
+        const have = Array.isArray(v) ? v : [v];
+        field.hidden = !values.split('|').some(w => have.includes(w));
       });
     }
-
-    $$('[data-yn]', form).forEach(group => {
-      const name = group.getAttribute('data-name');
-      $$('button', group).forEach(b => {
-        b.addEventListener('click', () => {
-          $$('button', group).forEach(bb => bb.setAttribute('aria-pressed', 'false'));
-          b.setAttribute('aria-pressed', 'true');
-          state.data[name] = b.getAttribute('data-value');
-        });
-      });
-    });
 
     form.addEventListener('input', e => {
       const t = e.target;
@@ -489,60 +479,67 @@
     nextBtn.addEventListener('click', () => { if (state.step < steps.length) showStep(state.step + 1); });
     backBtn.addEventListener('click', () => { if (state.step > 1) showStep(state.step - 1); });
 
+    // An answer only counts while its question is on screen, so a follow-up
+    // filled in and then branched away from stays out of the email.
+    const isLive = el => !el.closest('[data-show-when][hidden]');
+
+    // The email goes to Andy in English whatever language the visitor used,
+    // so labels come from the English half of each chip.
+    function picked(name) {
+      const group = $(`[data-chips][data-name="${name}"]`, form);
+      if (!group || !isLive(group)) return [];
+      return $$('.chip.is-selected', group).map(c => {
+        const en = $('[data-lang="en"]', c);
+        return { value: c.getAttribute('data-value'), label: (en || c).textContent.trim() };
+      });
+    }
+    function text(name) {
+      const el = form.elements[name];
+      return el && isLive(el) ? el.value.trim() : '';
+    }
+    // "Other" and similar answers carry their own explanation in brackets.
+    function answer(name, details) {
+      const list = picked(name).map(p => {
+        const d = details && details[p.value] ? text(details[p.value]) : '';
+        return d ? `${p.label} (${d})` : p.label;
+      });
+      return list.join(', ') || '—';
+    }
+
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const isES = root.getAttribute('lang') === 'es';
-
-      const servicesLabels = {
-        federal: 'Federal return', fbar: 'FBAR', fatca: 'FATCA / 8938',
-        state: 'State return', spanish: 'Spanish IRPF', streamlined: 'Catch-up filings',
-        planning: 'Tax planning', se: 'Self-employed', military: 'Military',
-        extension: 'Extension', student: 'Student return', sme: 'SME / business', other: 'Other'
-      };
-
-      const referralLabels = {
-        'word-of-mouth': 'Word of mouth', retail: 'Shop or business', association: 'Association',
-        google: 'Google search', social: 'Social media / online group', ai: 'AI assistant',
-        event: 'Event or talk', other: 'Other'
-      };
-      const referralDetail = {
-        retail: state.data.referralRetail, association: state.data.referralAssociation,
-        social: state.data.referralSocial, event: state.data.referralEvent, other: state.data.referralOther
-      }[state.data.referral];
-      const referral = state.data.referral
-        ? (referralLabels[state.data.referral] || state.data.referral) +
-          (referralDetail && referralDetail.trim() ? ` (${referralDetail.trim()})` : '')
-        : '—';
+      const name = text('name');
+      const advisorName = text('advisorName');
+      const reservationUS = picked('reservationUS').map(p => p.label).join(', ');
+      const reservationES = picked('reservationES').map(p => p.label).join(', ');
 
       const lines = [
-        `New intake: ${state.data.firstName || '(no name)'}`,
+        `New intake: ${name || '(no name)'}`,
         ``,
-        `Name: ${state.data.firstName || '—'}`,
-        `Email: ${state.data.email || '—'}`,
+        `Name: ${name || '—'}`,
+        `Email: ${text('email') || '—'}`,
         ``,
-        `Based: ${state.data.based || '—'}`,
-        `U.S. status: ${state.data.usStatus || '—'}`,
-        `Time in Spain: ${state.data.timeInSpain || '—'}`,
-        `Visa/residency: ${state.data.visa || '—'}`,
+        `Citizenship / status: ${answer('citizenship', { other: 'citizenshipOther' })}`,
+        `Current situation: ${answer('situation', { other: 'situationOther' })}`,
         ``,
-        `Services: ${(state.data.services || []).map(s => servicesLabels[s] || s).join(', ') || '—'}`,
+        `Looking for: ${answer('services', { specific: 'servicesSpecific', other: 'servicesOther' })}`,
+        `What brings them here: ${answer('reason', { other: 'reasonOther' })}`,
+        `How soon: ${answer('timing')}`,
+        `Willing to pay for tax services: ${answer('willingToPay')}`,
         ``,
-        `— Self-employed?  ${state.data.selfEmployed || '—'}`,
-        `— FBAR-trigger accounts (>$10k aggregate)?  ${state.data.fbarTrigger || '—'}`,
-        `— Investment / brokerage accounts?  ${state.data.investments || '—'}`,
-        `— Real estate ownership?  ${state.data.realEstate || '—'}`,
-        `— Years of unfiled U.S. returns:  ${state.data.unfiled || '—'}`,
+        `Current tax advisor: ${answer('advisor')}${advisorName ? ` (${advisorName})` : ''}`,
+        `Reserve 2027 filing season (tax year 2026): ${answer('reservation', { other: 'reservationOther' })}`,
+        ...(reservationUS ? [`  U.S. returns: ${reservationUS}`] : []),
+        ...(reservationES ? [`  Spanish returns: ${reservationES}`] : []),
         ``,
-        `Heard about Pollock Tax: ${referral}`,
-        ``,
-        `Notes:`,
-        state.data.notes || '—',
+        `What matters most in an advisor:`,
+        text('priorities') || '—',
         ``,
         `--`,
         `Submitted from pollocktax.com`
       ].join('\n');
 
-      const subject = `New intake: ${state.data.firstName || 'Pollock Tax website'}`;
+      const subject = `New intake: ${name || 'Pollock Tax website'}`;
       const mailto = `mailto:Andy@pollocktax.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
 
       // The mailto may be blocked, or the visitor may use webmail, so the same
@@ -908,7 +905,7 @@
         e.preventDefault();
         seedIntake();
         start.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-        const firstField = $('#f-firstName');
+        const firstField = $('#f-name');
         // Focusing mid-scroll fights the scroll, so it waits for it to settle.
         if (firstField) setTimeout(() => firstField.focus({ preventScroll: true }), reduce ? 0 : 700);
       });

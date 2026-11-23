@@ -532,6 +532,8 @@
         ...(reservationUS ? [`  U.S. returns: ${reservationUS}`] : []),
         ...(reservationES ? [`  Spanish returns: ${reservationES}`] : []),
         ``,
+        `Heard about Pollock Tax: ${answer('referral', { retail: 'referralRetail', association: 'referralAssociation', social: 'referralSocial', event: 'referralEvent', other: 'referralOther' })}`,
+        ``,
         `What matters most in an advisor:`,
         text('priorities') || '—',
         ``,
